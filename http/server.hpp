@@ -11,6 +11,7 @@
 #include <thread>
 #include <vector>
 
+#include "client.hpp"
 #include "configuration.hpp"
 #include "server_launch_error.hpp"
 
@@ -47,8 +48,12 @@ private:
 	int internalSocket{ -1 };
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
+	std::vector<Client> clients;
 
 	bool shutdownSignaled{ false };
+
+	void
+	AcceptClient();
 
 	void
 	CheckConfiguration() const;

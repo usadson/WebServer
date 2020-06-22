@@ -50,6 +50,8 @@ Server::InternalStart() {
 			HandlePollFailure();
 			return;
 		}
+
+		AcceptClient();
 	}
 }
 
@@ -59,6 +61,17 @@ Server::~Server() noexcept {
 	for (const auto &cleanFunction : cleanFunctions) {
 		cleanFunction(this);
 	}
+}
+
+void
+Server::AcceptClient() {
+	int client = accept(internalSocket, nullptr, nullptr);
+	if (client == -1) {
+		std::clog << __PRETTY_FUNCTION__ << ": Accept() failed!\n";
+		return;
+	}
+
+	clients.emplace_back(client);
 }
 
 void
