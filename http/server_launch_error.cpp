@@ -7,7 +7,6 @@
 #include "server_launch_error.hpp"
 
 #include <array>
-#include <string>
 
 const std::array launchErrorNames = {
 	"NO_ERROR",
