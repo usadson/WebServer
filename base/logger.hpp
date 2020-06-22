@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 namespace Logger {
 
