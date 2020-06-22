@@ -6,18 +6,20 @@
 
 #include "server.hpp"
 
+#include <algorithm>
+#include <exception>
 #include <initializer_list>
-#include <iostream>
-#include <sstream>
+#include <iterator>
+#include <sstream> // IWYU pragma: keep
 
 #include <cerrno>
-#include <csignal>
 #include <netinet/in.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include "base/logger.hpp"
+#include "http/client.hpp"
 #include "http/configuration.hpp"
 #include "http/server_launch_error.hpp"
 

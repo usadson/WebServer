@@ -12,14 +12,7 @@
 #include <thread>
 #include <vector>
 
-namespace HTTP {
-
-	// Forward-decl for client.hpp
-	class Server;
-
-} // namespace HTTP
-
-#include "http/client.hpp"
+#include "http/client.hpp" // IWYU pragma: keep
 #include "http/configuration.hpp"
 #include "http/server_launch_error.hpp"
 
