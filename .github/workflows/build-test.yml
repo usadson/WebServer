@@ -8,10 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - name: GoogleTest Dependency
+      run: (sudo apt install googletest libgtest-dev && sudo apt install googletest-tools) || wget https://github.com/google/googletest/archive/v1.10.x.tar.gz && tar -xf v1.10.x.tar.gz && cd googletest-1.10.x && cmake . && make && sudo make install && cd ..
     - name: Build
       run: make
