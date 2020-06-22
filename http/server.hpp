@@ -50,17 +50,17 @@ private:
 	void
 	CloseSocket() noexcept;
 
+	[[nodiscard]] ServerLaunchError
+	ConfigureSocketBind() noexcept;
+
+	[[nodiscard]] ServerLaunchError
+	ConfigureSocketSetReusable() noexcept;
+
 	[[nodiscard]] bool
 	CreateServer() noexcept;
 
 	[[nodiscard]] ServerLaunchError
 	CreateSocket() noexcept;
-
-	[[nodiscard]] ServerLaunchError
-	ConfigureSocketSetReusable() noexcept;
-
-	[[nodiscard]] ServerLaunchError
-	ConfigureSocketBind() noexcept;
 
 	void
 	InternalStart();

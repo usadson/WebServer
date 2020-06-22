@@ -36,20 +36,6 @@ Server::~Server() noexcept {
 	}
 }
 
-bool
-Server::CreateServer() noexcept {
-	for (const auto &function : functions) {
-		ServerLaunchError error = function(this);
-
-		if (error != ServerLaunchError::NO_ERROR) {
-			std::cerr << "Failed to create server!\nError: " << error << '\n';
-			return false;
-		}
-	}
-
-	return true;
-}
-
 void
 Server::CloseSocket() noexcept {
 	if (internalSocket == -1) {
@@ -58,30 +44,6 @@ Server::CloseSocket() noexcept {
 
 	close(internalSocket);
 	internalSocket = -1;
-}
-
-ServerLaunchError
-Server::CreateSocket() noexcept {
-	internalSocket = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (internalSocket == -1) {
-		return ServerLaunchError::SOCKET_CREATION;
-	}
-
-	cleanFunctions.push_back(&Server::CloseSocket);
-
-	return ServerLaunchError::NO_ERROR;
-}
-
-ServerLaunchError
-Server::ConfigureSocketSetReusable() noexcept {
-	int flag = 1;
-
-	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
-		return ServerLaunchError::SOCKET_REUSABLE;
-	}
-
-	return ServerLaunchError::NO_ERROR;
 }
 
 ServerLaunchError
@@ -103,6 +65,44 @@ Server::ConfigureSocketBind() noexcept {
 				return ServerLaunchError::SOCKET_BIND_UNKNOWN;
 		}
 	}
+
+	return ServerLaunchError::NO_ERROR;
+}
+
+ServerLaunchError
+Server::ConfigureSocketSetReusable() noexcept {
+	int flag = 1;
+
+	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
+		return ServerLaunchError::SOCKET_REUSABLE;
+	}
+
+	return ServerLaunchError::NO_ERROR;
+}
+
+bool
+Server::CreateServer() noexcept {
+	for (const auto &function : functions) {
+		ServerLaunchError error = function(this);
+
+		if (error != ServerLaunchError::NO_ERROR) {
+			std::cerr << "Failed to create server!\nError: " << error << '\n';
+			return false;
+		}
+	}
+
+	return true;
+}
+
+ServerLaunchError
+Server::CreateSocket() noexcept {
+	internalSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (internalSocket == -1) {
+		return ServerLaunchError::SOCKET_CREATION;
+	}
+
+	cleanFunctions.push_back(&Server::CloseSocket);
 
 	return ServerLaunchError::NO_ERROR;
 }
