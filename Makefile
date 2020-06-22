@@ -64,7 +64,8 @@ bin/test.txt:
 
 bin/http/client.o: http/client.cpp \
 	http/client.hpp \
-	http/configuration.hpp
+	http/configuration.hpp \
+	http/server.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
