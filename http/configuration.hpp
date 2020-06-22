@@ -10,7 +10,22 @@
 
 #include <cstdint>
 
+#include <exception>
+
 namespace HTTP {
+
+class ConfigurationException : public std::exception {
+public:
+	inline ConfigurationException(const char *desc) : description(desc) {
+	}
+
+	[[nodiscard]] inline const char *
+	what() const noexcept override {
+		return description;
+	}
+private:
+	const char *description;
+};
 
 struct Configuration {
 
