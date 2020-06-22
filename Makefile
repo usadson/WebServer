@@ -46,6 +46,8 @@ server: main.cpp \
 bin/test.txt:
 	@mkdir bin
 	@mkdir bin/http
+	@mkdir bin/test
+	@mkdir bin/test/http
 	@touch bin/test.txt
 
 bin/http/client.o: http/client.cpp \
@@ -100,3 +102,6 @@ infer-clean:
 # A modern linter for C++, made by Facebook.
 flint:
 	flint++ -r -v .
+
+
+include test/Makefile
