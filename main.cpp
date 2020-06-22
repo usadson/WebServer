@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 
+#include "http/configuration.hpp"
 #include "http/server.hpp"
 
 int
