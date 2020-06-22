@@ -91,8 +91,8 @@ Server::ConfigureSocketSetReusable() noexcept {
 
 bool
 Server::CreateServer() noexcept {
-	for (const auto &function : functions) {
-		ServerLaunchError error = function(this);
+	for (auto function : { &Server::CreateSocket, &Server::ConfigureSocketSetReusable, &Server::ConfigureSocketBind, &Server::ConfigureSocketListen }) {
+		ServerLaunchError error = (this->*function)();
 
 		if (error != ServerLaunchError::NO_ERROR) {
 			std::cerr << "Failed to create server!\nError: " << error << '\n';
