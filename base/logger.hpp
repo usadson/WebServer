@@ -10,12 +10,16 @@
 
 namespace Logger {
 
+inline void Debug(std::string source, std::string message) {
+	std::cout << "\x1b[35m[Debug] [" << source << "] " << message << "\x1b[0m\n";
+}
+
 inline void Error(std::string source, std::string message) {
-	std::clog << "[Error] [" << source << "] " << message << '\n';
+	std::clog << "\x1b[31m[Error] [" << source << "] " << message << "\x1b[0m\n";
 }
 
 inline void Info(std::string source, std::string message) {
-	std::cout << "[Info] [" << source << "] " << message << '\n';
+	std::cout << "\x1b[32m[Info] [" << source << "] " << message << "\x1b[0m\n";
 }
 
 inline void Log(std::string source, std::string message) {
@@ -23,11 +27,11 @@ inline void Log(std::string source, std::string message) {
 }
 
 inline void Severe(std::string source, std::string message) {
-	std::clog << "[Severe] [" << source << "] " << message << '\n';
+	std::clog << "\x1b[31m[Severe] [" << source << "] " << message << '\n';
 }
 
 inline void Warning(std::string source, std::string message) {
-	std::clog << "[Warning] [" << source << "] " << message << '\n';
+	std::clog << "\x1b[33m[Warning] [" << source << "] " << message << "\x1b[0m\n";
 }
 
 } // namespace Logger
