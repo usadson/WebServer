@@ -16,7 +16,8 @@ LDFLAGS = `pkg-config --static --libs $(TLS_PACKAGE)`
 
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
-BINARIES =
+BINARIES = bin/http/server.o \
+	   bin/http/server_launch_error.o
 
 # The 'all' target will compile all object files and generate the binary
 # executable. This is the default target for 'make'.
@@ -50,12 +51,19 @@ server: main.cpp \
 # execute the 'clean' target.
 bin/test.txt:
 	@mkdir bin
+	@mkdir bin/http
 	@touch bin/test.txt
 
-bin/ccompat.o: ccompat.cpp\
-	ccompat.hpp \
-	logger.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ ccompat.cpp
+bin/http/server.o: http/server.cpp \
+	http/server.hpp \
+	http/client.hpp \
+	http/configuration.hpp \
+	http/server_launch_error.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ http/server.cpp
+
+bin/http/server_launch_error.o: http/server_launch_error.cpp \
+	http/server_launch_error.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ http/server_launch_error.cpp
 
 
 # the 'memory' target will invoke Valgrind, which will run the executable and

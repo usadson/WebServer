@@ -6,7 +6,18 @@
 
 #include <cstdlib>
 
+#include "http/server.hpp"
+
 int
 main() {
+	HTTP::Configuration config;
+	config.port = 80;
+	config.useTransportSecurity = false;
+
+	HTTP::Server server(config);
+	server.Start();
+
+	server.Join();
+
 	return EXIT_SUCCESS;
 }
