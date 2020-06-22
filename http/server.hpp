@@ -45,7 +45,7 @@ private:
 		&Server::ConfigureSocketBind,
 	};
 
-	std::vector<std::function<void(Server *)>> cleanUpFunctions;
+	std::vector<std::function<void(Server *)>> cleanFunctions;
 
 	void
 	CloseSocket() noexcept;

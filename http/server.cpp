@@ -29,7 +29,9 @@ Server::InternalStart() {
 
 Server::~Server() noexcept {
 	// TODO Stop thread
-	CloseSocket();
+	for (const auto &cleanFunction : cleanFunctions) {
+		cleanFunction(this);
+	}
 }
 
 bool
@@ -62,7 +64,7 @@ Server::CreateSocket() noexcept {
 	if (internalSocket == -1)
 		return ServerLaunchError::SOCKET_CREATION;
 
-	cleanUpFunctions.push_back(&Server::CloseSocket);
+	cleanFunctions.push_back(&Server::CloseSocket);
 
 	return ServerLaunchError::NO_ERROR;
 }
