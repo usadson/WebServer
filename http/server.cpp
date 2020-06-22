@@ -10,9 +10,9 @@
 #include <iostream>
 
 #include <cerrno>
+#include <csignal>
 #include <netinet/in.h>
 #include <poll.h>
-#include <signal.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
