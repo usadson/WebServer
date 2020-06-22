@@ -197,11 +197,11 @@ Server::SignalClientDeath(std::reference_wrapper<std::thread> thread) noexcept {
 	// Detach the thread so we can remove the client.
 	thread.get().detach();
 
-	std::remove_if(std::begin(clients), std::end(clients),
+	clients.erase(std::remove_if(std::begin(clients), std::end(clients),
 		[thread](const auto &client) {
 			return client->thread.get_id() == thread.get().get_id();
 		}
-	);
+	));
 }
 
 } // namespace HTTP
