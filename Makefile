@@ -22,7 +22,8 @@ LDFLAGS = `pkg-config --static --libs $(TLS_PACKAGE)`
 
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
-BINARIES = bin/http/server.o \
+BINARIES = bin/http/client.o \
+	   bin/http/server.o \
 	   bin/http/server_launch_error.o
 
 # The 'all' target will compile all object files and generate the binary
@@ -60,6 +61,11 @@ bin/test.txt:
 	@mkdir bin
 	@mkdir bin/http
 	@touch bin/test.txt
+
+bin/http/client.o: http/client.cpp \
+	http/client.hpp \
+	http/configuration.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
 	http/server.hpp \
