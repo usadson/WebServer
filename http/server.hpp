@@ -19,9 +19,9 @@ namespace HTTP {
 
 } // namespace HTTP
 
-#include "client.hpp"
-#include "configuration.hpp"
-#include "server_launch_error.hpp"
+#include "http/client.hpp"
+#include "http/configuration.hpp"
+#include "http/server_launch_error.hpp"
 
 namespace HTTP {
 
