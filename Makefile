@@ -8,7 +8,13 @@ TLS_PACKAGE = openssl
 
 GENERAL = -std=c++17 -g
 INCLUDES = -I.
-WARNINGS = -Wall -Wextra -Wpedantic
+WARNINGS = \
+	   -Wall \
+	   -Wextra \
+	   -Wformat=2 \
+	   -Wpedantic \
+	   -Wshadow
+
 ADDITIONAL_CXXFLAGS ?=
 CXXFLAGS += $(GENERAL) $(INCLUDES) $(WARNINGS) $(ADDITIONAL_CXXFLAGS)
 CXX = clang++
