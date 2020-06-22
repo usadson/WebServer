@@ -21,5 +21,5 @@ const std::array launchErrorNames = {
 
 std::ostream &
 operator<<(std::ostream &stream, HTTP::ServerLaunchError error) {
-	return stream << launchErrorNames[static_cast<std::size_t>(error)];
+	return stream << launchErrorNames.at(static_cast<std::size_t>(error));
 }
