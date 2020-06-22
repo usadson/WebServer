@@ -39,10 +39,11 @@ private:
 	std::unique_ptr<std::thread> internalThread{ nullptr };
 	int internalSocket{ -1 };
 
-	const std::array<std::function<ServerLaunchError(Server *)>, 3> functions = {
+	const std::array<std::function<ServerLaunchError(Server *)>, 4> functions = {
 		&Server::CreateSocket,
 		&Server::ConfigureSocketSetReusable,
 		&Server::ConfigureSocketBind,
+		&Server::ConfigureSocketListen,
 	};
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
@@ -52,6 +53,9 @@ private:
 
 	[[nodiscard]] ServerLaunchError
 	ConfigureSocketBind() noexcept;
+
+	[[nodiscard]] ServerLaunchError
+	ConfigureSocketListen() noexcept;
 
 	[[nodiscard]] ServerLaunchError
 	ConfigureSocketSetReusable() noexcept;

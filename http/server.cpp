@@ -70,6 +70,15 @@ Server::ConfigureSocketBind() noexcept {
 }
 
 ServerLaunchError
+Server::ConfigureSocketListen() noexcept {
+	if (listen(internalSocket, configuration.listenerBacklog) == -1) {
+		return ServerLaunchError::SOCKET_LISTEN;
+	}
+
+	return ServerLaunchError::NO_ERROR;
+}
+
+ServerLaunchError
 Server::ConfigureSocketSetReusable() noexcept {
 	int flag = 1;
 
