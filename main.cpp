@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 
+#include "base/logger.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 
@@ -19,11 +20,16 @@ main() {
 	HTTP::Server server(config);
 	server.Start();
 
+	Logger::Info("Main", "Server Started");
+
 	std::string test;
 	std::cin >> test;
+
+	Logger::Info("Main", "Stopping...");
 
 	server.SignalShutdown();
 	server.Join();
 
+	Logger::Info("Main", "Stopped!");
 	return EXIT_SUCCESS;
 }
