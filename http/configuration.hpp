@@ -14,23 +14,10 @@
 
 namespace HTTP {
 
-class ConfigurationException : public std::exception {
-public:
-	inline ConfigurationException(const char *desc) : description(desc) {
-	}
-
-	[[nodiscard]] inline const char *
-	what() const noexcept override {
-		return description;
-	}
-private:
-	const char *description;
-};
-
 struct Configuration {
 
 	// The amount of clients awaiting in the accept() queue
-	std::size_t listenerBacklog;
+	std::size_t listenerBacklog{ 100 };
 
 	// The amount of time should pass between poll() calls to the main server
 	// socket.
@@ -46,12 +33,26 @@ struct Configuration {
 	// 80    This port is the default port for non-secure (HTTP) connections.
 	// 443   This port is the default port for secure (HTTPS) connections.
 	// 8080  This port is regularly used on (local) test servers.
-	uint16_t port;
+	uint16_t port{ 8080 };
 
 	// Whether or a security layer should be used.
 	// The security layer is TLS.
-	bool useTransportSecurity;
+	bool useTransportSecurity{ false };
 
+};
+
+class ConfigurationException : public std::exception {
+public:
+	inline ConfigurationException(const char *desc) : description(desc) {
+	}
+
+	[[nodiscard]] inline const char *
+	what() const noexcept override {
+		return description;
+	}
+
+private:
+	const char *description;
 };
 
 } // namespace HTTP
