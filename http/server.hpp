@@ -35,12 +35,19 @@ public:
 		return internalThread->join();
 	}
 
+	inline void
+	SignalShutdown() noexcept {
+		shutdownSignaled = true;
+	}
+
 private:
 	Configuration configuration;
 	std::unique_ptr<std::thread> internalThread{ nullptr };
 	int internalSocket{ -1 };
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
+
+	bool shutdownSignaled;
 
 	void
 	CloseSocket() noexcept;
@@ -62,6 +69,7 @@ private:
 
 	void
 	InternalStart();
+
 };
 
 } // namespace HTTP

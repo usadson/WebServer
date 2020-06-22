@@ -4,6 +4,8 @@
  * See the COPYING file for licensing information.
  */
 
+#include <iostream>
+
 #include <cstdlib>
 
 #include "http/configuration.hpp"
@@ -19,6 +21,10 @@ main() {
 	HTTP::Server server(config);
 	server.Start();
 
+	std::string test;
+	std::cin >> test;
+
+	server.SignalShutdown();
 	server.Join();
 
 	return EXIT_SUCCESS;
