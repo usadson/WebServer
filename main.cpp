@@ -20,16 +20,16 @@ main() {
 	HTTP::Server server(config);
 	server.Start();
 
-	Logger::Info("Main", "Server Started");
+	Logger::Log("Main", "Server Started");
 
 	std::string test;
 	std::cin >> test;
 
-	Logger::Info("Main", "Stopping...");
+	Logger::Log("Main", "Stopping...");
 
 	server.SignalShutdown();
 	server.Join();
 
-	Logger::Info("Main", "Stopped!");
+	Logger::Log("Main", "Stopped!");
 	return EXIT_SUCCESS;
 }
