@@ -6,7 +6,7 @@
 # TLS Configuration
 TLS_PACKAGE = openssl
 
-GENERAL = -std=c++17 -g
+GENERAL = -std=c++17 -O3 -g
 INCLUDES = -I.
 WARNINGS = \
 	   -Wall \
