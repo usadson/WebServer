@@ -6,7 +6,7 @@
  * See the COPYING file for licensing information.
  */
 
-#include <ostream>
+#include <iostream>
 
 namespace Logger {
 
