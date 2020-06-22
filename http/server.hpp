@@ -27,7 +27,7 @@ namespace HTTP {
 
 class Server {
 public:
-	inline Server(const Configuration &configuration) :
+	inline explicit Server(const Configuration &configuration) :
 		configuration(configuration) {
 		CheckConfiguration();
 	}
