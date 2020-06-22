@@ -10,12 +10,10 @@
 
 namespace HTTP {
 
-	// Forward-decl for server.hpp
-	class Client;
+	// Forward-decl from server.hpp
+	class Server;
 
 } // namespace HTTP
-
-#include "http/server.hpp"
 
 namespace HTTP {
 

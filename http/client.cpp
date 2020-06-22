@@ -9,6 +9,8 @@
 #include <cstring>
 #include <unistd.h>
 
+#include "http/server.hpp"
+
 namespace HTTP {
 
 Client::Client(Server *server, int sock) noexcept : internalSocket(sock), server(server), thread(&Client::Entrypoint, this) {
