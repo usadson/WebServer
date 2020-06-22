@@ -40,8 +40,16 @@ struct Configuration {
 	// This is not really a performance issue, more a preference issue.
 	int pollAcceptTimeout{ 1000 };
 
+	// The TCP port that should be used with the server.
+	//
+	// Some standard ports are:
+	// 80    This port is the default port for non-secure (HTTP) connections.
+	// 443   This port is the default port for secure (HTTPS) connections.
+	// 8080  This port is regularly used on (local) test servers.
 	uint16_t port;
 
+	// Whether or a security layer should be used.
+	// The security layer is TLS.
 	bool useTransportSecurity;
 
 };
