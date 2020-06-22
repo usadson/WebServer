@@ -46,6 +46,7 @@ fast:
 
 # The 'server' target will build the final binary executable.
 server: main.cpp \
+	base/logger.hpp \
 	http/server.hpp \
 	$(BINARIES)
 	$(CXX) $(CXXFLAGS) -o $@ main.cpp $(BINARIES) $(LDFLAGS)
@@ -64,12 +65,14 @@ bin/test.txt:
 
 bin/http/client.o: http/client.cpp \
 	http/client.hpp \
+	base/logger.hpp \
 	http/configuration.hpp \
 	http/server.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
 	http/server.hpp \
+	base/logger.hpp \
 	http/client.hpp \
 	http/configuration.hpp \
 	http/server_launch_error.hpp
