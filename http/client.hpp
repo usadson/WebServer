@@ -10,19 +10,31 @@
 
 namespace HTTP {
 
+	// Forward-decl for server.hpp
+	class Client;
+
+} // namespace HTTP
+
+#include "server.hpp"
+
+namespace HTTP {
+
 class Client {
 public:
-	explicit Client(int socket) noexcept;
+	Client(Server *server, int socket) noexcept;
 
 private:
 	int internalSocket;
-	std::thread thread;
+	Server *server;
 
 	void
 	Clean() noexcept;
 
 	void
 	Entrypoint();
+
+public:
+	std::thread thread;
 };
 
 } // namespace HTTP

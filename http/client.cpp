@@ -11,13 +11,15 @@
 
 namespace HTTP {
 
-Client::Client(int sock) noexcept : internalSocket(sock), thread(&Client::Entrypoint, this) {
+Client::Client(Server *server, int sock) noexcept : internalSocket(sock), server(server), thread(&Client::Entrypoint, this) {
 }
 
 void
 Client::Clean() noexcept {
 	close(internalSocket);
 	internalSocket = -1;
+
+	server->SignalClientDeath(thread);
 }
 
 void
