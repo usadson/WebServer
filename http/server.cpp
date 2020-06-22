@@ -50,8 +50,9 @@ Server::CreateServer() noexcept {
 
 void
 Server::CloseSocket() noexcept {
-	if (internalSocket == -1)
+	if (internalSocket == -1) {
 		return;
+	}
 
 	close(internalSocket);
 	internalSocket = -1;
@@ -61,8 +62,9 @@ ServerLaunchError
 Server::CreateSocket() noexcept {
 	internalSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-	if (internalSocket == -1)
+	if (internalSocket == -1) {
 		return ServerLaunchError::SOCKET_CREATION;
+	}
 
 	cleanFunctions.push_back(&Server::CloseSocket);
 
@@ -73,8 +75,9 @@ ServerLaunchError
 Server::ConfigureSocketSetReusable() noexcept {
 	int flag = 1;
 
-	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)
+	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
 		return ServerLaunchError::SOCKET_REUSABLE;
+	}
 
 	return ServerLaunchError::NO_ERROR;
 }
