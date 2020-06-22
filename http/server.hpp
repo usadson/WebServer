@@ -46,7 +46,14 @@ public:
 		shutdownSignaled = true;
 	}
 
+#ifdef TESTING
+
+public:
+#else
+
 private:
+#endif
+
 	Configuration configuration;
 	std::unique_ptr<std::thread> internalThread{ nullptr };
 	int internalSocket{ -1 };
