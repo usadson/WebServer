@@ -39,6 +39,7 @@ fast:
 
 # The 'server' target will build the final binary executable.
 server: main.cpp \
+	http/server.hpp \
 	$(BINARIES)
 	$(CXX) $(CXXFLAGS) -o $@ main.cpp $(BINARIES) $(LDFLAGS)
 
