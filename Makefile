@@ -3,22 +3,7 @@
 
 .DEFAULT_GOAL := all
 
-# TLS Configuration
-TLS_PACKAGE = openssl
-
-GENERAL = -std=c++17 -O3 -g
-INCLUDES = -I.
-WARNINGS = \
-	   -Wall \
-	   -Wextra \
-	   -Wformat=2 \
-	   -Wpedantic \
-	   -Wshadow
-
-ADDITIONAL_CXXFLAGS ?=
-CXXFLAGS += $(GENERAL) $(INCLUDES) $(WARNINGS) $(ADDITIONAL_CXXFLAGS)
-CXX = clang++
-LDFLAGS = `pkg-config --static --libs $(TLS_PACKAGE)`
+include standard.Makefile
 
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
