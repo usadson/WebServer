@@ -12,6 +12,7 @@
                     -google-readability-todo,
                     -llvm-header-guard,                             # We use #pragma once
                     # Duplicate checks:
+                    -hicpp-use-emplace,
                     -hicpp-special-member-functions,
                     -hicpp-braces-around-statements,
                     -hicpp-special-member-functions
