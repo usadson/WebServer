@@ -62,18 +62,23 @@ Server::CreateSocket() noexcept {
 	if (internalSocket == -1)
 		return ServerLaunchError::SOCKET_CREATION;
 
+	cleanUpFunctions.push_back(&Server::CloseSocket);
+
 	return ServerLaunchError::NO_ERROR;
 }
 
 ServerLaunchError
-Server::ConfigureSocket() noexcept {
+Server::ConfigureSocketSetReusable() noexcept {
 	int flag = 1;
 
-	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
-		CloseSocket();
-		return ServerLaunchError::SOCKET_CREATION;
-	}
+	if (setsockopt(internalSocket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)
+		return ServerLaunchError::SOCKET_REUSABLE;
 
+	return ServerLaunchError::NO_ERROR;
+}
+
+ServerLaunchError
+Server::ConfigureSocketBind() noexcept {
 	return ServerLaunchError::NO_ERROR;
 }
 

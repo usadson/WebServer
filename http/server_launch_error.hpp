@@ -12,7 +12,9 @@ namespace HTTP {
 
 enum ServerLaunchError {
 	NO_ERROR,
+	SOCKET_BIND,
 	SOCKET_CREATION,
+	SOCKET_REUSABLE,
 };
 
 } // namespace HTTP

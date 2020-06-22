@@ -9,9 +9,11 @@
 #include <array>
 #include <string>
 
-const std::array<std::string, 2> launchErrorNames = {
+const std::array<std::string, 4> launchErrorNames = {
 	"NO_ERROR",
+	"SOCKET_BIND",
 	"SOCKET_CREATION",
+	"SOCKET_REUSABLE",
 };
 
 std::ostream &
