@@ -43,7 +43,7 @@ struct Configuration {
 
 class ConfigurationException : public std::exception {
 public:
-	inline ConfigurationException(const char *desc) : description(desc) {
+	explicit inline ConfigurationException(const char *desc) : description(desc) {
 	}
 
 	[[nodiscard]] inline const char *
