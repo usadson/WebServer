@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include <exception>
+#include <exception> // IWYU pragma: keep
 
 namespace HTTP {
 
