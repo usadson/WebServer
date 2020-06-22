@@ -8,6 +8,7 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <sstream>
 
 #include <cerrno>
 #include <csignal>
@@ -16,6 +17,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "base/logger.hpp"
 #include "http/configuration.hpp"
 #include "http/server_launch_error.hpp"
 
@@ -29,7 +31,7 @@ Server::Start() {
 void
 Server::InternalStart() {
 	if (!CreateServer()) {
-		std::cerr << "[HTTPServer] Failed to start!\n";
+		Logger::Error("HTTPServer", "Failed to start!");
 		return;
 	}
 
@@ -68,7 +70,7 @@ Server::AcceptClient() {
 	int client = accept(internalSocket, nullptr, nullptr);
 
 	if (client == -1) {
-		std::clog << __PRETTY_FUNCTION__ << ": Accept() failed!\n";
+		Logger::Warning("HTTPServer::AcceptClient", "Accept() failed!");
 		return;
 	}
 
@@ -142,7 +144,9 @@ Server::CreateServer() noexcept {
 		ServerLaunchError error = (this->*function)();
 
 		if (error != ServerLaunchError::NO_ERROR) {
-			std::cerr << "Failed to create server!\nError: " << error << '\n';
+			std::stringstream info;
+			info << "Failed to create server!\nError: " << error;
+			Logger::Warning("HTTPServer::AcceptClient", info.str());
 			return false;
 		}
 	}
@@ -175,7 +179,7 @@ Server::HandlePollFailure() {
 	// Thus, a call to std::terminate() is sufficient, since the following cases
 	// wont happen, and the other cases are already catastrophic.
 
-	std::clog << "Invalid state: poll() failure on main socket\n";
+	Logger::Severe("HTTPServer::HandlePollFailure", "Invalid state: poll() failure on main socket");
 	std::terminate();
 }
 
