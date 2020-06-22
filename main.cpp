@@ -11,6 +11,7 @@
 int
 main() {
 	HTTP::Configuration config;
+	config.listenerBacklog = 100;
 	config.port = 8080;
 	config.useTransportSecurity = false;
 

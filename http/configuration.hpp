@@ -8,8 +8,14 @@
 namespace HTTP {
 
 struct Configuration {
+
+	// The amount of clients awaiting in the accept() queue
+	std::size_t listenerBacklog;
+
 	uint16_t port;
+
 	bool useTransportSecurity;
+
 };
 
 } // namespace HTTP
