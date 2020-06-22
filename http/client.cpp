@@ -22,7 +22,7 @@ Client::Clean() noexcept {
 
 void
 Client::Entrypoint() {
-	const char *text = "HTTP/1.1 200 OK\r\n\r\nHello!";
+	const char *text = "HTTP/1.1 200 OK\r\nContent-Length: 6\r\n\r\nHello!";
 	write(internalSocket, text, strlen(text));
 
 	Clean();
