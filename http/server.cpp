@@ -141,7 +141,7 @@ Server::CreateSocket() noexcept {
 		return ServerLaunchError::SOCKET_CREATION;
 	}
 
-	cleanFunctions.push_back(&Server::CloseSocket);
+	cleanFunctions.emplace_back(&Server::CloseSocket);
 
 	return ServerLaunchError::NO_ERROR;
 }
