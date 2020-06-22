@@ -9,6 +9,8 @@
 #include <array>
 #include <iostream>
 
+#include <arpa/inet.h>
+#include <cerrno>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -40,7 +42,7 @@ Server::CreateServer() noexcept {
 		ServerLaunchError error = function(this);
 
 		if (error != ServerLaunchError::NO_ERROR) {
-			std::cerr << "Failed to start: " << error << '\n';
+			std::cerr << "Failed to create server!\nError: " << error << '\n';
 			return false;
 		}
 	}
@@ -84,6 +86,24 @@ Server::ConfigureSocketSetReusable() noexcept {
 
 ServerLaunchError
 Server::ConfigureSocketBind() noexcept {
+	struct sockaddr_in address;
+	address.sin_family = AF_INET;
+	address.sin_port = htons(configuration.port);
+	address.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	if (bind(internalSocket, reinterpret_cast<struct sockaddr *>(&address), sizeof(address)) == -1) {
+		switch (errno) {
+			case EADDRINUSE:
+				return ServerLaunchError::SOCKET_BIND_PORT_IN_USE;
+			case EACCES:
+				return ServerLaunchError::SOCKET_BIND_PERMISSIONS;
+			default:
+				// Only uncommon errors should be associated with this
+				// ServerLaunchError.
+				return ServerLaunchError::SOCKET_BIND_UNKNOWN;
+		}
+	}
+
 	return ServerLaunchError::NO_ERROR;
 }
 
