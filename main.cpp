@@ -11,7 +11,7 @@
 int
 main() {
 	HTTP::Configuration config;
-	config.port = 80;
+	config.port = 8080;
 	config.useTransportSecurity = false;
 
 	HTTP::Server server(config);
