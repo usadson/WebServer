@@ -66,12 +66,13 @@ Server::~Server() noexcept {
 void
 Server::AcceptClient() {
 	int client = accept(internalSocket, nullptr, nullptr);
+
 	if (client == -1) {
 		std::clog << __PRETTY_FUNCTION__ << ": Accept() failed!\n";
 		return;
 	}
 
-	clients.emplace_back(client);
+	clients.push_back(std::make_unique<Client>(client));
 }
 
 void

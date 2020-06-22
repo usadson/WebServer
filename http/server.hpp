@@ -48,7 +48,7 @@ private:
 	int internalSocket{ -1 };
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
-	std::vector<Client> clients;
+	std::vector<std::unique_ptr<Client>> clients;
 
 	bool shutdownSignaled{ false };
 
