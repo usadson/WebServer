@@ -61,6 +61,12 @@ Server::~Server() noexcept {
 }
 
 void
+Server::CheckConfiguration() const {
+	if (configuration.pollAcceptTimeout < 0)
+		throw HTTP::ConfigurationException("negative pollAcceptTimeout");
+}
+
+void
 Server::CloseSocket() noexcept {
 	if (internalSocket == -1) {
 		return;

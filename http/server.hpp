@@ -18,8 +18,9 @@ namespace HTTP {
 
 class Server {
 public:
-	inline Server(const Configuration &configuration) noexcept :
+	inline Server(const Configuration &configuration) :
 		configuration(configuration) {
+		CheckConfiguration();
 	}
 
 	~Server() noexcept;
@@ -48,6 +49,9 @@ private:
 	std::vector<std::function<void(Server *)>> cleanFunctions;
 
 	bool shutdownSignaled{ false };
+
+	void
+	CheckConfiguration() const;
 
 	void
 	CloseSocket() noexcept;
