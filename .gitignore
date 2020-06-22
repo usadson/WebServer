@@ -1,0 +1,6 @@
+bin/
+server
+infer-out/
+*.log
+.kateproject
+kate.project.ctags.*
