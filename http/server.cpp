@@ -11,6 +11,8 @@
 
 #include <cerrno>
 #include <netinet/in.h>
+#include <poll.h>
+#include <signal.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -29,6 +31,25 @@ Server::InternalStart() {
 	if (!CreateServer()) {
 		std::cerr << "[HTTPServer] Failed to start!\n";
 		return;
+	}
+
+	struct pollfd pollAction;
+	pollAction.fd = internalSocket;
+	pollAction.events = POLLIN;
+	pollAction.revents = 0;
+
+	while (!shutdownSignaled) {
+		int pollStatus = poll(&pollAction, 1, configuration.pollAcceptTimeout);
+
+		if (pollStatus == 0) {
+			std::this_thread::yield();
+			continue;
+		}
+
+		if (pollStatus < 0) {
+			HandlePollFailure();
+			return;
+		}
 	}
 }
 
@@ -117,6 +138,22 @@ Server::CreateSocket() noexcept {
 	cleanFunctions.push_back(&Server::CloseSocket);
 
 	return ServerLaunchError::NO_ERROR;
+}
+
+void
+Server::HandlePollFailure() {
+	// A call to poll() can ONLY fail on catastrophic failures, like a shortage
+	// of memory, illegal pointer locations, etc.
+	//
+	// Except for the following cases:
+	// 1. Signal Interruptions
+	// 2. An invalid timeout i.e. HTTP::Configuration::pollAcceptTimeout
+	//
+	// Thus, a call to std::terminate() is sufficient, since the following cases
+	// wont happen, and the other cases are already catastrophic.
+
+	std::clog << "Invalid state: poll() failure on main socket\n";
+	std::terminate();
 }
 
 } // namespace HTTP

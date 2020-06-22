@@ -47,7 +47,7 @@ private:
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
 
-	bool shutdownSignaled;
+	bool shutdownSignaled{ false };
 
 	void
 	CloseSocket() noexcept;
@@ -66,6 +66,9 @@ private:
 
 	[[nodiscard]] ServerLaunchError
 	CreateSocket() noexcept;
+
+	void
+	HandlePollFailure();
 
 	void
 	InternalStart();
