@@ -203,8 +203,11 @@ Server::SignalClientDeath(std::reference_wrapper<std::thread> thread) noexcept {
 		}
 	);
 
-	if (iterator == std::end(clients))
+	if (iterator == std::end(clients)) {
+		// Shouldn't happen, but isn't catastrophic. Don't use std::terminate
+		// in production but return instead, since it isn't a breaking bug.
 		std::terminate();
+	}
 
 	clients.erase(iterator);
 }
