@@ -72,7 +72,9 @@ Server::AcceptClient() {
 		return;
 	}
 
-	clients.push_back(std::make_unique<Client>(client));
+	clientsMutex.lock();
+	clients.push_back(std::make_unique<Client>(this, client));
+	clientsMutex.unlock();
 }
 
 void
@@ -175,6 +177,31 @@ Server::HandlePollFailure() {
 
 	std::clog << "Invalid state: poll() failure on main socket\n";
 	std::terminate();
+}
+
+// SignalClientDeath is tailcalled from the destructor of HTTP::Client.
+// This function will remove the client from the 'clients' vector.
+//
+// To remove the client, we will momentarily detach the thread, because
+// std::thread::~thread will std::terminate if it isn't joining or
+// detached.
+//
+// We can't do the former, since joining will only work from another thread
+// and if it was possible, it would mean a deadlock since the destructor
+// can't be called.
+void
+Server::SignalClientDeath(std::reference_wrapper<std::thread> thread) noexcept {
+	// Lock the mutex to prevent modifications as we access 'clients'.
+	const std::lock_guard<std::mutex> lock(clientsMutex);
+
+	// Detach the thread so we can remove the client.
+	thread.get().detach();
+
+	std::remove_if(std::begin(clients), std::end(clients),
+		[thread](const auto &client) {
+			return client->thread.get_id() == thread.get().get_id();
+		}
+	);
 }
 
 } // namespace HTTP

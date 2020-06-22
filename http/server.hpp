@@ -8,8 +8,16 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <thread>
 #include <vector>
+
+namespace HTTP {
+
+	// Forward-decl for client.hpp
+	class Server;
+
+} // namespace HTTP
 
 #include "client.hpp"
 #include "configuration.hpp"
@@ -37,6 +45,9 @@ public:
 		return internalThread->join();
 	}
 
+	void
+	SignalClientDeath(std::reference_wrapper<std::thread>) noexcept;
+
 	inline void
 	SignalShutdown() noexcept {
 		shutdownSignaled = true;
@@ -48,6 +59,8 @@ private:
 	int internalSocket{ -1 };
 
 	std::vector<std::function<void(Server *)>> cleanFunctions;
+
+	std::mutex clientsMutex;
 	std::vector<std::unique_ptr<Client>> clients;
 
 	bool shutdownSignaled{ false };
