@@ -54,7 +54,8 @@ Server::InternalStart() {
 }
 
 Server::~Server() noexcept {
-	// TODO Stop thread
+	// The thread has exited by now.
+
 	for (const auto &cleanFunction : cleanFunctions) {
 		cleanFunction(this);
 	}
