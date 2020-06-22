@@ -6,13 +6,16 @@
 
 #include "server.hpp"
 
-#include <array>
+#include <initializer_list>
 #include <iostream>
 
-#include <arpa/inet.h>
 #include <cerrno>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+
+#include "http/configuration.hpp"
+#include "http/server_launch_error.hpp"
 
 namespace HTTP {
 

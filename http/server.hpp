@@ -7,8 +7,9 @@
  */
 
 #include <functional>
-#include <optional>
+#include <memory>
 #include <thread>
+#include <vector>
 
 #include "configuration.hpp"
 #include "server_launch_error.hpp"
