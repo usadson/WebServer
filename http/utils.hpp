@@ -26,7 +26,6 @@ namespace HTTP::Utils {
 		}
 
 		return false;
-
 	}
 
 } // namespace HTTP
