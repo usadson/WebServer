@@ -22,15 +22,17 @@ namespace HTTP {
 enum class ClientError {
 	FAILED_READ_METHOD,
 	FAILED_READ_PATH,
+	FAILED_READ_VERSION,
 	INCORRECT_METHOD,
 	INCORRECT_PATH,
+	INCORRECT_VERSION,
 	NO_ERROR
 };
 
 struct Request {
 	std::string method;
 	std::string path;
-	std::string version;
+	// Version isn't worth/needed storing atm.
 };
 
 class Client {
@@ -50,6 +52,9 @@ private:
 
 	[[nodiscard]] ClientError
 	ConsumePath() noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeVersion() noexcept;
 
 	void
 	Entrypoint();

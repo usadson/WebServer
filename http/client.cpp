@@ -51,8 +51,7 @@ Client::ConsumeMethod() noexcept {
 		}
 
 		// Character validation
-		if (!HTTP::Utils::IsTokenCharacter(character)) {
-			std::cout << "Invalid Character: " << character << '\n';
+		if (!Utils::IsTokenCharacter(character)) {
 			return ClientError::INCORRECT_METHOD;
 		}
 
@@ -77,13 +76,33 @@ Client::ConsumePath() noexcept {
 		}
 
 		// Character validation
-		if (!HTTP::Utils::IsPathCharacter(character)) {
-			std::cout << "Invalid Character: " << character << '\n';
+		if (!Utils::IsPathCharacter(character)) {
 			return ClientError::INCORRECT_PATH;
 		}
 
 		buffer.push_back(character);
 	}
+}
+
+ClientError
+Client::ConsumeVersion() noexcept {
+	std::array<char, 8> buffer;
+
+	std::array<char, 7> expectedChars = {
+		'H', 'T', 'T', 'P', '/', '1', '.'
+	};
+
+	for (std::size_t i = 0; i < 8; i++) {
+		if (!connection->ReadChar(&buffer[i])) {
+			return ClientError::FAILED_READ_VERSION;
+		}
+
+		if (i == 7 ? Utils::IsNumericCharacter(buffer[i]) : (buffer[i] != expectedChars[i])) {
+			return ClientError::INCORRECT_VERSION;
+		}
+	}
+
+	return ClientError::NO_ERROR;
 }
 
 void
