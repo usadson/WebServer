@@ -6,6 +6,8 @@
  * See the COPYING file for licensing information.
  */
 
+#include <memory>
+#include <string>
 #include <thread>
 
 #include "connection/connection.hpp"
