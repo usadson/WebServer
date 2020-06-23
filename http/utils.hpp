@@ -28,6 +28,15 @@ namespace HTTP::Utils {
 		return static_cast<uint8_t>(character) & 0x80;
 	}
 
+	// Ensures that the character is a numberic code point, i.e. 0 through 9.
+	//
+	// Reference:
+	// http://sliderule.mraiow.com/w/images/7/73/ASCII.pdf
+	[[nodiscard]] inline constexpr bool
+	IsNumericCharacter(char character) {
+		return character >= '0' && character <= '9';
+	}
+
 	// Some inputs are specified as 'token' definitions. This function makes
 	// sure the characters follow the standard.
 	//
@@ -38,7 +47,7 @@ namespace HTTP::Utils {
 		if (IsNonUSASCIICharacter(character))
 			return false;
 
-		if ((character >= '0' && character <= '9') ||
+		if (IsNumericCharacter(character) ||
 			(character >= 'A' && character <= 'Z') ||
 			(character >= 'a' && character <= 'z')) {
 			return true;
