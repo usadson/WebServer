@@ -37,19 +37,55 @@ Client::Entrypoint() {
 		return;
 	}
 
-	const std::string prefix = "This was your method: ";
+	if (ConsumePath() != ClientError::NO_ERROR) {
+		Logger::Warning("Client::Entrypoint", "Failed to read path!");
+		return;
+	}
+
+	const std::string prefix = "This was your method: \"";
+	const std::string infix = "\"\nThis was your path: \"";
+	const std::string suffix = "\"";
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
-	response << prefix.length() + this->currentRequest.method.length();
+	response << prefix.length() + this->currentRequest.method.length() + infix.length() + this->currentRequest.path.length() + suffix.length();
 	response << "\r\n\r\n";
 	response << prefix;
 	response << this->currentRequest.method;
+	response << infix;
+	response << this->currentRequest.path;
+	response << suffix;
 
 	if (!connection->WriteString(response.str())) {
 		Logger::Warning("Client::Entrypoint", "Failed to send response!");
 	}
 
 	Clean();
+}
+
+ClientError
+Client::ConsumePath() noexcept {
+	std::vector<char> buffer;
+
+	while (true) {
+		char character = 0;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_PATH;
+		}
+
+		if (character == ' ') {
+			this->currentRequest.path = std::string(std::begin(buffer), std::end(buffer));
+			return ClientError::NO_ERROR;
+		}
+
+		// Character validation
+		if (!HTTP::Utils::IsPathCharacter(character)) {
+			std::cout << "Invalid Character: " << character << '\n';
+			return ClientError::INCORRECT_PATH;
+		}
+
+		buffer.push_back(character);
+	}
 }
 
 ClientError

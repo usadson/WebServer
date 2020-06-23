@@ -21,7 +21,9 @@ namespace HTTP {
 
 enum class ClientError {
 	FAILED_READ_METHOD,
+	FAILED_READ_PATH,
 	INCORRECT_METHOD,
+	INCORRECT_PATH,
 	NO_ERROR
 };
 
@@ -43,11 +45,14 @@ private:
 	void
 	Clean() noexcept;
 
-	void
-	Entrypoint();
-
 	[[nodiscard]] ClientError
 	ConsumeMethod() noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumePath() noexcept;
+
+	void
+	Entrypoint();
 
 public:
 	std::thread thread;
