@@ -46,6 +46,11 @@ public:
 		shutdownSignaled = true;
 	}
 
+	[[nodiscard]] inline constexpr const Configuration &
+	config() const noexcept {
+		return configuration;
+	}
+
 #ifdef TESTING
 
 public:
