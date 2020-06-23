@@ -7,7 +7,8 @@ include standard.Makefile
 
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
-BINARIES = bin/http/client.o \
+BINARIES = bin/connection/connection.o \
+	   bin/http/client.o \
 	   bin/http/server.o \
 	   bin/http/server_launch_error.o
 
@@ -45,10 +46,16 @@ server: main.cpp \
 # execute the 'clean' target.
 bin/test.txt:
 	@mkdir bin
+	@mkdir bin/connection
 	@mkdir bin/http
 	@mkdir bin/test
 	@mkdir bin/test/http
 	@touch bin/test.txt
+
+bin/connection/connection.o: connection/connection.cpp \
+	connection/connection.hpp \
+	http/configuration.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ connection/connection.cpp
 
 bin/http/client.o: http/client.cpp \
 	http/client.hpp \
