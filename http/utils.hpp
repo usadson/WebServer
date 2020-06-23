@@ -8,15 +8,6 @@
 
 namespace HTTP::Utils {
 
-	// The term "unreserved character" isn't used in the HTTP Spec (RFC 723x).
-	// Unreserved Characters are characters that are allowed by the 'tchar'
-	// definition and isn't a-z, A-z or 0-9.
-	//
-	// Reference:
-	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#field.components
-	static const std::array unreservedCharacters =
-		{ '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
-
 	// The HTTP specification states that we should parse octets as code points
 	// part of the USASCII subset.
 	//
@@ -44,22 +35,15 @@ namespace HTTP::Utils {
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#field.components
 	[[nodiscard]] inline constexpr bool
 	IsTokenCharacter(char character) {
-		if (IsNonUSASCIICharacter(character))
+		// [\]{}
+		if (character  < '!'  || character == '"' || character == '(' ||
+			character == ')'  || character == ',' || character == '/' ||
+			(character > '9'  && character < 'A') || character == '[' ||
+			character == '\\' || character == ']' || character == '{' ||
+			character == '}'  || character  > '~')
 			return false;
 
-		if (IsNumericCharacter(character) ||
-			(character >= 'A' && character <= 'Z') ||
-			(character >= 'a' && character <= 'z')) {
-			return true;
-		}
-
-		if (std::find(std::begin(unreservedCharacters),
-					  std::end(unreservedCharacters), character)
-			!= std::end(unreservedCharacters)) {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	// The path of a request is of request-target type. This function ensures

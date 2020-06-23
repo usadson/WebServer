@@ -22,7 +22,7 @@ namespace HTTP::Utils {
 					<< "Character '" << static_cast<char>(c) << "' isn't treated as a token character!";
 			else
 				ASSERT_FALSE(IsTokenCharacter(c))
-					<< "Character '" << static_cast<char>(c) << "' is wrongfully treated as a token character!";
+					<< "Character '" << static_cast<char>(c) << "' (" << c << ") is wrongfully treated as a token character!";
 		}
 	}
 
