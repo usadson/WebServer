@@ -61,7 +61,8 @@ bin/http/client.o: http/client.cpp \
 	http/client.hpp \
 	base/logger.hpp \
 	http/configuration.hpp \
-	http/server.hpp
+	http/server.hpp \
+	http/utils.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
