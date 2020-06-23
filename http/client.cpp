@@ -6,13 +6,13 @@
 
 #include "client.hpp"
 
+#include <array>
+#include <iterator>
 #include <sstream>
 #include <string>
+#include <vector>
 
-#include <cstring>
-#include <unistd.h>
-
-#include "base/logger.hpp"
+#include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
 
