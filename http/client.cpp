@@ -6,6 +6,7 @@
 
 #include "client.hpp"
 
+#include <sstream>
 #include <string>
 
 #include <cstring>
@@ -31,10 +32,22 @@ Client::Clean() noexcept {
 
 void
 Client::Entrypoint() {
-	static const std::string &str =
-		"HTTP/1.1 200 OK\r\nContent-Length: 6\r\n\r\nHello!";
-	if (!connection->WriteString(str))
+	if (ConsumeMethod() != ClientError::NO_ERROR) {
+		Logger::Warning("Client::Entrypoint", "Failed to read method!");
+		return;
+	}
+
+	const std::string prefix = "This was your method: ";
+	std::stringstream response;
+	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
+	response << prefix.length() + this->currentRequest.method.length();
+	response << "\r\n\r\n";
+	response << prefix;
+	response << this->currentRequest.method;
+
+	if (!connection->WriteString(response.str())) {
 		Logger::Warning("Client::Entrypoint", "Failed to send response!");
+	}
 
 	Clean();
 }
@@ -54,19 +67,19 @@ Client::ConsumeMethod() noexcept {
 			return ClientError::FAILED_READ_METHOD;
 		}
 
-		if (character == ':') {
+		if (character == ' ') {
+			this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
 			return ClientError::NO_ERROR;
 		}
 
 		// Character validation
 		if (!HTTP::Utils::IsTokenCharacter(character)) {
+			std::cout << "Invalid Character: " << character << '\n';
 			return ClientError::INCORRECT_METHOD;
 		}
 
 		buffer.push_back(character);
 	}
-
-	this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
 }
 
 } // namespace HTTP
