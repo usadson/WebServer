@@ -109,21 +109,17 @@ Client::ConsumeVersion() noexcept {
 
 void
 Client::Entrypoint() {
-	if (ConsumeMethod() != ClientError::NO_ERROR) {
-		Logger::Warning("Client::Entrypoint", "Failed to read method!");
-		return;
-	}
+	bool previousRequestSuccess;
 
-	if (ConsumePath() != ClientError::NO_ERROR) {
-		Logger::Warning("Client::Entrypoint", "Failed to read path!");
-		return;
-	}
+	do {
+		previousRequestSuccess = RunMessageExchange();
+	} while (previousRequestSuccess && persistentConnection);
 
-	if (ConsumeVersion() != ClientError::NO_ERROR) {
-		Logger::Warning("Client::Entrypoint", "Failed to read version!");
-		return;
-	}
+	Clean();
+}
 
+ClientError
+Client::HandleRequest() noexcept {
 	const std::string prefix = "This was your method: \"";
 	const std::string infix = "\"\nThis was your path: \"";
 	const std::string suffix = "\"";
@@ -138,10 +134,45 @@ Client::Entrypoint() {
 	response << suffix;
 
 	if (!connection->WriteString(response.str())) {
-		Logger::Warning("Client::Entrypoint", "Failed to send response!");
+		return ClientError::FAILED_WRITE_RESPONSE;
 	}
 
-	Clean();
+	return ClientError::NO_ERROR;
+}
+
+bool
+Client::RecoverError() noexcept {
+	return false;
+}
+
+void
+Client::ResetExchangeState() noexcept {
+	this->currentRequest = Request();
+}
+
+bool
+Client::RunMessageExchange() noexcept {
+	auto error = ConsumeMethod();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError();
+	}
+
+	error = ConsumePath();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError();
+	}
+
+	error = ConsumeVersion();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError();
+	}
+
+	error = HandleRequest();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError();
+	}
+
+	return true;
 }
 
 } // namespace HTTP

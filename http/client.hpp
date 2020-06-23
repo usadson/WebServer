@@ -23,6 +23,7 @@ enum class ClientError {
 	FAILED_READ_METHOD,
 	FAILED_READ_PATH,
 	FAILED_READ_VERSION,
+	FAILED_WRITE_RESPONSE,
 	INCORRECT_METHOD,
 	INCORRECT_PATH,
 	INCORRECT_VERSION,
@@ -41,8 +42,13 @@ public:
 
 private:
 	std::unique_ptr<Connection> connection;
-	Server *server;
 	Request currentRequest;
+
+	// This is turned on after checking the headers.
+	// NOTE that this isn't a configuration option, but a state.
+	bool persistentConnection{ false };
+
+	Server *server;
 
 	void
 	Clean() noexcept;
@@ -58,6 +64,18 @@ private:
 
 	void
 	Entrypoint();
+
+	[[nodiscard]] ClientError
+	HandleRequest() noexcept;
+
+	[[nodiscard]] bool
+	RecoverError() noexcept;
+
+	void
+	ResetExchangeState() noexcept;
+
+	[[nodiscard]] bool
+	RunMessageExchange() noexcept;
 
 public:
 	std::thread thread;
