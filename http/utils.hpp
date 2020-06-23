@@ -6,6 +6,8 @@
  * See the COPYING file for licensing information.
  */
 
+#include <cstdint>
+
 namespace HTTP::Utils {
 
 	// The HTTP specification states that we should parse octets as code points
@@ -16,7 +18,7 @@ namespace HTTP::Utils {
 	// http://sliderule.mraiow.com/w/images/7/73/ASCII.pdf
 	[[nodiscard]] inline constexpr bool
 	IsNonUSASCIICharacter(char character) noexcept {
-		return static_cast<uint8_t>(character) & 0x80;
+		return (static_cast<uint8_t>(character) & 0x80) == 0x80;
 	}
 
 	// Ensures that the character is a numberic code point, i.e. 0 through 9.
@@ -36,14 +38,11 @@ namespace HTTP::Utils {
 	[[nodiscard]] inline constexpr bool
 	IsTokenCharacter(char character) {
 		// [\]{}
-		if (character  < '!'  || character == '"' || character == '(' ||
-			character == ')'  || character == ',' || character == '/' ||
-			(character > '9'  && character < 'A') || character == '[' ||
-			character == '\\' || character == ']' || character == '{' ||
-			character == '}'  || character  > '~')
-			return false;
-
-		return true;
+		return !(character  < '!'  || character == '"' || character == '(' ||
+			   character == ')'  || character == ',' || character == '/' ||
+			   (character > '9'  && character < 'A') || character == '[' ||
+			   character == '\\' || character == ']' || character == '{' ||
+			   character == '}'  || character  > '~');
 	}
 
 	// The path of a request is of request-target type. This function ensures
@@ -66,4 +65,4 @@ namespace HTTP::Utils {
 		return true;
 	}
 
-} // namespace HTTP
+} // namespace HTTP::Utils

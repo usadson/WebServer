@@ -12,11 +12,21 @@
 
 namespace HTTP::Utils {
 
+	TEST(Utils, IsNonUSASCIICharacter) {
+		for (char c = 0; c < 127; c++) {
+			ASSERT_FALSE(IsNonUSASCIICharacter(c));
+		}
+
+		for (char c = 0; c < 127; c++) {
+			ASSERT_TRUE(IsNonUSASCIICharacter(c + 0x80));
+		}
+	}
+
 	TEST(Utils, IsTokenCharacter) {
 		std::array invalidCharacters = {
 			'"', '(', ')', ',', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '{', '}'
 		};
-		for (uint16_t c = 0; c < 255; c++) {
+		for (uint16_t c = 0; c <= 255; c++) {
 			if (c > 0x20 && std::find(std::begin(invalidCharacters), std::end(invalidCharacters), c) == std::end(invalidCharacters) && c < 0x7F)
 				ASSERT_TRUE(IsTokenCharacter(c))
 					<< "Character '" << static_cast<char>(c) << "' isn't treated as a token character!";
