@@ -30,6 +30,62 @@ Client::Clean() noexcept {
 	server->SignalClientDeath(thread);
 }
 
+ClientError
+Client::ConsumeMethod() noexcept {
+	std::vector<char> buffer;
+
+	// Reserve 4 octets because GET & POST fit in 4 octets, so no reallocation
+	// is needed.
+	buffer.reserve(4);
+
+	while (true) {
+		char character = 0;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_METHOD;
+		}
+
+		if (character == ' ') {
+			this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
+			return ClientError::NO_ERROR;
+		}
+
+		// Character validation
+		if (!HTTP::Utils::IsTokenCharacter(character)) {
+			std::cout << "Invalid Character: " << character << '\n';
+			return ClientError::INCORRECT_METHOD;
+		}
+
+		buffer.push_back(character);
+	}
+}
+
+ClientError
+Client::ConsumePath() noexcept {
+	std::vector<char> buffer;
+
+	while (true) {
+		char character = 0;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_PATH;
+		}
+
+		if (character == ' ') {
+			this->currentRequest.path = std::string(std::begin(buffer), std::end(buffer));
+			return ClientError::NO_ERROR;
+		}
+
+		// Character validation
+		if (!HTTP::Utils::IsPathCharacter(character)) {
+			std::cout << "Invalid Character: " << character << '\n';
+			return ClientError::INCORRECT_PATH;
+		}
+
+		buffer.push_back(character);
+	}
+}
+
 void
 Client::Entrypoint() {
 	if (ConsumeMethod() != ClientError::NO_ERROR) {
@@ -60,62 +116,6 @@ Client::Entrypoint() {
 	}
 
 	Clean();
-}
-
-ClientError
-Client::ConsumePath() noexcept {
-	std::vector<char> buffer;
-
-	while (true) {
-		char character = 0;
-
-		if (!connection->ReadChar(&character)) {
-			return ClientError::FAILED_READ_PATH;
-		}
-
-		if (character == ' ') {
-			this->currentRequest.path = std::string(std::begin(buffer), std::end(buffer));
-			return ClientError::NO_ERROR;
-		}
-
-		// Character validation
-		if (!HTTP::Utils::IsPathCharacter(character)) {
-			std::cout << "Invalid Character: " << character << '\n';
-			return ClientError::INCORRECT_PATH;
-		}
-
-		buffer.push_back(character);
-	}
-}
-
-ClientError
-Client::ConsumeMethod() noexcept {
-	std::vector<char> buffer;
-
-	// Reserve 4 octets because GET & POST fit in 4 octets, so no reallocation
-	// is needed.
-	buffer.reserve(4);
-
-	while (true) {
-		char character = 0;
-
-		if (!connection->ReadChar(&character)) {
-			return ClientError::FAILED_READ_METHOD;
-		}
-
-		if (character == ' ') {
-			this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
-			return ClientError::NO_ERROR;
-		}
-
-		// Character validation
-		if (!HTTP::Utils::IsTokenCharacter(character)) {
-			std::cout << "Invalid Character: " << character << '\n';
-			return ClientError::INCORRECT_METHOD;
-		}
-
-		buffer.push_back(character);
-	}
 }
 
 } // namespace HTTP
