@@ -8,6 +8,8 @@
 
 #include <thread>
 
+#include "connection/connection.hpp"
+
 namespace HTTP {
 
 	// Forward-decl from server.hpp
@@ -17,19 +19,33 @@ namespace HTTP {
 
 namespace HTTP {
 
+enum ClientError {
+	FAILED_READ_METHOD,
+};
+
+struct Request {
+	std::string method;
+	std::string path;
+	std::string version;
+};
+
 class Client {
 public:
 	Client(Server *server, int socket) noexcept;
 
 private:
-	int internalSocket;
+	std::unique_ptr<Connection> connection;
 	Server *server;
+	Request currentRequest;
 
 	void
 	Clean() noexcept;
 
 	void
 	Entrypoint();
+
+	void
+	ReadMethod() noexcept;
 
 public:
 	std::thread thread;

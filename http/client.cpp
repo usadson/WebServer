@@ -6,30 +6,46 @@
 
 #include "client.hpp"
 
+#include <string>
+
 #include <cstring>
 #include <unistd.h>
 
+#include "base/logger.hpp"
 #include "http/server.hpp"
 
 namespace HTTP {
 
-Client::Client(Server *server, int sock) noexcept : internalSocket(sock), server(server), thread(&Client::Entrypoint, this) {
+Client::Client(Server *server, int sock) noexcept :
+	connection(std::make_unique<Connection>(sock, server->config().useTransportSecurity)),
+	server(server), thread(&Client::Entrypoint, this) {
 }
 
 void
 Client::Clean() noexcept {
-	close(internalSocket);
-	internalSocket = -1;
+	connection = nullptr;
 
 	server->SignalClientDeath(thread);
 }
 
 void
 Client::Entrypoint() {
-	const char *text = "HTTP/1.1 200 OK\r\nContent-Length: 6\r\n\r\nHello!";
-	write(internalSocket, text, strlen(text));
+	static const std::string &str =
+		"HTTP/1.1 200 OK\r\nContent-Length: 6\r\n\r\nHello!";
+	if (!connection->WriteString(str))
+		Logger::Warning("Client::Entrypoint", "Failed to send response!");
 
 	Clean();
+}
+
+void
+Client::ReadMethod() noexcept {
+	std::vector<char> buffer;
+	buffer.reserve(4);
+
+	do {
+		char dest;
+	} while (1);
 }
 
 } // namespace HTTP
