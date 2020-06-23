@@ -12,7 +12,15 @@ namespace HTTP::Utils {
 		{ '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
 
 	[[nodiscard]] inline constexpr bool
+	IsNonUSASCIICharacter(char character) noexcept {
+		return static_cast<uint8_t>(character) & 0x80;
+	}
+
+	[[nodiscard]] inline constexpr bool
 	IsTokenCharacter(char character) {
+		if (IsNonUSASCIICharacter(character))
+			return false;
+
 		if ((character >= '0' && character <= '9') ||
 			(character >= 'A' && character <= 'Z') ||
 			(character >= 'a' && character <= 'z')) {
@@ -26,6 +34,19 @@ namespace HTTP::Utils {
 		}
 
 		return false;
+	}
+
+	[[nodiscard]] inline constexpr bool
+	IsPathCharacter(char character) {
+		if (IsNonUSASCIICharacter(character))
+			return false;
+
+		if (character == '\0')
+			return false;
+
+		// Path validation/sanitization is going to be done by the request
+		// handler, not the parser.
+		return true;
 	}
 
 } // namespace HTTP
