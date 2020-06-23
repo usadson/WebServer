@@ -13,6 +13,7 @@
 
 #include "base/logger.hpp"
 #include "http/server.hpp"
+#include "http/utils.hpp"
 
 namespace HTTP {
 
@@ -38,14 +39,34 @@ Client::Entrypoint() {
 	Clean();
 }
 
-void
-Client::ReadMethod() noexcept {
+ClientError
+Client::ConsumeMethod() noexcept {
 	std::vector<char> buffer;
+
+	// Reserve 4 octets because GET & POST fit in 4 octets, so no reallocation
+	// is needed.
 	buffer.reserve(4);
 
-	do {
-		char dest;
-	} while (1);
+	while (true) {
+		char character = 0;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_METHOD;
+		}
+
+		if (character == ':') {
+			return ClientError::NO_ERROR;
+		}
+
+		// Character validation
+		if (!HTTP::Utils::IsTokenCharacter(character)) {
+			return ClientError::INCORRECT_METHOD;
+		}
+
+		buffer.push_back(character);
+	}
+
+	this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
 }
 
 } // namespace HTTP
