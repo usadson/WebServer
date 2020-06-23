@@ -97,10 +97,12 @@ Client::ConsumeVersion() noexcept {
 			return ClientError::FAILED_READ_VERSION;
 		}
 
-		if (i == 7 ? Utils::IsNumericCharacter(buffer[i]) : (buffer[i] != expectedChars[i])) {
+		if (i == 7 ? !Utils::IsNumericCharacter(buffer[i]) : (buffer[i] != expectedChars[i])) {
 			return ClientError::INCORRECT_VERSION;
 		}
 	}
+
+	// Not storing the version atm.
 
 	return ClientError::NO_ERROR;
 }
@@ -114,6 +116,11 @@ Client::Entrypoint() {
 
 	if (ConsumePath() != ClientError::NO_ERROR) {
 		Logger::Warning("Client::Entrypoint", "Failed to read path!");
+		return;
+	}
+
+	if (ConsumeVersion() != ClientError::NO_ERROR) {
+		Logger::Warning("Client::Entrypoint", "Failed to read version!");
 		return;
 	}
 
