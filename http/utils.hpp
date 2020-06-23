@@ -8,6 +8,12 @@
 
 namespace HTTP::Utils {
 
+	// The term "unreserved character" isn't used in the HTTP Spec (RFC 723x).
+	// Unreserved Characters are characters that are allowed by the 'tchar'
+	// definition and isn't a-z, A-z or 0-9.
+	//
+	// Reference:
+	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#field.components
 	static const std::array unreservedCharacters =
 		{ '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
 
@@ -54,14 +60,16 @@ namespace HTTP::Utils {
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#request-target
 	[[nodiscard]] inline constexpr bool
 	IsPathCharacter(char character) {
-		if (IsNonUSASCIICharacter(character))
+		// For now, lets only allow visible characters.
+
+		// A control character
+		if (character < 0x20)
 			return false;
 
-		if (character == '\0')
+		// DEL or an invalid USASCII character.
+		if (character > 0x7E)
 			return false;
 
-		// Path validation/sanitization is going to be done by the request
-		// handler, not the parser.
 		return true;
 	}
 
