@@ -19,8 +19,10 @@ namespace HTTP {
 
 namespace HTTP {
 
-enum ClientError {
+enum class ClientError {
 	FAILED_READ_METHOD,
+	INCORRECT_METHOD,
+	NO_ERROR
 };
 
 struct Request {
@@ -44,8 +46,8 @@ private:
 	void
 	Entrypoint();
 
-	void
-	ReadMethod() noexcept;
+	[[nodiscard]] ClientError
+	ConsumeMethod() noexcept;
 
 public:
 	std::thread thread;
