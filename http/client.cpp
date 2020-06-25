@@ -126,6 +126,10 @@ ClientError
 Client::HandleRequest() noexcept {
 	auto file = server->fileResolver.Resolve(currentRequest);
 
+	if (!file) {
+		return ClientError::FILE_NOT_FOUND;
+	}
+
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
 	response << file->Size();
@@ -146,7 +150,7 @@ Client::HandleRequest() noexcept {
 bool
 Client::RecoverError(ClientError error) noexcept {
 	std::stringstream test;
-	test << "Error Occurred: " << static_cast<std::size_t>(error) << '\n';
+	test << "Error Occurred: " << error << '\n';
 	Logger::Info("HTTPClient::RecoverError", test.str());
 	return false;
 }
