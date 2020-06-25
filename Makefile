@@ -10,7 +10,8 @@ include standard.Makefile
 BINARIES = bin/connection/connection.o \
 	   bin/http/client.o \
 	   bin/http/server.o \
-	   bin/http/server_launch_error.o
+	   bin/http/server_launch_error.o \
+	   bin/io/file.o
 
 # The 'all' target will compile all object files and generate the binary
 # executable. This is the default target for 'make'.
@@ -48,6 +49,7 @@ bin/test.txt:
 	@mkdir bin
 	@mkdir bin/connection
 	@mkdir bin/http
+	@mkdir bin/io
 	@mkdir bin/test
 	@mkdir bin/test/http
 	@touch bin/test.txt
@@ -76,6 +78,10 @@ bin/http/server.o: http/server.cpp \
 bin/http/server_launch_error.o: http/server_launch_error.cpp \
 	http/server_launch_error.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/server_launch_error.cpp
+
+bin/io/file.o: io/file.cpp \
+	io/file.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ io/file.cpp
 
 
 # the 'memory' target will invoke Valgrind, which will run the executable and
