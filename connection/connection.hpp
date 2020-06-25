@@ -35,8 +35,11 @@ public:
 	[[nodiscard]] bool
 	ReadChar(char *) noexcept;
 
-	[[nodiscard]]
-	bool Setup(const HTTP::Configuration &) noexcept;
+	[[nodiscard]] bool
+	SendFile(int fd, std::size_t count) noexcept;
+
+	[[nodiscard]] bool
+	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
 	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;

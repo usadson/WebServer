@@ -8,6 +8,16 @@
 
 #include <unistd.h>
 
+#if defined(__FreeBSD__)
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+#elif defined(__linux__)
+#include <sys/sendfile.h>
+#else
+#include <array>
+#endif
+
 Connection::~Connection() noexcept {
 	close(internalSocket);
 	internalSocket = -1;
@@ -41,6 +51,47 @@ Connection::ReadChar(char *buf) noexcept {
 		return false;
 
 	return true;
+}
+
+bool
+Connection::SendFile(int fd, std::size_t count) noexcept {
+	if (useTransportSecurity) {
+		// TODO Use TLS wrapper
+		return false;
+	}
+
+#if defined(__FreeBSD__)
+	// Sendfile syscall
+	// (int/fd)  src
+	// (int/fd)  dest
+	// (off_t)   offset in file
+	// (size_t)  amount of bytes of file (0 = to EOF)
+	// (*)       unused
+	// (off_t *) amount of bytes sent (useful for non-blocking)
+	// (int)     flags
+	return sendfile(fd, internalSocket, 0, 0, nullptr, nullptr, 0) == 0;
+#elif defined(__linux__)
+	// Sendfile syscall
+	// (int/fd) dest
+	// (int/fd) src
+	// (*)      unused
+	// (size_t) count of bytes to rw
+	return sendfile(internalSocket, fd, nullptr, count) != -1;
+#else
+	std::array<char, 4096> buffer{};
+	do {
+		ssize_t result = read(fd, buffer.data(), 4096);
+		if (result == -1)
+			return false;
+		count -= result;
+		do {
+			ssize_t writeResult = write(internalSocket, buffer.data(), result);
+			if (writeResult == -1)
+				return false;
+			result -= writeResult;
+		} while (result != 0);
+	} while (count != 0);
+#endif
 }
 
 bool
