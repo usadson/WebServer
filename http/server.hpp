@@ -15,13 +15,14 @@
 #include "http/client.hpp" // IWYU pragma: keep
 #include "http/configuration.hpp"
 #include "http/server_launch_error.hpp"
+#include "io/file_resolver.hpp"
 
 namespace HTTP {
 
 class Server {
 public:
 	inline explicit Server(const Configuration &configuration) :
-		configuration(configuration) {
+		fileResolver(configuration.rootDirectory), configuration(configuration) {
 		CheckConfiguration();
 	}
 
@@ -51,6 +52,7 @@ public:
 		return configuration;
 	}
 
+	IO::FileResolver fileResolver;
 #ifdef TESTING
 
 public:

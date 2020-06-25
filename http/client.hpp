@@ -25,7 +25,8 @@ enum class ClientError {
 	FAILED_READ_METHOD,
 	FAILED_READ_PATH,
 	FAILED_READ_VERSION,
-	FAILED_WRITE_RESPONSE,
+	FAILED_WRITE_RESPONSE_METADATA,
+	FAILED_WRITE_RESPONSE_BODY,
 	INCORRECT_METHOD,
 	INCORRECT_PATH,
 	INCORRECT_VERSION,
@@ -65,7 +66,7 @@ private:
 	HandleRequest() noexcept;
 
 	[[nodiscard]] bool
-	RecoverError() noexcept;
+	RecoverError(ClientError) noexcept;
 
 	void
 	ResetExchangeState() noexcept;

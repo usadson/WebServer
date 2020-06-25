@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 
+#include <cstdio>
+
+#include "base/logger.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
@@ -121,26 +124,30 @@ Client::Entrypoint() {
 
 ClientError
 Client::HandleRequest() noexcept {
-	IO::File file("/var/www/html/index.html");
+	auto file = server->fileResolver.Resolve(currentRequest);
 
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
-	response << file.size();
+	response << file->Size();
 	response << "\r\n\r\n";
 
 	if (!connection->WriteString(response.str())) {
-		return ClientError::FAILED_WRITE_RESPONSE;
+		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
-	if (!connection->SendFile(file.handle(), file.size())) {
-		return ClientError::FAILED_WRITE_RESPONSE;
+	if (!connection->SendFile(file->Handle(), file->Size())) {
+		perror("HandleRequest");
+		return ClientError::FAILED_WRITE_RESPONSE_BODY;
 	}
 
 	return ClientError::NO_ERROR;
 }
 
 bool
-Client::RecoverError() noexcept {
+Client::RecoverError(ClientError error) noexcept {
+	std::stringstream test;
+	test << "Error Occurred: " << static_cast<std::size_t>(error) << '\n';
+	Logger::Info("HTTPClient::RecoverError", test.str());
 	return false;
 }
 
@@ -153,22 +160,22 @@ bool
 Client::RunMessageExchange() noexcept {
 	auto error = ConsumeMethod();
 	if (error != ClientError::NO_ERROR) {
-		return RecoverError();
+		return RecoverError(error);
 	}
 
 	error = ConsumePath();
 	if (error != ClientError::NO_ERROR) {
-		return RecoverError();
+		return RecoverError(error);
 	}
 
 	error = ConsumeVersion();
 	if (error != ClientError::NO_ERROR) {
-		return RecoverError();
+		return RecoverError(error);
 	}
 
 	error = HandleRequest();
 	if (error != ClientError::NO_ERROR) {
-		return RecoverError();
+		return RecoverError(error);
 	}
 
 	return true;
