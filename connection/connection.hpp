@@ -19,9 +19,6 @@ public:
 
 	~Connection() noexcept;
 
-	[[nodiscard]]
-	bool Setup(const HTTP::Configuration &) noexcept;
-
 	// Will read a single character from the source, either directly from the
 	// socket or from the TLS wrapper.
 	//
@@ -37,6 +34,9 @@ public:
 	// NOTE: If [char *] is nullptr, false is always returned.
 	[[nodiscard]] bool
 	ReadChar(char *) noexcept;
+
+	[[nodiscard]]
+	bool Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
 	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
