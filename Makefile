@@ -9,6 +9,7 @@ include standard.Makefile
 # object file. For more information, see the explanation above.
 BINARIES = bin/connection/connection.o \
 	   bin/http/client.o \
+	   bin/http/client_error.o \
 	   bin/http/server.o \
 	   bin/http/server_launch_error.o \
 	   bin/io/file.o \
@@ -60,9 +61,14 @@ bin/connection/connection.o: connection/connection.cpp \
 	http/configuration.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ connection/connection.cpp
 
+bin/http/client_error.o: http/client_error.cpp \
+	http/client_error.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ http/client_error.cpp
+
 bin/http/client.o: http/client.cpp \
 	http/client.hpp \
 	base/logger.hpp \
+	http/client.hpp \
 	http/configuration.hpp \
 	http/server.hpp \
 	http/utils.hpp

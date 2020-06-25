@@ -10,6 +10,7 @@
 #include <thread>
 
 #include "connection/connection.hpp"
+#include "http/client_error.hpp"
 #include "http/request.hpp"
 
 namespace HTTP {
@@ -20,18 +21,6 @@ namespace HTTP {
 } // namespace HTTP
 
 namespace HTTP {
-
-enum class ClientError {
-	FAILED_READ_METHOD,
-	FAILED_READ_PATH,
-	FAILED_READ_VERSION,
-	FAILED_WRITE_RESPONSE_METADATA,
-	FAILED_WRITE_RESPONSE_BODY,
-	INCORRECT_METHOD,
-	INCORRECT_PATH,
-	INCORRECT_VERSION,
-	NO_ERROR
-};
 
 class Client {
 public:
