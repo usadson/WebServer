@@ -7,10 +7,10 @@
  */
 
 #include <iosfwd>
+#include <string>
+#include <exception> // IWYU pragma: keep
 
 #include <cstdint>
-
-#include <exception> // IWYU pragma: keep
 
 namespace HTTP {
 
@@ -34,6 +34,8 @@ struct Configuration {
 	// 443   This port is the default port for secure (HTTPS) connections.
 	// 8080  This port is regularly used on (local) test servers.
 	uint16_t port{ 8080 };
+
+	std::string rootDirectory;
 
 	// Whether or a security layer should be used.
 	// The security layer is TLS.

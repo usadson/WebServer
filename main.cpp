@@ -16,7 +16,7 @@
 int
 main() {
 	HTTP::Configuration config;
-	// Change config before passing it to the HTTP::Server
+	config.rootDirectory = "/var/www/html";
 
 	HTTP::Server server(config);
 	server.Start();
