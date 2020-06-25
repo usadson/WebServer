@@ -11,7 +11,8 @@ BINARIES = bin/connection/connection.o \
 	   bin/http/client.o \
 	   bin/http/server.o \
 	   bin/http/server_launch_error.o \
-	   bin/io/file.o
+	   bin/io/file.o \
+	   bin/io/file_resolver.o
 
 # The 'all' target will compile all object files and generate the binary
 # executable. This is the default target for 'make'.
@@ -82,6 +83,12 @@ bin/http/server_launch_error.o: http/server_launch_error.cpp \
 bin/io/file.o: io/file.cpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ io/file.cpp
+
+bin/io/file_resolver.o: io/file_resolver.cpp \
+	io/file_resolver.hpp \
+	http/request.hpp \
+	io/file.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ io/file_resolver.cpp
 
 
 # the 'memory' target will invoke Valgrind, which will run the executable and

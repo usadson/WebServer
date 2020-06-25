@@ -6,11 +6,18 @@
 
 #include "file.hpp"
 
+#include <iostream>
+
 #include <fcntl.h>
 #include <unistd.h>
 
-IO::File::File(const char *path) {
+void
+IO::File::InternalInit(const char *path) {
+	if (fd != -1)
+		close(fd);
+
 	fd = open(path, O_RDONLY);
+
 	if (fd != -1 && fstat(fd, &status) == -1) {
 		close(fd);
 		fd = -1;
@@ -18,7 +25,6 @@ IO::File::File(const char *path) {
 }
 
 IO::File::~File() noexcept {
-	if (fd != -1) {
-		close(fd);
-	}
+	std::cout << "Destructor called for fd " << fd << '\n';
+	close(fd);
 }

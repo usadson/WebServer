@@ -11,20 +11,38 @@
 
 namespace IO {
 class File {
+friend class FileResolver;
+
 public:
-	File(const char *path);
+	inline File(const char *path) noexcept : fd(-1) {
+		InternalInit(path);
+	}
 
 	~File() noexcept;
 
 	[[nodiscard]] inline constexpr int
-	handle() const noexcept {
+	Handle() const noexcept {
 		return fd;
 	}
 
 	[[nodiscard]] inline constexpr std::size_t
-	size() const noexcept {
+	Size() const noexcept {
 		return status.st_size;
 	}
+
+	[[nodiscard]] inline constexpr bool
+	IsNormalFile() const noexcept {
+		return S_ISREG(status.st_mode);
+	}
+
+	[[nodiscard]] inline constexpr bool
+	IsDirectory() const noexcept {
+		return S_ISDIR(status.st_mode);
+	}
+
+protected:
+	void
+	InternalInit(const char *);
 
 private:
 	int fd;
