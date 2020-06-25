@@ -7,10 +7,10 @@
  */
 
 #include <memory>
-#include <string>
 #include <thread>
 
 #include "connection/connection.hpp"
+#include "http/request.hpp"
 
 namespace HTTP {
 
@@ -30,12 +30,6 @@ enum class ClientError {
 	INCORRECT_PATH,
 	INCORRECT_VERSION,
 	NO_ERROR
-};
-
-struct Request {
-	std::string method;
-	std::string path;
-	// Version isn't worth/needed storing atm.
 };
 
 class Client {
