@@ -15,6 +15,7 @@
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
+#include "io/file.hpp"
 
 namespace HTTP {
 
@@ -120,20 +121,18 @@ Client::Entrypoint() {
 
 ClientError
 Client::HandleRequest() noexcept {
-	const std::string prefix = "This was your method: \"";
-	const std::string infix = "\"\nThis was your path: \"";
-	const std::string suffix = "\"";
+	IO::File file("/var/www/html/index.html");
+
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
-	response << prefix.length() + this->currentRequest.method.length() + infix.length() + this->currentRequest.path.length() + suffix.length();
+	response << file.size();
 	response << "\r\n\r\n";
-	response << prefix;
-	response << this->currentRequest.method;
-	response << infix;
-	response << this->currentRequest.path;
-	response << suffix;
 
 	if (!connection->WriteString(response.str())) {
+		return ClientError::FAILED_WRITE_RESPONSE;
+	}
+
+	if (!connection->SendFile(file.handle(), file.size())) {
 		return ClientError::FAILED_WRITE_RESPONSE;
 	}
 
