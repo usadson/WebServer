@@ -57,6 +57,9 @@ private:
 	[[nodiscard]] bool
 	RecoverError(ClientError) noexcept;
 
+	[[nodiscard]] bool
+	RecoverErrorFileNotFound() noexcept;
+
 	void
 	ResetExchangeState() noexcept;
 

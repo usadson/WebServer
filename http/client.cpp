@@ -149,10 +149,38 @@ Client::HandleRequest() noexcept {
 
 bool
 Client::RecoverError(ClientError error) noexcept {
+	switch (error) {
+		case ClientError::FILE_NOT_FOUND:
+			return RecoverErrorFileNotFound();
+		default:
+			break;
+	}
+
 	std::stringstream test;
 	test << "Error Occurred: " << error << '\n';
 	Logger::Info("HTTPClient::RecoverError", test.str());
 	return false;
+}
+
+bool
+Client::RecoverErrorFileNotFound() noexcept {
+	const std::string body = "<!doctype html>"
+							 "<html>"
+							 "<head><title>File Not Found</title></head>"
+							 "<body><h1>File Not Found</h1></body>"
+							 "</html>";
+
+	std::stringstream metadata;
+	metadata << "HTTP/1.1 404 Not Found\r\n"
+				"Content-Length: " << body.length() << "\r\n"
+				"Content-Type: text/html;charset=utf-8\r\n"
+				"\r\n";
+
+	if (!connection->WriteString(metadata.str())) {
+		return false;
+	}
+
+	return connection->WriteString(body.c_str());
 }
 
 void
