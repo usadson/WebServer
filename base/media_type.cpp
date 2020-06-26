@@ -8,20 +8,20 @@
 
 #include <algorithm>
 
-static constexpr std::string_view genericType = "application/octet-stream";
+static const std::string genericType = "application/octet-stream";
 
 MediaTypeFinder::MediaTypeFinder() noexcept : mediaTypes({
-	{ "html", { "text/html" } },
+	{ "html", "text/html" },
 }) {
 }
 
-const std::string_view &
+const std::string &
 MediaTypeFinder::DetectMediaType(const std::unique_ptr<IO::File> &file) const noexcept {
-	std::string_view string("test.html");
+	std::string string(file->Path());
 
 	do {
 		auto dot = string.find_first_of('.');
-		if (dot == std::string_view::npos)
+		if (dot == std::string::npos)
 			return genericType;
 		string = string.substr(dot + 1);
 
