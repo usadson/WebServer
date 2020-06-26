@@ -6,6 +6,8 @@
  * See the COPYING file for licensing information.
  */
 
+#include <string>
+
 #include <cstddef>
 #include <sys/stat.h>
 
@@ -14,7 +16,7 @@ class File {
 friend class FileResolver;
 
 public:
-	inline File(const char *path) noexcept : fd(-1) {
+	inline File(const char *path) noexcept : fd(-1), internalPath(path) {
 		InternalInit(path);
 	}
 
@@ -40,12 +42,18 @@ public:
 		return S_ISDIR(status.st_mode);
 	}
 
+	[[nodiscard]] inline constexpr const std::string &
+	Path() const noexcept {
+		return internalPath;
+	}
+
 protected:
 	void
 	InternalInit(const char *);
 
 private:
 	int fd;
+	std::string internalPath;
 	struct stat status;
 };
 
