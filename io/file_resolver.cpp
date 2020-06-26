@@ -32,6 +32,6 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	if (file->Handle() != -1)
 		return file;
 
-	std::cout << "File: " << pathBuilder.str() << " not found!\n";
+	std::cout << "File: " << root << request.path << " not found!\n";
 	return std::unique_ptr<IO::File>{};
 }
