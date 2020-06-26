@@ -7,6 +7,7 @@
  */
 
 #include <map>
+#include <memory>
 #include <string_view>
 
 #include "io/file.hpp"
@@ -16,8 +17,8 @@ public:
 	MediaTypeFinder() noexcept;
 
 	[[nodiscard]] const std::string_view &
-	DetectMediaType(const IO::File &) noexcept;
+	DetectMediaType(const std::unique_ptr<IO::File> &) const noexcept;
 
 private:
-	std::map<std::string, std::string_view> mediaTypes;
+	std::map<std::string_view, std::string_view> mediaTypes;
 };

@@ -16,8 +16,17 @@ MediaTypeFinder::MediaTypeFinder() noexcept : mediaTypes({
 }
 
 const std::string_view &
-MediaTypeFinder::DetectMediaType(const IO::File &file) noexcept {
-	const std::string string("test.html");
-	auto result = mediaTypes.find(string);
-	return result == std::end(mediaTypes) ? genericType : result->second;
+MediaTypeFinder::DetectMediaType(const std::unique_ptr<IO::File> &file) const noexcept {
+	std::string_view string("test.html");
+
+	do {
+		auto dot = string.find_first_of('.');
+		if (dot == std::string_view::npos)
+			return genericType;
+		string = string.substr(dot + 1);
+
+		auto result = mediaTypes.find(string);
+		if (result != std::end(mediaTypes))
+			return result->second;
+	} while (true);
 }
