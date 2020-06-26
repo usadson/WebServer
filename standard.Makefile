@@ -5,6 +5,7 @@
 TLS_PACKAGE = openssl
 
 GENERAL = -std=c++17 -O3 -g
+FLAGS = -fno-rtti
 INCLUDES = -I.
 WARNINGS = \
 	   -Wall \
@@ -14,6 +15,6 @@ WARNINGS = \
 	   -Wshadow
 
 ADDITIONAL_CXXFLAGS ?=
-CXXFLAGS += $(GENERAL) $(INCLUDES) $(WARNINGS) $(ADDITIONAL_CXXFLAGS)
+CXXFLAGS += $(GENERAL) $(INCLUDES) $(WARNINGS) $(FLAGS) $(ADDITIONAL_CXXFLAGS)
 CXX = clang++
 LDFLAGS = `pkg-config --static --libs $(TLS_PACKAGE)`
