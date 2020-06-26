@@ -12,12 +12,16 @@
 
 #include <cstdint>
 
+#include "base/media_type.hpp"
+
 namespace HTTP {
 
 struct Configuration {
 
 	// The amount of clients awaiting in the accept() queue
 	std::size_t listenerBacklog{ 100 };
+
+	MediaTypeFinder mediaTypeFinder;
 
 	// The amount of time should pass between poll() calls to the main server
 	// socket.
