@@ -124,7 +124,10 @@ Client::Entrypoint() {
 
 ClientError
 Client::HandleRequest() noexcept {
+	auto startTime = std::chrono::high_resolution_clock::now();
 	auto file = server->fileResolver.Resolve(currentRequest);
+	auto endTime = std::chrono::high_resolution_clock::now();
+	std::cout << "FileResolver::Resolve took: " << std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count() << " μs\n";
 
 	if (!file) {
 		return ClientError::FILE_NOT_FOUND;
@@ -139,10 +142,13 @@ Client::HandleRequest() noexcept {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
+	startTime = std::chrono::high_resolution_clock::now();
 	if (!connection->SendFile(file->Handle(), file->Size())) {
 		perror("HandleRequest");
 		return ClientError::FAILED_WRITE_RESPONSE_BODY;
 	}
+	endTime = std::chrono::high_resolution_clock::now();
+	std::cout << "SendFile took: " << std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count() << " μs\n";
 
 	return ClientError::NO_ERROR;
 }
