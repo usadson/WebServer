@@ -136,6 +136,7 @@ Client::HandleRequest() noexcept {
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
 	response << file->Size();
+	response << "\r\nContent-Type: " << server->config().mediaTypeFinder.DetectMediaType(file);
 	response << "\r\n\r\n";
 
 	if (!connection->WriteString(response.str())) {
