@@ -90,7 +90,7 @@ Client::ConsumePath() noexcept {
 
 ClientError
 Client::ConsumeVersion() noexcept {
-	std::array<char, 8> buffer;
+	std::array<char, 8> buffer{};
 
 	std::array<char, 7> expectedChars = {
 		'H', 'T', 'T', 'P', '/', '1', '.'
@@ -180,7 +180,7 @@ Client::RecoverErrorFileNotFound() noexcept {
 		return false;
 	}
 
-	return connection->WriteString(body.c_str());
+	return connection->WriteString(body);
 }
 
 void
