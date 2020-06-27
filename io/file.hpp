@@ -13,7 +13,7 @@
 
 namespace IO {
 class File {
-friend class FileResolver;
+	friend class FileResolver;
 
 public:
 	inline File(const char *path) noexcept : fd(-1), internalPath(path) {
