@@ -9,7 +9,7 @@ AllowAllArgumentsOnNextLine: false
 
 SpaceBeforeCpp11BracedList: true
 AlwaysBreakAfterReturnType: All
-ColumnLimit: 120
+ColumnLimit: 80
 SpaceBeforeParens: ControlStatements
 
 # Indentation
