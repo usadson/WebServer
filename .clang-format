@@ -15,7 +15,7 @@ SpaceBeforeParens: ControlStatements
 # Indentation
 IndentCaseLabels: true
 IndentWidth: 4
-NamespaceIndentation: All
+NamespaceIndentation: None
 TabWidth: 4
 UseCRLF: false
 UseTab: Always
