@@ -12,8 +12,8 @@
 #include <unistd.h>
 
 #if defined(__FreeBSD__)
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <sys/uio.h>
 #elif defined(__linux__)
 #include <sys/sendfile.h>
@@ -29,7 +29,7 @@ Connection::~Connection() noexcept {
 }
 
 bool
-Connection::Setup(const HTTP::Configuration &/* configuration */) noexcept {
+Connection::Setup(const HTTP::Configuration & /* configuration */) noexcept {
 	if (useTransportSecurity) {
 		// TODO Use TLS wrapper
 		return false;
@@ -85,8 +85,7 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 		ssize_t status = sendfile(internalSocket, fd, nullptr, count);
 		if (status == -1) {
 			std::stringstream errorInfo;
-			errorInfo << "[Linux] Error occurred: " << status
-					  << " errno is: " << errno;
+			errorInfo << "[Linux] Error occurred: " << status << " errno is: " << errno;
 			Logger::Error("Connection::SendFile", errorInfo.str());
 			return false;
 		}
@@ -94,7 +93,7 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 	}
 	return true;
 #else
-	std::array<char, 4096> buffer{};
+	std::array<char, 4096> buffer {};
 	do {
 		ssize_t result = read(fd, buffer.data(), 4096);
 		if (result == -1)
@@ -114,8 +113,7 @@ bool
 Connection::WriteString(const std::string &str, bool includeNullCharacter) noexcept {
 	// TODO put in while loop because write may not write all characters
 
-	int status = write(internalSocket, str.c_str(),
-					   str.length() + (includeNullCharacter ? 1 : 0));
+	int status = write(internalSocket, str.c_str(), str.length() + (includeNullCharacter ? 1 : 0));
 
 	if (status == -1)
 		return false;

@@ -17,8 +17,8 @@ namespace HTTP {
 
 class Connection {
 public:
-	inline Connection(int socket, bool useTransportSecurity) noexcept :
-		internalSocket(socket), useTransportSecurity(useTransportSecurity) {
+	inline Connection(int socket, bool useTransportSecurity) noexcept
+		: internalSocket(socket), useTransportSecurity(useTransportSecurity) {
 	}
 
 	~Connection() noexcept;
