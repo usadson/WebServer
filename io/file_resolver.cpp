@@ -23,7 +23,7 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 		return file;
 
 	if (file->Handle() != -1 && !file->IsDirectory()) {
-		return std::unique_ptr<IO::File>{};
+		return std::unique_ptr<IO::File> {};
 	}
 
 	pathBuilder << "/index.html";
@@ -33,5 +33,5 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 		return file;
 
 	std::cout << "File: " << root << request.path << " not found!\n";
-	return std::unique_ptr<IO::File>{};
+	return std::unique_ptr<IO::File> {};
 }
