@@ -133,10 +133,14 @@ Client::HandleRequest() noexcept {
 		return ClientError::FILE_NOT_FOUND;
 	}
 
+	auto mediaType = server->config().mediaTypeFinder.DetectMediaType(file);
+
 	std::stringstream response;
 	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
 	response << file->Size();
-	response << "\r\nContent-Type: " << server->config().mediaTypeFinder.DetectMediaType(file);
+	response << "\r\nContent-Type: " << mediaType.completeType;
+	if (mediaType.includeCharset)
+		response << ";charset=utf-8";
 	response << "\r\n\r\n";
 
 	if (!connection->WriteString(response.str())) {
