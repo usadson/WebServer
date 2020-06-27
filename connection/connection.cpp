@@ -6,6 +6,8 @@
 
 #include "connection/connection.hpp"
 
+#include <sstream>
+
 #include <unistd.h>
 
 #if defined(__FreeBSD__)
@@ -17,6 +19,8 @@
 #else
 #include <array>
 #endif
+
+#include "base/logger.hpp"
 
 Connection::~Connection() noexcept {
 	close(internalSocket);
@@ -76,7 +80,18 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 	// (int/fd) src
 	// (*)      unused
 	// (size_t) count of bytes to rw
-	return sendfile(internalSocket, fd, nullptr, count) != -1;
+	while (count != 0) {
+		ssize_t status = sendfile(internalSocket, fd, nullptr, count);
+		if (status == -1) {
+			std::stringstream errorInfo;
+			errorInfo << "[Linux] Error occurred: " << status
+					  << " errno is: " << errno;
+			Logger::Error("Connection::SendFile", errorInfo.str());
+			return false;
+		}
+		count -= status;
+	}
+	return true;
 #else
 	std::array<char, 4096> buffer{};
 	do {
