@@ -6,9 +6,9 @@
  * See the COPYING file for licensing information.
  */
 
+#include <exception> // IWYU pragma: keep
 #include <iosfwd>
 #include <string>
-#include <exception> // IWYU pragma: keep
 
 #include <cstdint>
 
@@ -19,7 +19,7 @@ namespace HTTP {
 struct Configuration {
 
 	// The amount of clients awaiting in the accept() queue
-	std::size_t listenerBacklog{ 100 };
+	std::size_t listenerBacklog { 100 };
 
 	MediaTypeFinder mediaTypeFinder;
 
@@ -29,7 +29,7 @@ struct Configuration {
 	// Time is in milliseconds.
 	//
 	// This is not really a performance issue, more a preference issue.
-	int pollAcceptTimeout{ 1000 };
+	int pollAcceptTimeout { 1000 };
 
 	// The TCP port that should be used with the server.
 	//
@@ -37,14 +37,13 @@ struct Configuration {
 	// 80    This port is the default port for non-secure (HTTP) connections.
 	// 443   This port is the default port for secure (HTTPS) connections.
 	// 8080  This port is regularly used on (local) test servers.
-	uint16_t port{ 8080 };
+	uint16_t port { 8080 };
 
 	std::string rootDirectory;
 
 	// Whether or a security layer should be used.
 	// The security layer is TLS.
-	bool useTransportSecurity{ false };
-
+	bool useTransportSecurity { false };
 };
 
 class ConfigurationException : public std::exception {
