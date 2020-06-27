@@ -6,10 +6,14 @@
  * See the COPYING file for licensing information.
  */
 
-#include <string>
-#include <utility>
+#include <iosfwd>
 
-#include "http/configuration.hpp"
+#include <string>
+
+// ForwardDecl from http/configuration.hpp
+namespace HTTP {
+	struct Configuration;
+} // namespace HTTP
 
 class Connection {
 public:

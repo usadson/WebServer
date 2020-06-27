@@ -8,6 +8,7 @@
 
 #include <sstream>
 
+#include <cerrno>
 #include <unistd.h>
 
 #if defined(__FreeBSD__)
@@ -28,7 +29,7 @@ Connection::~Connection() noexcept {
 }
 
 bool
-Connection::Setup(const HTTP::Configuration &configuration) noexcept {
+Connection::Setup(const HTTP::Configuration &/* configuration */) noexcept {
 	if (useTransportSecurity) {
 		// TODO Use TLS wrapper
 		return false;
