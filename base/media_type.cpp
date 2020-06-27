@@ -16,10 +16,12 @@ static const MediaType genericType = { "application", "octet-stream" };
 MediaTypeFinder::MediaTypeFinder() noexcept
 	: mediaTypes({
 		// NOTE This list must be kept minimal. There is no need to have every
-		//      extension in this list. It will only cause overhead and provide no
+		//      extension in this list. It will only cause overhead and provide
+		//      no
 		//      real advantage.
 		//
-		// If you need to have an extension in this list, you can add it, but keep
+		// If you need to have an extension in this list, you can add it, but
+		// keep
 		// the advice above in mind.
 		{ "html", { "text", "html" } },
 		{ "json", { "application", "json", true } },
@@ -29,7 +31,8 @@ MediaTypeFinder::MediaTypeFinder() noexcept
 }
 
 const MediaType &
-MediaTypeFinder::DetectMediaType(const std::unique_ptr<IO::File> &file) const noexcept {
+MediaTypeFinder::DetectMediaType(
+	const std::unique_ptr<IO::File> &file) const noexcept {
 	std::string string(file->Path());
 
 	do {

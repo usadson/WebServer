@@ -18,11 +18,14 @@ struct MediaType {
 	const std::string completeType;
 	const bool includeCharset;
 
-	inline MediaType(const std::string &type, const std::string &subtype, bool includeCharset)
-		: type(type), subtype(subtype), completeType(type + '/' + subtype), includeCharset(includeCharset) {
+	inline MediaType(const std::string &type, const std::string &subtype,
+		bool includeCharset)
+		: type(type), subtype(subtype), completeType(type + '/' + subtype),
+		  includeCharset(includeCharset) {
 	}
 
-	inline MediaType(const std::string &type, const std::string &subtype) : MediaType(type, subtype, type == "text") {
+	inline MediaType(const std::string &type, const std::string &subtype)
+		: MediaType(type, subtype, type == "text") {
 	}
 };
 
