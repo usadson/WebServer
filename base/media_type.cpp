@@ -11,7 +11,7 @@
 
 #include "base/logger.hpp"
 
-static const std::string genericType = "application/octet-stream";
+static const MediaType genericType = { "application", "octet-stream" };
 
 MediaTypeFinder::MediaTypeFinder() noexcept
 	: mediaTypes({
@@ -21,14 +21,14 @@ MediaTypeFinder::MediaTypeFinder() noexcept
 		//
 		// If you need to have an extension in this list, you can add it, but keep
 		// the advice above in mind.
-		{ "html", "text/html" },
-		{ "json", "application/json" },
-		{ "jpg", "image/jpeg" },
-		{ "png", "image/png" },
+		{ "html", { "text", "html" } },
+		{ "json", { "application", "json", true } },
+		{ "jpg", { "image", "jpeg" } },
+		{ "png", { "image", "png" } },
 	}) {
 }
 
-const std::string &
+const MediaType &
 MediaTypeFinder::DetectMediaType(const std::unique_ptr<IO::File> &file) const noexcept {
 	std::string string(file->Path());
 
