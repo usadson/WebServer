@@ -23,7 +23,7 @@
 #include "io/file.hpp"
 
 [[nodiscard]] inline bool
-StringStartsWith(const std::string string, const std::string prefix) {
+StringStartsWith(const std::string &string, const std::string &prefix) {
 #ifdef __cpp_lib_starts_ends_with
 	return str.starts_with(str);
 #else
