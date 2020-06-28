@@ -66,6 +66,9 @@ private:
 	[[nodiscard]] bool
 	RunMessageExchange() noexcept;
 
+	[[nodiscard]] bool
+	ServeDefaultPage() noexcept;
+
 public:
 	std::thread thread;
 };

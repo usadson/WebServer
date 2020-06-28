@@ -6,6 +6,7 @@
 
 #include "client.hpp"
 
+#include <algorithm>
 #include <array>
 #include <iterator>
 #include <sstream>
@@ -13,12 +14,25 @@
 #include <vector>
 
 #include <cstdio>
+#include <cstring>
 
 #include "base/logger.hpp"
+#include "base/strings.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
 #include "io/file.hpp"
+
+// agjag
+// ag
+[[nodiscard]] inline bool
+StringStartsWith(const std::string string, const std::string prefix) {
+#ifdef __cpp_lib_starts_ends_with
+	return str.starts_with(str);
+#else
+	return std::mismatch(std::begin(prefix), std::end(prefix), std::begin(string), std::end(string)).first == std::end(prefix);
+#endif
+}
 
 namespace HTTP {
 
@@ -166,8 +180,13 @@ Client::HandleRequest() noexcept {
 
 bool
 Client::RecoverError(ClientError error) noexcept {
+	static const std::string indexPathTarget("/index.html");
+
 	switch (error) {
 		case ClientError::FILE_NOT_FOUND:
+			if (StringStartsWith(indexPathTarget, currentRequest.path)) {
+				return ServeDefaultPage();
+			}
 			return RecoverErrorFileNotFound();
 		default:
 			break;
@@ -228,6 +247,21 @@ Client::RunMessageExchange() noexcept {
 	}
 
 	return true;
+}
+
+bool
+Client::ServeDefaultPage() noexcept {
+	std::stringstream metadata;
+	metadata << "HTTP/1.1 200 OK\r\n"
+				"Content-Length: " << strlen(Strings::DefaultWebPage) << "\r\n"
+				"Content-Type: text/html;charset=utf-8\r\n"
+				"\r\n";
+
+	if (!connection->WriteString(metadata.str())) {
+		return false;
+	}
+
+	return connection->WriteString(Strings::DefaultWebPage);
 }
 
 } // namespace HTTP
