@@ -147,9 +147,7 @@ Client::HandleRequest() noexcept {
 		return ClientError::FILE_NOT_FOUND;
 	}
 
-	auto mediaType = server->config().mediaTypeFinder.DetectMediaType(file);
-
-	if (!SendMetadata(Strings::Response::OK, file->Size(), mediaType)) {
+	if (!SendMetadata(Strings::Response::OK, file->Size(), server->config().mediaTypeFinder.DetectMediaType(file))) {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
@@ -183,13 +181,8 @@ Client::RecoverError(ClientError error) noexcept {
 
 bool
 Client::RecoverErrorFileNotFound() noexcept {
-	const std::string &body = Strings::NotFoundPage;
-
-	if (!SendMetadata(Strings::Response::NotFound, body.length(), MediaTypes::HTML)) {
-		return false;
-	}
-
-	return connection->WriteString(body);
+	return SendMetadata(Strings::Response::NotFound, Strings::NotFoundPage.length(), MediaTypes::HTML)
+			&& connection->WriteString(Strings::NotFoundPage);
 }
 
 void
@@ -240,7 +233,8 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 
 bool
 Client::ServeDefaultPage() noexcept {
-	return SendMetadata(Strings::Response::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML) && connection->WriteString(Strings::DefaultWebPage);
+	return SendMetadata(Strings::Response::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML)
+			&& connection->WriteString(Strings::DefaultWebPage);
 }
 
 } // namespace HTTP
