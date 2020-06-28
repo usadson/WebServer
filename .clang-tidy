@@ -13,6 +13,8 @@
                     -google-readability-todo,
                     -android-cloexec-accept,
                     -llvm-header-guard,
+                    -cppcoreguidelines-pro-type-vararg,
+                    -hicpp-vararg,
                     # Duplicate checks:
                     -hicpp-member-init,
                     -hicpp-use-emplace,
