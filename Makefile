@@ -7,7 +7,8 @@ include standard.Makefile
 
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
-BINARIES = bin/base/media_type.o \
+BINARIES = bin/base/error_reporter.o \
+	   bin/base/media_type.o \
 	   bin/base/strings.o \
 	   bin/connection/connection.o \
 	   bin/http/client.o \
@@ -58,6 +59,11 @@ bin/test.txt:
 	@mkdir bin/test
 	@mkdir bin/test/http
 	@touch bin/test.txt
+
+bin/base/error_reporter.o: base/error_reporter.cpp \
+	base/error_reporter.hpp \
+	base/logger.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ base/error_reporter.cpp
 
 bin/base/media_type.o: base/media_type.cpp \
 	base/media_type.hpp \
