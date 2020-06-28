@@ -41,6 +41,9 @@ struct Configuration {
 
 	std::string rootDirectory;
 
+	// The 'Server' header field value as defined per RFC 7231 § 7.4.2
+	std::string serverProductName { "Wizard" };
+
 	// Whether or a security layer should be used.
 	// The security layer is TLS.
 	bool useTransportSecurity { false };

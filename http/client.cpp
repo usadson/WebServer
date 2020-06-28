@@ -22,8 +22,6 @@
 #include "http/utils.hpp"
 #include "io/file.hpp"
 
-// agjag
-// ag
 [[nodiscard]] inline bool
 StringStartsWith(const std::string string, const std::string prefix) {
 #ifdef __cpp_lib_starts_ends_with
@@ -199,6 +197,7 @@ Client::RecoverErrorFileNotFound() noexcept {
 	metadata << "HTTP/1.1 404 Not Found\r\n"
 				"Content-Length: " << body.length() << "\r\n"
 				"Content-Type: text/html;charset=utf-8\r\n"
+			 <<
 				"\r\n";
 
 	if (!connection->WriteString(metadata.str())) {
@@ -241,10 +240,11 @@ Client::RunMessageExchange() noexcept {
 bool
 Client::ServeDefaultPage() noexcept {
 	std::stringstream metadata;
-	metadata << "HTTP/1.1 200 OK\r\n"
-				"Content-Length: " << Strings::DefaultWebPage.length() << "\r\n"
-				"Content-Type: text/html;charset=utf-8\r\n"
-				"\r\n";
+	metadata << "HTTP/1.1 200 OK"
+				"\r\nContent-Length: " << Strings::DefaultWebPage.length()
+			 << "\r\nContent-Type: text/html;charset=utf-8"
+			 << "\r\nServer: " << server->config().serverProductName <<
+				"\r\n\r\n";
 
 	if (!connection->WriteString(metadata.str())) {
 		return false;

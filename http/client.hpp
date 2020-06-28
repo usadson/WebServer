@@ -11,6 +11,7 @@
 
 #include "connection/connection.hpp"
 #include "http/client_error.hpp"
+#include "http/configuration.hpp"
 #include "http/request.hpp"
 
 namespace HTTP {
