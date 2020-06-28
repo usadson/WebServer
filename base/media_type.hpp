@@ -29,6 +29,10 @@ struct MediaType {
 	}
 };
 
+namespace MediaTypes {
+	const MediaType HTML { "text", "html" };
+} // namespace MediaTypes
+
 class MediaTypeFinder {
 public:
 	MediaTypeFinder() noexcept;
