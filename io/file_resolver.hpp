@@ -15,7 +15,7 @@
 namespace IO {
 class FileResolver {
 public:
-	inline FileResolver(const std::string &rootDirectory) noexcept : root(rootDirectory) {
+	inline explicit FileResolver(const std::string &rootDirectory) noexcept : root(rootDirectory) {
 	}
 
 	[[nodiscard]] std::unique_ptr<IO::File>
