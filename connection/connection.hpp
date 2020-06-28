@@ -12,7 +12,7 @@
 
 // ForwardDecl from http/configuration.hpp
 namespace HTTP {
-	struct Configuration;
+struct Configuration;
 } // namespace HTTP
 
 class Connection {
@@ -46,7 +46,8 @@ public:
 	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
-	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
+	WriteString(
+		const std::string &, bool includeNullCharacter = false) noexcept;
 
 private:
 	void *internalData;

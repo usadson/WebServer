@@ -6,9 +6,11 @@
 
 #include "connection/connection.hpp"
 
+#include <iostream>
 #include <sstream>
 
 #include <cerrno>
+#include <poll.h>
 #include <unistd.h>
 
 #if defined(__FreeBSD__)
@@ -16,7 +18,11 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 #elif defined(__linux__)
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <sys/ioctl.h>
 #include <sys/sendfile.h>
+#include <sys/socket.h>
 #else
 #include <array>
 #endif
@@ -24,12 +30,29 @@
 #include "base/logger.hpp"
 
 Connection::~Connection() noexcept {
-	close(internalSocket);
+	// This makes sure all data has been transferred before closing the
+	// connection. Clever solutions like poll(2), read(?, ' ', 1), etc. didn't
+	// work. Maybe non-blocking sockets solve it[?]
+	struct timespec sleepTime { 0, 100000 };
+	while (true) {
+		int value;
+		if (ioctl(internalSocket, TIOCOUTQ, &value) == -1 || value == 0)
+			break;
+		nanosleep(&sleepTime, nullptr);
+	}
+
+	/* ignore-return-value */ shutdown(internalSocket, SHUT_RDWR);
+	/* ignore-return-value */ close(internalSocket);
 	internalSocket = -1;
 }
 
 bool
 Connection::Setup(const HTTP::Configuration & /* configuration */) noexcept {
+	int i = 1;
+	if (setsockopt(internalSocket, IPPROTO_TCP, TCP_NODELAY, static_cast<void *>(&i), sizeof(i)) == -1) {
+		return false;
+	}
+
 	if (useTransportSecurity) {
 		// TODO Use TLS wrapper
 		return false;
@@ -81,8 +104,9 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 	// (int/fd) src
 	// (*)      unused
 	// (size_t) count of bytes to rw
+
 	while (count != 0) {
-		ssize_t status = sendfile(internalSocket, fd, nullptr, count);
+		ssize_t status = sendfile64(internalSocket, fd, nullptr, count);
 		if (status == -1) {
 			std::stringstream errorInfo;
 			errorInfo << "[Linux] Error occurred: " << status << " errno is: " << errno;
@@ -91,6 +115,7 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 		}
 		count -= status;
 	}
+
 	return true;
 #else
 	std::array<char, 4096> buffer {};

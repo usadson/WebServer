@@ -113,6 +113,12 @@ Client::ConsumeVersion() noexcept {
 
 void
 Client::Entrypoint() {
+	if (!connection->Setup(server->config())) {
+		Logger::Error(__FUNCTION__, "Failed to setup connection!");
+		Clean();
+		return;
+	}
+
 	bool previousRequestSuccess;
 
 	do {
