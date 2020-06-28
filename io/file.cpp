@@ -6,8 +6,6 @@
 
 #include "file.hpp"
 
-#include <iostream>
-
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -26,6 +24,5 @@ IO::File::InternalInit(const char *path) {
 }
 
 IO::File::~File() noexcept {
-	std::cout << "Destructor called for fd " << fd << '\n';
 	close(fd);
 }
