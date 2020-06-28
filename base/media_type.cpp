@@ -4,6 +4,8 @@
  * See the COPYING file for licensing information.
  */
 
+/* NOTE Don't auto-format this file! */
+
 #include "media_type.hpp"
 
 #include <algorithm>
@@ -16,17 +18,34 @@ static const MediaType genericType = { "application", "octet-stream" };
 MediaTypeFinder::MediaTypeFinder() noexcept
 	: mediaTypes({
 		// NOTE This list must be kept minimal. There is no need to have every
-		//      extension in this list. It will only cause overhead and provide
-		//      no
-		//      real advantage.
-		//
-		// If you need to have an extension in this list, you can add it, but
-		// keep
-		// the advice above in mind.
-		{ "html", { "text", "html" } },
-		{ "json", { "application", "json", true } },
-		{ "jpg", { "image", "jpeg" } },
-		{ "png", { "image", "png" } },
+		//      extension in this list. Providing rarely used and obsolete
+		//      media types only causes overhead, because media type lookup
+		//      should be snappy.
+		// NOTE If you need to have an extension in this list, you can add it, but
+		//      keep the advice above in mind.
+		{ "css",   { "text", "css" } },                     // RFC 2318
+		{ "html",  { "text", "html" } },                    // https://html.spec.whatwg.org/#text/html
+		// Microsoft uses image/x-icon, which isn't approved by IANA. Most web
+		// servers use the correct media type (as seen below), except nginx.
+		{ "ico",   { "image", "vnd.microsoft.icon" } },     // https://www.iana.org/assignments/media-types/image/vnd.microsoft.icon
+		{ "js",    { "application", "javascript", true } }, // RFC 4329
+		{ "json",  { "application", "json" } },               // RFC 8259
+		{ "jpg",   { "image", "jpeg" } },                   // RFC 2046
+		{ "otf",   { "font", "otf" } },                     // RFC 8081
+		{ "png",   { "image", "png" } },                    // RFC 2083
+		{ "svg",   { "image", "svg+xml" } },                // https://www.w3.org/TR/SVG/mimereg.html
+		{ "ttf",   { "font", "ttf" } },                     // RFC 8081
+		{ "txt",   { "text", "plain" } },                   // RFC 2046, 3676 & 5147
+		{ "woff",  { "font", "woff" } },                    // RFC 8081
+		{ "woff2", { "font", "woff" } },                    // RFC 8081
+		// The debate of application/xml vs text/xml. As every UA knows about
+		// both of them, it isn't really necessary. Every server has their own
+		// opinion about it, so there isn't really a standard to follow. RFC
+		// 7303 doesn't specify a better one — as opposed to JSON — only that
+		// text/xml is for user-readable XML, and application/xml is for non-
+		// user-readable XML.
+		{ "xml",  { "application", "xml" } },               // RFC 7303
+		{ "zip",  { "application", "zip" } },               // https://www.iana.org/assignments/media-types/application/zip
 	}) {
 }
 
