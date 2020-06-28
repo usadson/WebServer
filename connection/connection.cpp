@@ -63,7 +63,7 @@ Connection::Setup(const HTTP::Configuration & /* configuration */) noexcept {
 
 // TODO Make sure that using char isn't causing problems when it isn't 8-bits.
 bool
-Connection::ReadChar(char *buf) noexcept {
+Connection::ReadChar(char *buf) const noexcept {
 	if (buf == nullptr) {
 		return false;
 	}
@@ -73,15 +73,11 @@ Connection::ReadChar(char *buf) noexcept {
 		return false;
 	}
 
-	int status = read(internalSocket, buf, 1);
-	if (status == -1)
-		return false;
-
-	return true;
+	return read(internalSocket, buf, 1) != -1;
 }
 
 bool
-Connection::SendFile(int fd, std::size_t count) noexcept {
+Connection::SendFile(int fd, std::size_t count) const noexcept {
 	if (useTransportSecurity) {
 		// TODO Use TLS wrapper
 		return false;
@@ -134,7 +130,7 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str, bool includeNullCharacter) noexcept {
+Connection::WriteString(const std::string &str, bool includeNullCharacter) const noexcept {
 	// TODO put in while loop because write may not write all characters
 
 	int status = write(internalSocket, str.c_str(), str.length() + (includeNullCharacter ? 1 : 0));

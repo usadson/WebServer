@@ -37,16 +37,16 @@ public:
 	// undefined.
 	// NOTE: If [char *] is nullptr, false is always returned.
 	[[nodiscard]] bool
-	ReadChar(char *) noexcept;
+	ReadChar(char *) const noexcept;
 
 	[[nodiscard]] bool
-	SendFile(int fd, std::size_t count) noexcept;
+	SendFile(int fd, std::size_t count) const noexcept;
 
 	[[nodiscard]] bool
 	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
-	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
+	WriteString(const std::string &, bool includeNullCharacter = false) const noexcept;
 
 private:
 	int internalSocket;
