@@ -46,11 +46,9 @@ public:
 	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
-	WriteString(
-		const std::string &, bool includeNullCharacter = false) noexcept;
+	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
 
 private:
-	void *internalData;
 	int internalSocket;
 	bool useTransportSecurity;
 };
