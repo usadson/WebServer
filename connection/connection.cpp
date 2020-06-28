@@ -131,12 +131,15 @@ Connection::SendFile(int fd, std::size_t count) const noexcept {
 
 bool
 Connection::WriteString(const std::string &str, bool includeNullCharacter) const noexcept {
-	// TODO put in while loop because write may not write all characters
+	std::size_t off = 0;
+	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
+	while (len != 0) {
+		int status = write(internalSocket, str.c_str() + off, len);
 
-	int status = write(internalSocket, str.c_str(), str.length() + (includeNullCharacter ? 1 : 0));
-
-	if (status == -1)
-		return false;
-
+		if (status == -1)
+			return false;
+		len -= status;
+		off += status;
+	}
 	return true;
 }
