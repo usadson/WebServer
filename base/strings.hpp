@@ -13,4 +13,9 @@ namespace Strings {
 extern const std::string DefaultWebPage;
 extern const std::string NotFoundPage;
 
+namespace Response {
+	extern const std::string NotFound;
+	extern const std::string OK;
+}
+
 } // namespace Strings

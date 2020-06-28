@@ -15,4 +15,9 @@ const std::string NotFoundPage = "<!doctype html>"
 								 "<body><h1>File Not Found</h1></body>"
 								 "</html>";
 
+namespace Response {
+const std::string NotFound = "HTTP/1.1 404 Not Found";
+const std::string OK = "HTTP/1.1 200 OK";
+}
+
 } // namespace Strings
