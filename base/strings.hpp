@@ -10,7 +10,7 @@
 
 namespace Strings {
 
-extern const char *DefaultWebPage;
+extern const std::string DefaultWebPage;
 extern const std::string NotFoundPage;
 
 } // namespace Strings

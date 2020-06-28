@@ -14,7 +14,6 @@
 #include <vector>
 
 #include <cstdio>
-#include <cstring>
 
 #include "base/logger.hpp"
 #include "base/strings.hpp"
@@ -243,7 +242,7 @@ bool
 Client::ServeDefaultPage() noexcept {
 	std::stringstream metadata;
 	metadata << "HTTP/1.1 200 OK\r\n"
-				"Content-Length: " << strlen(Strings::DefaultWebPage) << "\r\n"
+				"Content-Length: " << Strings::DefaultWebPage.length() << "\r\n"
 				"Content-Type: text/html;charset=utf-8\r\n"
 				"\r\n";
 
