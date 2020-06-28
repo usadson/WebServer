@@ -200,11 +200,7 @@ Client::RecoverError(ClientError error) noexcept {
 
 bool
 Client::RecoverErrorFileNotFound() noexcept {
-	const std::string body = "<!doctype html>"
-							 "<html>"
-							 "<head><title>File Not Found</title></head>"
-							 "<body><h1>File Not Found</h1></body>"
-							 "</html>";
+	const std::string &body = Strings::NotFoundPage;
 
 	std::stringstream metadata;
 	metadata << "HTTP/1.1 404 Not Found\r\n"

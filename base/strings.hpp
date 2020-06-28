@@ -6,8 +6,11 @@
  * See the COPYING file for licensing information.
  */
 
+#include <string>
+
 namespace Strings {
 
 extern const char *DefaultWebPage;
+extern const std::string NotFoundPage;
 
 } // namespace Strings
