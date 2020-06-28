@@ -8,6 +8,7 @@ include standard.Makefile
 # All the object files. By convention, each .cpp should have a corresponding
 # object file. For more information, see the explanation above.
 BINARIES = bin/base/media_type.o \
+	   bin/base/strings.o \
 	   bin/connection/connection.o \
 	   bin/http/client.o \
 	   bin/http/client_error.o \
@@ -62,6 +63,10 @@ bin/base/media_type.o: base/media_type.cpp \
 	base/media_type.hpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ base/media_type.cpp
+
+bin/base/strings.o: base/strings.cpp \
+	base/strings.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ base/strings.cpp
 
 bin/connection/connection.o: connection/connection.cpp \
 	connection/connection.hpp \
