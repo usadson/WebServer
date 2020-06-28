@@ -68,6 +68,9 @@ private:
 	RunMessageExchange() noexcept;
 
 	[[nodiscard]] bool
+	SendMetadata(const std::string &response, std::size_t contentLength, const MediaType &type) noexcept;
+
+	[[nodiscard]] bool
 	ServeDefaultPage() noexcept;
 
 public:

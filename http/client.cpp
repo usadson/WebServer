@@ -149,15 +149,7 @@ Client::HandleRequest() noexcept {
 
 	auto mediaType = server->config().mediaTypeFinder.DetectMediaType(file);
 
-	std::stringstream response;
-	response << "HTTP/1.1 200 OK\r\nContent-Length: ";
-	response << file->Size();
-	response << "\r\nContent-Type: " << mediaType.completeType;
-	if (mediaType.includeCharset)
-		response << ";charset=utf-8";
-	response << "\r\n\r\n";
-
-	if (!connection->WriteString(response.str())) {
+	if (!SendMetadata(Strings::Response::OK, file->Size(), mediaType)) {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
@@ -193,14 +185,7 @@ bool
 Client::RecoverErrorFileNotFound() noexcept {
 	const std::string &body = Strings::NotFoundPage;
 
-	std::stringstream metadata;
-	metadata << "HTTP/1.1 404 Not Found\r\n"
-				"Content-Length: " << body.length() << "\r\n"
-				"Content-Type: text/html;charset=utf-8\r\n"
-			 <<
-				"\r\n";
-
-	if (!connection->WriteString(metadata.str())) {
+	if (!SendMetadata(Strings::Response::NotFound, body.length(), MediaTypes::HTML)) {
 		return false;
 	}
 
@@ -238,19 +223,24 @@ Client::RunMessageExchange() noexcept {
 }
 
 bool
-Client::ServeDefaultPage() noexcept {
+Client::SendMetadata(const std::string &response, std::size_t contentLength, const MediaType &mediaType) noexcept {
 	std::stringstream metadata;
-	metadata << "HTTP/1.1 200 OK"
-				"\r\nContent-Length: " << Strings::DefaultWebPage.length()
-			 << "\r\nContent-Type: text/html;charset=utf-8"
-			 << "\r\nServer: " << server->config().serverProductName <<
-				"\r\n\r\n";
+	metadata << response;
+	metadata << "\r\nContent-Length: " << contentLength;
+	metadata << "\r\nServer: " << server->config().serverProductName;
+	metadata << "\r\nContent-Type: " << mediaType.completeType;
 
-	if (!connection->WriteString(metadata.str())) {
-		return false;
-	}
+	if (mediaType.includeCharset)
+		metadata << ";charset=utf-8\r\n\r\n";
+	else
+		metadata << "\r\n\r\n";
 
-	return connection->WriteString(Strings::DefaultWebPage);
+	return connection->WriteString(metadata.str());
+}
+
+bool
+Client::ServeDefaultPage() noexcept {
+	return SendMetadata(Strings::Response::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML) && connection->WriteString(Strings::DefaultWebPage);
 }
 
 } // namespace HTTP
