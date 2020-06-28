@@ -6,11 +6,10 @@
 
 #include "connection/connection.hpp"
 
-#include <iostream>
 #include <sstream>
 
 #include <cerrno>
-#include <poll.h>
+#include <ctime>
 #include <unistd.h>
 
 #if defined(__FreeBSD__)
@@ -18,7 +17,7 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 #elif defined(__linux__)
-#include <netinet/ip.h>
+#include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/ioctl.h>
 #include <sys/sendfile.h>
