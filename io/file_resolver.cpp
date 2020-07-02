@@ -12,8 +12,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "base/error_reporter.hpp"
-
 std::unique_ptr<IO::File>
 IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	std::stringstream pathBuilder;
@@ -34,6 +32,5 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	if (file->Handle() != -1)
 		return file;
 
-	ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Couldn't find file: " + root + request.path);
 	return std::unique_ptr<IO::File> {};
 }

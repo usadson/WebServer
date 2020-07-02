@@ -15,6 +15,7 @@
 
 #include <cstdio>
 
+#include "base/error_reporter.hpp"
 #include "base/logger.hpp"
 #include "base/strings.hpp"
 #include "http/configuration.hpp"
@@ -168,6 +169,7 @@ Client::RecoverError(ClientError error) noexcept {
 			if (StringStartsWith(indexPathTarget, currentRequest.path)) {
 				return ServeDefaultPage();
 			}
+			ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
 			return RecoverErrorFileNotFound();
 		default:
 			break;
