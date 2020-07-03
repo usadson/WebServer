@@ -6,6 +6,7 @@
  * See the COPYING file for licensing information.
  */
 
+#include <map>
 #include <string>
 
 namespace HTTP {
@@ -14,6 +15,8 @@ struct Request {
 	std::string method;
 	std::string path;
 	// Version isn't worth/needed storing atm.
+
+	std::map<std::string, std::string> headers;
 };
 
 } // namespace HTTP
