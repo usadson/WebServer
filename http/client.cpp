@@ -51,11 +51,11 @@ ClientError
 Client::ConsumeCRLF() noexcept {
 	char cr, lf;
 	if (!connection->ReadChar(&cr) || !connection->ReadChar(&lf)) {
-		return ClientError::FAILED_READ_STARTLINE_CRLF;
+		return ClientError::FAILED_READ_CRLF;
 	}
 
 	if (cr != '\r' || lf != '\n') {
-		return ClientError::INCORRECT_STARTLINE_CRLF;
+		return ClientError::INCORRECT_CRLF;
 	}
 
 	return ClientError::NO_ERROR;
@@ -198,17 +198,22 @@ Client::ConsumeSingleSpace() noexcept {
 ClientError
 Client::ConsumeHeaders() noexcept {
 	do {
-		char singleCharacter;
-		if (!connection->ReadChar(&singleCharacter)) {
-			return ClientError::FAILED_READ_GENERIC;
+		char character;
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_HEADER_FIELD_NAME;
 		}
 
-		if (singleCharacter == '\r' && (!connection->ReadChar(&singleCharacter) || singleCharacter != '\n')) {
-			Logger::Warning("ConsumeHeaders", "Incorrect CRLF");
+		if (character == '\r') {
+			if (!connection->ReadChar(&character)) {
+				return ClientError::FAILED_READ_HEADER_NEWLINE;
+			}
+			if (character != '\n') {
+				return ClientError::UNEXPECTED_CR_IN_FIELD_NAME;
+			}
 			break;
 		}
 
-		auto error = ConsumeHeaderField(singleCharacter);
+		auto error = ConsumeHeaderField(character);
 		if (error != ClientError::NO_ERROR) {
 			return error;
 		}
