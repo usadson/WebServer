@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <thread>
+#include <vector>
 
 #include "connection/connection.hpp"
 #include "http/client_error.hpp"
@@ -39,6 +40,24 @@ private:
 
 	void
 	Clean() noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeCRLF() noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeHeaderField(char) noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeHeaderFieldName(std::vector<char> *) noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeHeaderFieldValue(std::vector<char> *) noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeHeaders() noexcept;
+
+	[[nodiscard]] ClientError
+	ConsumeSingleSpace() noexcept;
 
 	[[nodiscard]] ClientError
 	ConsumeMethod() noexcept;

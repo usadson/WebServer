@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <cstdio>
+#include <cstring>
 
 #include "base/error_reporter.hpp"
 #include "base/logger.hpp"
@@ -44,6 +45,176 @@ Client::Clean() noexcept {
 	connection = nullptr;
 
 	server->SignalClientDeath(thread);
+}
+
+ClientError
+Client::ConsumeCRLF() noexcept {
+	char cr, lf;
+	if (!connection->ReadChar(&cr) || !connection->ReadChar(&lf)) {
+		return ClientError::FAILED_READ_STARTLINE_CRLF;
+	}
+
+	if (cr != '\r' || lf != '\n') {
+		return ClientError::INCORRECT_STARTLINE_CRLF;
+	}
+
+	return ClientError::NO_ERROR;
+}
+
+ClientError
+Client::ConsumeHeaderField(char firstCharacter) noexcept {
+	std::vector<char> fieldName;
+	std::vector<char> fieldValue;
+	char *nullCharacterPosition;
+	ClientError subroutineError;
+
+	/* Consume field-name */
+	fieldName.push_back(firstCharacter);
+	subroutineError = ConsumeHeaderFieldName(&fieldName);
+	if (subroutineError != ClientError::NO_ERROR)
+		return subroutineError;
+
+	/* Consume OWS (Optional Whitespaces) */
+	while (true) {
+		char character;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_HEADER_FIELD_GENERIC;
+		}
+
+		if (character != ' ' && character != '\t') {
+			fieldValue.push_back(character);
+			break;
+		}
+	}
+
+	/* Consume header-value */
+	subroutineError = ConsumeHeaderFieldValue(&fieldValue);
+	if (subroutineError != ClientError::NO_ERROR)
+		return subroutineError;
+
+	/* Store in strings */
+	fieldName.push_back('\0');
+	fieldValue.push_back('\0');
+
+	/* Trim end of OWS's. */
+	char *fieldValueString = fieldValue.data();
+	char *lastSpace = strrchr(fieldValueString, ' ');
+	char *lastHTab = strrchr(fieldValueString, '\t');
+
+	if (lastSpace != nullptr)
+		if (lastHTab != nullptr)
+			if (lastHTab > lastSpace)
+				nullCharacterPosition = lastSpace;
+			else
+				nullCharacterPosition = lastHTab;
+		else
+			nullCharacterPosition = lastSpace;
+	else if (lastHTab != nullptr)
+		nullCharacterPosition = lastHTab;
+	else
+		nullCharacterPosition = fieldValueString + fieldValue.size() - 1;
+	*nullCharacterPosition = 0;
+
+	currentRequest.headers.insert({ std::string(fieldName.data()), std::string(fieldValueString) });
+	return ClientError::NO_ERROR;
+}
+
+ClientError
+Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
+	/* obs-fold (optional line folding) isn't supported. */
+	while (true) {
+		/* Set next character */
+		char character;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_HEADER_FIELD_VALUE;
+		}
+
+		if (character == '\r') {
+			if (!connection->ReadChar(&character)) {
+				return ClientError::FAILED_READ_HEADER_NEWLINE;
+			}
+			if (character != '\n') {
+				return ClientError::INCORRECT_HEADER_FIELD_NEWLINE;
+			}
+			return ClientError::NO_ERROR;
+		}
+
+		unsigned char uc = (unsigned char) character;
+		if ((uc >= 0x21 && uc <= 0x7E) || // VCHAR
+			(uc >= 0x80 && uc <= 0xFF) || // obs-text
+			character == ' ' || character == '\t') {	// SP / HTAB
+			dest->push_back(character);
+		} else {
+			return ClientError::INCORRECT_HEADER_FIELD_VALUE;
+		}
+	}
+}
+
+ClientError
+Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
+	static const std::vector<char> unreservedCharacters
+		= { '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
+
+	while (true) {
+		char character;
+
+		if (!connection->ReadChar(&character)) {
+			return ClientError::FAILED_READ_HEADER_FIELD_NAME;
+		}
+
+		if (character == ':') {
+			return ClientError::NO_ERROR;
+		}
+
+		if (std::find(std::begin(unreservedCharacters),
+					  std::end(unreservedCharacters), character)
+			!= std::end(unreservedCharacters) ||
+			(character >= '0' && character <= '9') ||
+			(character >= 'A' && character <= 'Z') ||
+			(character >= 'a' && character <= 'z')) {
+			dest->push_back(character);
+		} else {
+			return ClientError::INCORRECT_HEADER_FIELD_NAME;
+		}
+	}
+}
+
+ClientError
+Client::ConsumeSingleSpace() noexcept {
+	char singleCharacter;
+	if (!connection->ReadChar(&singleCharacter)) {
+		return ClientError::FAILED_READ_GENERIC;
+	}
+
+	if (singleCharacter != ' ') {
+		return ClientError::WHITESPACE_EXPECTED;
+	}
+
+	return ClientError::NO_ERROR;
+}
+
+ClientError
+Client::ConsumeHeaders() noexcept {
+	do {
+		char singleCharacter;
+		if (!connection->ReadChar(&singleCharacter)) {
+			return ClientError::FAILED_READ_GENERIC;
+		}
+
+		if (singleCharacter == '\r' && (!connection->ReadChar(&singleCharacter) || singleCharacter != '\n')) {
+			Logger::Warning("ConsumeHeaders", "Incorrect CRLF");
+			break;
+		}
+
+		auto error = ConsumeHeaderField(singleCharacter);
+		if (error != ClientError::NO_ERROR) {
+			return error;
+		}
+	} while (true);
+
+	return ClientError::NO_ERROR;
 }
 
 ClientError
@@ -205,6 +376,16 @@ Client::RunMessageExchange() noexcept {
 	}
 
 	error = ConsumeVersion();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
+	error = ConsumeCRLF();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
+	error = ConsumeHeaders();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
 	}
