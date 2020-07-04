@@ -174,7 +174,7 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 			(character >= '0' && character <= '9') ||
 			(character >= 'A' && character <= 'Z') ||
 			(character >= 'a' && character <= 'z')) {
-			dest->push_back(character);
+			dest->push_back(tolower(character));
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_NAME;
 		}
