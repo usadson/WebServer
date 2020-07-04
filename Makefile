@@ -114,7 +114,6 @@ bin/io/file_resolver.o: io/file_resolver.cpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ io/file_resolver.cpp
 
-
 # the 'memory' target will invoke Valgrind, which will run the executable and
 # can track memory usage. Memory leaks, double free()'s, use-after-free,
 # uninitialised values, etc. can be found by using this tool.
@@ -147,6 +146,5 @@ infer-clean:
 # A modern linter for C++, made by Facebook.
 flint:
 	flint++ -r -v .
-
 
 include test/Makefile
