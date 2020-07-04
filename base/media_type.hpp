@@ -31,6 +31,7 @@ struct MediaType {
 
 namespace MediaTypes {
 	const MediaType HTML { "text", "html" };
+	const MediaType TEXT { "text", "plain" };
 } // namespace MediaTypes
 
 class MediaTypeFinder {
