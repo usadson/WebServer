@@ -7,6 +7,7 @@
  */
 
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -102,6 +103,9 @@ private:
 	// errors can be handled gracefully (e.g. FILE_NOT_FOUND), but some can't.
 	[[nodiscard]] bool
 	RecoverError(ClientError) noexcept;
+
+	[[nodiscard]] bool
+	RecoverErrorBadRequest(const std::string &) noexcept;
 
 	// Handles the FILE_NOT_FOUND ClientError. Called by RecoverError.
 	[[nodiscard]] bool

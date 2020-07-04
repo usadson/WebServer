@@ -334,6 +334,20 @@ Client::RecoverError(ClientError error) noexcept {
 			}
 			ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
 			return RecoverErrorFileNotFound();
+		case ClientError::INCORRECT_HEADER_FIELD_NAME:
+			return RecoverErrorBadRequest("invalid header field-name");
+		case ClientError::INCORRECT_HEADER_FIELD_NEWLINE:
+			return RecoverErrorBadRequest("expected newline (CRLF) after header field");
+		case ClientError::INCORRECT_HEADER_FIELD_VALUE:
+			return RecoverErrorBadRequest("invalid header field-value");
+		case ClientError::INCORRECT_METHOD:
+			return RecoverErrorBadRequest("invalid method: not a token as per RFC 7230 section 3.2.6");
+		case ClientError::INCORRECT_PATH:
+			return RecoverErrorBadRequest("incorrect request-target");
+		case ClientError::INCORRECT_CRLF:
+			return RecoverErrorBadRequest("request-line should end with a newline (CRLF)");
+		case ClientError::INCORRECT_VERSION:
+			return RecoverErrorBadRequest("invalid HTTP version as per RFC 7230 section 2.6");
 		default:
 			break;
 	}
@@ -342,6 +356,13 @@ Client::RecoverError(ClientError error) noexcept {
 	test << "Error Occurred: " << error << '\n';
 	Logger::Info("HTTPClient::RecoverError", test.str());
 	return false;
+}
+
+bool
+Client::RecoverErrorBadRequest(const std::string &message) noexcept {
+	const std::string body = "Invalid request: " + message;
+	return SendMetadata(Strings::Response::BadRequest, body.length(), MediaTypes::TEXT)
+			&& connection->WriteString(body);
 }
 
 bool
