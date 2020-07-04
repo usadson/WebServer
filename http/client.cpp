@@ -311,6 +311,7 @@ Client::Entrypoint() {
 
 	do {
 		previousRequestSuccess = RunMessageExchange();
+		ResetExchangeState();
 	} while (previousRequestSuccess && persistentConnection);
 
 	Clean();
