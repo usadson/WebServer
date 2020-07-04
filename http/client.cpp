@@ -15,6 +15,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <strings.h>
 
 #include "base/error_reporter.hpp"
 #include "base/logger.hpp"
@@ -323,6 +324,15 @@ Client::HandleRequest() noexcept {
 	return ClientError::NO_ERROR;
 }
 
+void
+Client::InterpretConnectionHeaders() noexcept {
+	if (persistentConnection) {
+		auto header = currentRequest.headers.find("connection");
+		if (header != std::end(currentRequest.headers) && strcasecmp(header->second.c_str(), "close") == 0)
+			persistentConnection = false;
+	}
+}
+
 bool
 Client::RecoverError(ClientError error) noexcept {
 	static const std::string indexPathTarget("/index.html");
@@ -403,6 +413,8 @@ Client::RunMessageExchange() noexcept {
 		return RecoverError(error);
 	}
 
+	InterpretConnectionHeaders();
+
 	error = HandleRequest();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
@@ -417,6 +429,7 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 	metadata << response;
 	metadata << "\r\nContent-Length: " << contentLength;
 	metadata << "\r\nServer: " << server->config().serverProductName;
+	metadata << "\r\nConnection: " << (persistentConnection ? "keep-alive" : "close");
 	metadata << "\r\nContent-Type: " << mediaType.completeType;
 
 	if (mediaType.includeCharset)

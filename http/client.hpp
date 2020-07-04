@@ -33,9 +33,10 @@ private:
 	std::unique_ptr<Connection> connection;
 	Request currentRequest;
 
-	// This is turned on after checking the headers.
+	// This may be changed by InterpretConnectionHeaders
+	// HTTP/1.1 enables persistent connections by default.
 	// NOTE that this isn't a configuration option, but a state.
-	bool persistentConnection{ false };
+	bool persistentConnection{ true };
 
 	Server *server;
 
@@ -98,6 +99,9 @@ private:
 	// 'Handling' refers to the interpreting and respoding to requests.
 	[[nodiscard]] ClientError
 	HandleRequest() noexcept;
+
+	void
+	InterpretConnectionHeaders() noexcept;
 
 	// This function is called after a subroutine encounters an error. Some
 	// errors can be handled gracefully (e.g. FILE_NOT_FOUND), but some can't.
