@@ -182,20 +182,6 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 }
 
 ClientError
-Client::ConsumeSingleSpace() noexcept {
-	char singleCharacter;
-	if (!connection->ReadChar(&singleCharacter)) {
-		return ClientError::FAILED_READ_GENERIC;
-	}
-
-	if (singleCharacter != ' ') {
-		return ClientError::WHITESPACE_EXPECTED;
-	}
-
-	return ClientError::NO_ERROR;
-}
-
-ClientError
 Client::ConsumeHeaders() noexcept {
 	do {
 		char character;
