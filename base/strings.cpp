@@ -16,6 +16,7 @@ const std::string NotFoundPage = "<!doctype html>"
 								 "</html>";
 
 namespace Response {
+const std::string BadRequest = "HTTP/1.1 400 Bad Request";
 const std::string NotFound = "HTTP/1.1 404 Not Found";
 const std::string OK = "HTTP/1.1 200 OK";
 }
