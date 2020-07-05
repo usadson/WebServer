@@ -106,26 +106,12 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	fieldValue.push_back('\0');
 
 	/* Trim end of OWS's. */
-	char *fieldValueString = fieldValue.data();
-	char *lastSpace = strrchr(fieldValueString, ' ');
-	char *lastHTab = strrchr(fieldValueString, '\t');
+	auto spaceIterator = std::find(std::begin(fieldValue), std::end(fieldValue), ' ');
+	auto tabIterator = std::find(std::begin(fieldValue), std::end(fieldValue), '\t');
 
-	char *nullCharacterPosition;
-	if (lastSpace != nullptr)
-		if (lastHTab != nullptr)
-			if (lastHTab > lastSpace)
-				nullCharacterPosition = lastSpace;
-			else
-				nullCharacterPosition = lastHTab;
-		else
-			nullCharacterPosition = lastSpace;
-	else if (lastHTab != nullptr)
-		nullCharacterPosition = lastHTab;
-	else
-		nullCharacterPosition = fieldValueString + fieldValue.size() - 1;
-	*nullCharacterPosition = '\0';
+	auto endIterator = spaceIterator < tabIterator ? spaceIterator : tabIterator;
 
-	currentRequest.headers.insert({ std::string(fieldName.data()), std::string(fieldValueString) });
+	currentRequest.headers.insert({ std::string(fieldName.data()), std::string(std::begin(fieldValue), endIterator - 1) });
 	return ClientError::NO_ERROR;
 }
 
