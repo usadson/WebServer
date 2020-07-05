@@ -17,10 +17,13 @@ const std::string NotFoundPage = "<!doctype html>"
 const std::string TooManyRequestsPage = "<!doctype html>"
 								 "<html>"
 								 "<head><title>Too Many Requests</title></head>"
-								 "<body><h1>Too Many Requests!</h1></body>"
+								 "<body>"
+								 "<h1>Too Many Requests!</h1>"
+								 "<hr>"
+								 "<p>The automatic abuse system has detected that you're sending too many requests. Calm down for a few seconds, then try again :)</p>"
+								 "</body>"
 								 "</html>";
-
-
+//
 namespace Response {
 const std::string BadRequest = "HTTP/1.1 400 Bad Request";
 const std::string NotFound = "HTTP/1.1 404 Not Found";
