@@ -29,6 +29,12 @@
 #include "base/logger.hpp"
 
 Connection::~Connection() noexcept {
+	if (hasWriteFailed) {
+		// TODO Make sure if the socket can be viewed as void.
+		// ... <<< NOTE no close() call
+		return;
+	}
+
 	// This makes sure all data has been transferred before closing the
 	// connection. Clever solutions like poll(2), read(?, ' ', 1), etc. didn't
 	// work. Maybe non-blocking sockets solve it[?]
@@ -77,9 +83,10 @@ Connection::ReadChar(char *buf) const noexcept {
 }
 
 bool
-Connection::SendFile(int fd, std::size_t count) const noexcept {
+Connection::SendFile(int fd, std::size_t count) noexcept {
 	if (useTransportSecurity) {
 		// TODO Use TLS wrapper
+		hasWriteFailed = true;
 		return false;
 	}
 
@@ -92,6 +99,7 @@ Connection::SendFile(int fd, std::size_t count) const noexcept {
 	// (*)       unused
 	// (off_t *) amount of bytes sent (useful for non-blocking)
 	// (int)     flags
+	// TODO
 	return sendfile(fd, internalSocket, 0, 0, nullptr, nullptr, 0) == 0;
 #elif defined(__linux__)
 	// Sendfile syscall
@@ -106,6 +114,7 @@ Connection::SendFile(int fd, std::size_t count) const noexcept {
 			std::stringstream errorInfo;
 			errorInfo << "[Linux] Error occurred: " << status << " errno is: " << errno;
 			Logger::Error("Connection::SendFile", errorInfo.str());
+			hasWriteFailed = true;
 			return false;
 		}
 		count -= status;
@@ -121,8 +130,10 @@ Connection::SendFile(int fd, std::size_t count) const noexcept {
 		count -= result;
 		do {
 			ssize_t writeResult = write(internalSocket, buffer.data(), result);
-			if (writeResult == -1)
+			if (writeResult == -1) {
+				hasWriteFailed = true;
 				return false;
+			}
 			result -= writeResult;
 		} while (result != 0);
 	} while (count != 0);
@@ -130,16 +141,21 @@ Connection::SendFile(int fd, std::size_t count) const noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str, bool includeNullCharacter) const noexcept {
+Connection::WriteString(const std::string &str, bool includeNullCharacter) noexcept {
 	std::size_t off = 0;
 	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
+
 	while (len != 0) {
 		int status = write(internalSocket, str.c_str() + off, len);
 
-		if (status == -1)
+		if (status == -1) {
+			hasWriteFailed = true;
 			return false;
+		}
+
 		len -= status;
 		off += status;
 	}
+
 	return true;
 }

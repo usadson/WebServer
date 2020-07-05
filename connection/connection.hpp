@@ -40,15 +40,16 @@ public:
 	ReadChar(char *) const noexcept;
 
 	[[nodiscard]] bool
-	SendFile(int fd, std::size_t count) const noexcept;
+	SendFile(int fd, std::size_t count) noexcept;
 
 	[[nodiscard]] bool
 	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
-	WriteString(const std::string &, bool includeNullCharacter = false) const noexcept;
+	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
 
 private:
+	bool hasWriteFailed;
 	int internalSocket;
 	bool useTransportSecurity;
 };
