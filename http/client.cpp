@@ -9,22 +9,28 @@
 #include <algorithm>
 #include <array>
 #include <iterator>
+#include <map>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include <cctype>
 #include <csignal>
 #include <cstdio>
+#include <cstdint>
 #include <cstring>
 #include <strings.h>
 
 #include "base/error_reporter.hpp"
 #include "base/logger.hpp"
+#include "base/media_type.hpp"
 #include "base/strings.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
 #include "io/file.hpp"
+#include "io/file_resolver.hpp"
 
 [[nodiscard]] inline bool
 StringStartsWith(const std::string &string, const std::string &prefix) {

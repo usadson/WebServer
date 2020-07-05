@@ -6,14 +6,17 @@
  * See the COPYING file for licensing information.
  */
 
+#include <iosfwd>
 #include <memory>
 #include <string>
 #include <thread>
 #include <vector>
 
+// From base/media_type.hpp:
+struct MediaType;
+
 #include "connection/connection.hpp"
 #include "http/client_error.hpp"
-#include "http/configuration.hpp"
 #include "http/request.hpp"
 
 namespace HTTP {
