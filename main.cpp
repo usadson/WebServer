@@ -12,10 +12,13 @@
 #include "base/logger.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
+#include "security/policies.hpp"
 
 int
 main() {
-	HTTP::Configuration config;
+	Security::Policies securityPolicies;
+
+	HTTP::Configuration config(securityPolicies);
 	config.rootDirectory = "/var/www/html";
 
 	HTTP::Server server(config);
