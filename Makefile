@@ -101,6 +101,10 @@ bin/http/client.o: http/client.cpp \
 
 bin/http/server.o: http/server.cpp \
 	http/server.hpp \
+	http/client.hpp \
+	http/configuration.hpp \
+	http/server_launch_error.hpp \
+	io/file_resolver.hpp \
 	base/logger.hpp \
 	http/client.hpp \
 	http/configuration.hpp \
