@@ -232,6 +232,12 @@ Client::ConsumeMethod() noexcept {
 
 		// Character validation
 		if (!Utils::IsTokenCharacter(character)) {
+			std::stringstream debugInformation;
+			debugInformation << "Invalid character: ";
+			if (character > ' ') debugInformation << character;
+			else				 debugInformation << "<control character>";
+			debugInformation << " 0x" << std::hex << static_cast<uint16_t>(character) << std::dec;
+			Logger::Debug(__PRETTY_FUNCTION__, debugInformation.str());
 			return ClientError::INCORRECT_METHOD;
 		}
 
