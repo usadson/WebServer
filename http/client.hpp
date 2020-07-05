@@ -137,6 +137,7 @@ private:
 	ServeDefaultPage() noexcept;
 
 public:
+	std::size_t requestCount{0};
 	std::thread thread;
 };
 
