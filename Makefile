@@ -76,8 +76,7 @@ bin/base/strings.o: base/strings.cpp \
 	$(CXX) $(CXXFLAGS) -c -o $@ base/strings.cpp
 
 bin/connection/connection.o: connection/connection.cpp \
-	connection/connection.hpp \
-	http/configuration.hpp
+	connection/connection.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ connection/connection.cpp
 
 bin/http/client_error.o: http/client_error.cpp \
