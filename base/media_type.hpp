@@ -10,7 +10,8 @@
 #include <memory>
 #include <string>
 
-#include "io/file.hpp"
+// From io/file.hpp:
+namespace IO { class File; }
 
 struct MediaType {
 	const std::string type;

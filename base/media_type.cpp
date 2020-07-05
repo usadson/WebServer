@@ -8,10 +8,12 @@
 
 #include "media_type.hpp"
 
-#include <algorithm>
+#include <iterator>
 #include <sstream>
+#include <utility>
 
 #include "base/logger.hpp"
+#include "io/file.hpp"
 
 static const MediaType genericType = { "application", "octet-stream" };
 
