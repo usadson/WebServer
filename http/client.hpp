@@ -141,6 +141,9 @@ private:
 	ServeDefaultPage() noexcept;
 
 public:
+	// This value is encremented if Security::Policies::maxRequestsCloseImmediately
+	// is true: ResetExchangeState
+	// is false: HandleRequest
 	std::size_t requestCount{0};
 	std::thread thread;
 };
