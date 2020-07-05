@@ -411,7 +411,7 @@ Client::ResetExchangeState() noexcept {
 	this->currentRequest = Request();
 
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
-	if (server->config().securityPolicies.maxRequestsCloseImmediately && maxRequests != 0 && requestCount >= maxRequests) {
+	if (server->config().securityPolicies.maxRequestsCloseImmediately && maxRequests != 0 && ++requestCount >= maxRequests) {
 		// Close the connection.
 		persistentConnection = false;
 	}
