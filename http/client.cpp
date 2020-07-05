@@ -312,7 +312,8 @@ Client::Entrypoint() {
 ClientError
 Client::HandleRequest() noexcept {
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
-	if (maxRequests != 0 && ++requestCount > maxRequests) {
+	if (!server->config().securityPolicies.maxRequestsCloseImmediately &&
+		maxRequests != 0 && ++requestCount > maxRequests) {
 		return ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION;
 	}
 
@@ -408,6 +409,12 @@ Client::RecoverErrorTooManyRequestsPerThisConnection() noexcept {
 void
 Client::ResetExchangeState() noexcept {
 	this->currentRequest = Request();
+
+	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
+	if (server->config().securityPolicies.maxRequestsCloseImmediately && maxRequests != 0 && requestCount >= maxRequests) {
+		// Close the connection.
+		persistentConnection = false;
+	}
 }
 
 bool
