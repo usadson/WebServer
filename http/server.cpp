@@ -57,6 +57,14 @@ Server::InternalStart() {
 
 		AcceptClient();
 	}
+
+	// WARNING This causes a memory leak, and is just to mitigate the raised
+	// exception by std::thread::~thread if std::thread::joinable() is true.
+	clientsMutex.lock();
+	for (const auto &client : clients) {
+		client->thread.detach();
+	}
+	clientsMutex.unlock();
 }
 
 Server::~Server() noexcept {
