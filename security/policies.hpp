@@ -16,6 +16,15 @@ struct Policies {
 	// 0 means unlimited.
 	std::size_t maxRequestsPerConnection{ 300 };
 
+	// true: (graceful)
+	//   after the `maxRequestsCloseImmediately`'s request has been made, close
+	//   the connection.
+	// false:
+	//   on each the request, check if `maxRequestsCloseImmediately` has been
+	//   exceeded, if true send a 'HTTP 429 Too Many Requests' page.
+	//   Strings::TooManyRequestsPage
+	bool maxRequestsCloseImmediately{ false };
+
 };
 
 } // namespace Security
