@@ -13,10 +13,15 @@
 #include <cstdint>
 
 #include "base/media_type.hpp"
+#include "security/policies.hpp"
 
 namespace HTTP {
 
 struct Configuration {
+
+	inline Configuration(const Security::Policies &policies)
+		: securityPolicies(policies) {
+	}
 
 	// The amount of clients awaiting in the accept() queue
 	std::size_t listenerBacklog { 100 };
@@ -40,6 +45,8 @@ struct Configuration {
 	uint16_t port { 8080 };
 
 	std::string rootDirectory;
+
+	const Security::Policies &securityPolicies;
 
 	// The 'Server' header field value as defined per RFC 7231 § 7.4.2
 	std::string serverProductName { "Wizard" };
