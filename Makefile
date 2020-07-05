@@ -67,6 +67,7 @@ bin/base/error_reporter.o: base/error_reporter.cpp \
 
 bin/base/media_type.o: base/media_type.cpp \
 	base/media_type.hpp \
+	base/logger.hpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ base/media_type.cpp
 
