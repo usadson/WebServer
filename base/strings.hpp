@@ -14,7 +14,7 @@ extern const std::string DefaultWebPage;
 extern const std::string NotFoundPage;
 extern const std::string TooManyRequestsPage;
 
-namespace Response {
+namespace StatusLines {
 	extern const std::string BadRequest;
 	extern const std::string NotFound;
 	extern const std::string OK;

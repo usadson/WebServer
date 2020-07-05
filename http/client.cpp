@@ -320,7 +320,7 @@ Client::HandleRequest() noexcept {
 		return ClientError::FILE_NOT_FOUND;
 	}
 
-	if (!SendMetadata(Strings::Response::OK, file->Size(), server->config().mediaTypeFinder.DetectMediaType(file))) {
+	if (!SendMetadata(Strings::StatusLines::OK, file->Size(), server->config().mediaTypeFinder.DetectMediaType(file))) {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
@@ -386,19 +386,19 @@ Client::RecoverErrorBadRequest(const std::string &message) noexcept {
 	// useless.
 	persistentConnection = false;
 
-	return SendMetadata(Strings::Response::BadRequest, body.length(), MediaTypes::TEXT)
+	return SendMetadata(Strings::StatusLines::BadRequest, body.length(), MediaTypes::TEXT)
 			&& connection->WriteString(body);
 }
 
 bool
 Client::RecoverErrorFileNotFound() noexcept {
-	return SendMetadata(Strings::Response::NotFound, Strings::NotFoundPage.length(), MediaTypes::HTML)
+	return SendMetadata(Strings::StatusLines::NotFound, Strings::NotFoundPage.length(), MediaTypes::HTML)
 			&& connection->WriteString(Strings::NotFoundPage);
 }
 
 bool
 Client::RecoverErrorTooManyRequestsPerThisConnection() noexcept {
-	return SendMetadata(Strings::Response::TooManyRequests, Strings::TooManyRequestsPage.length(), MediaTypes::HTML)
+	return SendMetadata(Strings::StatusLines::TooManyRequests, Strings::TooManyRequestsPage.length(), MediaTypes::HTML)
 			&& connection->WriteString(Strings::TooManyRequestsPage);
 }
 
@@ -463,7 +463,7 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 
 bool
 Client::ServeDefaultPage() noexcept {
-	return SendMetadata(Strings::Response::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML)
+	return SendMetadata(Strings::StatusLines::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML)
 			&& connection->WriteString(Strings::DefaultWebPage);
 }
 
