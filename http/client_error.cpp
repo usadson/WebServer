@@ -31,6 +31,7 @@ operator<<(std::ostream &stream, HTTP::ClientError error) {
 		"INCORRECT_CRLF",
 		"INCORRECT_VERSION",
 		"NO_ERROR",
+		"TOO_MANY_REQUESTS_PER_THIS_CONNECTION",
 		"UNEXPECTED_CR_IN_FIELD_NAME",
 		"WHITESPACE_EXPECTED"
 	};
