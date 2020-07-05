@@ -41,6 +41,7 @@ server: main.cpp \
 	base/logger.hpp \
 	http/configuration.hpp \
 	http/server.hpp \
+	security/policies.hpp \
 	$(BINARIES)
 	$(CXX) $(CXXFLAGS) -o $@ main.cpp $(BINARIES) $(LDFLAGS)
 
