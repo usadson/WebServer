@@ -375,6 +375,11 @@ Client::RecoverError(ClientError error) noexcept {
 bool
 Client::RecoverErrorBadRequest(const std::string &message) noexcept {
 	const std::string body = "Invalid request: " + message;
+
+	// Because the request parsing has abruptly failed, the connection is
+	// useless.
+	persistentConnection = false;
+
 	return SendMetadata(Strings::Response::BadRequest, body.length(), MediaTypes::TEXT)
 			&& connection->WriteString(body);
 }
