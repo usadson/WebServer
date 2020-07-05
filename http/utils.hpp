@@ -55,12 +55,14 @@ namespace HTTP::Utils {
 		// For now, lets only allow visible characters.
 
 		// A control character
-		if (character < 0x20)
+		if (character < 0x20) {
 			return false;
+		}
 
 		// DEL or an invalid USASCII character.
-		if (character > 0x7E)
+		if (character > 0x7E) {
 			return false;
+		}
 
 		return true;
 	}

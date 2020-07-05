@@ -41,8 +41,9 @@ Connection::~Connection() noexcept {
 	struct timespec sleepTime { 0, 100000 };
 	while (true) {
 		int value;
-		if (ioctl(internalSocket, TIOCOUTQ, &value) == -1 || value == 0)
+		if (ioctl(internalSocket, TIOCOUTQ, &value) == -1 || value == 0) {
 			break;
+		}
 		nanosleep(&sleepTime, nullptr);
 	}
 
@@ -125,8 +126,9 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 	std::array<char, 4096> buffer {};
 	do {
 		ssize_t result = read(fd, buffer.data(), 4096);
-		if (result == -1)
+		if (result == -1) {
 			return false;
+		}
 		count -= result;
 		do {
 			ssize_t writeResult = write(internalSocket, buffer.data(), result);

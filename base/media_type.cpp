@@ -67,7 +67,8 @@ MediaTypeFinder::DetectMediaType(
 		string = string.substr(dot + 1);
 
 		auto result = mediaTypes.find(string);
-		if (result != std::end(mediaTypes))
+		if (result != std::end(mediaTypes)) {
 			return result->second;
+		}
 	} while (true);
 }

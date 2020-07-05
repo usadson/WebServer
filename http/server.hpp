@@ -34,9 +34,9 @@ public:
 
 	inline void
 	Join() const {
-		if (internalThread == nullptr)
-			return;
-		return internalThread->join();
+		if (internalThread != nullptr) {
+			internalThread->join();
+		}
 	}
 
 	void

@@ -19,8 +19,9 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	pathBuilder << request.path;
 
 	auto file = std::make_unique<IO::File>(pathBuilder.str().c_str());
-	if (file->Handle() != -1 && file->IsNormalFile())
+	if (file->Handle() != -1 && file->IsNormalFile()) {
 		return file;
+	}
 
 	if (file->Handle() != -1 && !file->IsDirectory()) {
 		return std::unique_ptr<IO::File> {};
@@ -29,8 +30,9 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	pathBuilder << "/index.html";
 
 	file->InternalInit(pathBuilder.str().c_str());
-	if (file->Handle() != -1)
+	if (file->Handle() != -1) {
 		return file;
+	}
 
 	return std::unique_ptr<IO::File> {};
 }

@@ -79,8 +79,9 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	/* Consume field-name */
 	fieldName.push_back(firstCharacter);
 	subroutineError = ConsumeHeaderFieldName(&fieldName);
-	if (subroutineError != ClientError::NO_ERROR)
+	if (subroutineError != ClientError::NO_ERROR) {
 		return subroutineError;
+	}
 
 	/* Consume OWS (Optional Whitespaces) */
 	while (true) {
@@ -98,8 +99,9 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 
 	/* Consume header-value */
 	subroutineError = ConsumeHeaderFieldValue(&fieldValue);
-	if (subroutineError != ClientError::NO_ERROR)
+	if (subroutineError != ClientError::NO_ERROR) {
 		return subroutineError;
+	}
 
 	/* Store in strings */
 	fieldName.push_back('\0');
@@ -336,8 +338,9 @@ void
 Client::InterpretConnectionHeaders() noexcept {
 	if (persistentConnection) {
 		auto header = currentRequest.headers.find("connection");
-		if (header != std::end(currentRequest.headers) && strcasecmp(header->second.c_str(), "close") == 0)
+		if (header != std::end(currentRequest.headers) && strcasecmp(header->second.c_str(), "close") == 0) {
 			persistentConnection = false;
+		}
 	}
 }
 
@@ -453,10 +456,11 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 	metadata << "\r\nConnection: " << (persistentConnection ? "keep-alive" : "close");
 	metadata << "\r\nContent-Type: " << mediaType.completeType;
 
-	if (mediaType.includeCharset)
+	if (mediaType.includeCharset) {
 		metadata << ";charset=utf-8\r\n\r\n";
-	else
+	} else {
 		metadata << "\r\n\r\n";
+	}
 
 	return connection->WriteString(metadata.str());
 }

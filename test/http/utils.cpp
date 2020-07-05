@@ -27,12 +27,13 @@ namespace HTTP::Utils {
 			'"', '(', ')', ',', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '{', '}'
 		};
 		for (uint16_t c = 0; c <= 255; c++) {
-			if (c > 0x20 && std::find(std::begin(invalidCharacters), std::end(invalidCharacters), c) == std::end(invalidCharacters) && c < 0x7F)
+			if (c > 0x20 && std::find(std::begin(invalidCharacters), std::end(invalidCharacters), c) == std::end(invalidCharacters) && c < 0x7F) {
 				ASSERT_TRUE(IsTokenCharacter(c))
 					<< "Character '" << static_cast<char>(c) << "' isn't treated as a token character!";
-			else
+			} else {
 				ASSERT_FALSE(IsTokenCharacter(c))
 					<< "Character '" << static_cast<char>(c) << "' (" << c << ") is wrongfully treated as a token character!";
+			}
 		}
 	}
 

@@ -91,8 +91,9 @@ Server::AcceptClient() {
 
 void
 Server::CheckConfiguration() const {
-	if (configuration.pollAcceptTimeout < 0)
+	if (configuration.pollAcceptTimeout < 0) {
 		throw HTTP::ConfigurationException("negative pollAcceptTimeout");
+	}
 }
 
 void

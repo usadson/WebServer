@@ -11,8 +11,9 @@
 
 void
 IO::File::InternalInit(const char *path) {
-	if (fd != -1)
+	if (fd != -1) {
 		close(fd);
+	}
 
 	internalPath = path;
 	fd = open(path, O_RDONLY);
