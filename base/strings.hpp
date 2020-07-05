@@ -18,6 +18,7 @@ namespace Response {
 	extern const std::string BadRequest;
 	extern const std::string NotFound;
 	extern const std::string OK;
+	extern const std::string TooManyRequests;
 }
 
 } // namespace Strings
