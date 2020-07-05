@@ -7,6 +7,7 @@
 #include "error_reporter.hpp"
 
 #include <array>
+#include <iosfwd>
 
 #include "logger.hpp"
 
