@@ -23,7 +23,7 @@ const std::string TooManyRequestsPage = "<!doctype html>"
 								 "<p>The automatic abuse system has detected that you're sending too many requests. Calm down for a few seconds, then try again :)</p>"
 								 "</body>"
 								 "</html>";
-//
+
 namespace StatusLines {
 const std::string BadRequest = "HTTP/1.1 400 Bad Request";
 const std::string NotFound = "HTTP/1.1 404 Not Found";
