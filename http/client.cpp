@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include <csignal>
 #include <cstdio>
 #include <cstring>
 #include <strings.h>
@@ -288,6 +289,9 @@ Client::ConsumeVersion() noexcept {
 
 void
 Client::Entrypoint() {
+	// Ignore SIGPIPE ~= accessing closed connection
+	signal(SIGPIPE, SIG_IGN);
+
 	if (!connection->Setup(server->config())) {
 		Logger::Error("Client::Entrypoint", "Failed to setup connection!");
 		Clean();
