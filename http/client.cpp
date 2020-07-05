@@ -17,8 +17,8 @@
 
 #include <cctype>
 #include <csignal>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <strings.h>
 
@@ -57,7 +57,8 @@ Client::Clean() noexcept {
 
 ClientError
 Client::ConsumeCRLF() noexcept {
-	char cr, lf;
+	char cr;
+	char lf;
 	if (!connection->ReadChar(&cr) || !connection->ReadChar(&lf)) {
 		return ClientError::FAILED_READ_CRLF;
 	}
@@ -73,7 +74,6 @@ ClientError
 Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	std::vector<char> fieldName;
 	std::vector<char> fieldValue;
-	char *nullCharacterPosition;
 	ClientError subroutineError;
 
 	/* Consume field-name */
@@ -110,6 +110,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	char *lastSpace = strrchr(fieldValueString, ' ');
 	char *lastHTab = strrchr(fieldValueString, '\t');
 
+	char *nullCharacterPosition;
 	if (lastSpace != nullptr)
 		if (lastHTab != nullptr)
 			if (lastHTab > lastSpace)
@@ -122,7 +123,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 		nullCharacterPosition = lastHTab;
 	else
 		nullCharacterPosition = fieldValueString + fieldValue.size() - 1;
-	*nullCharacterPosition = 0;
+	*nullCharacterPosition = '\0';
 
 	currentRequest.headers.insert({ std::string(fieldName.data()), std::string(fieldValueString) });
 	return ClientError::NO_ERROR;
@@ -149,7 +150,7 @@ Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
 			return ClientError::NO_ERROR;
 		}
 
-		unsigned char uc = (unsigned char) character;
+		auto uc = static_cast<unsigned char>(character);
 		if ((uc >= 0x21 && uc <= 0x7E) || // VCHAR
 			(uc >= 0x80 && uc <= 0xFF) || // obs-text
 			character == ' ' || character == '\t') {	// SP / HTAB
