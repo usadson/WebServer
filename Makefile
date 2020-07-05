@@ -85,11 +85,18 @@ bin/http/client_error.o: http/client_error.cpp \
 
 bin/http/client.o: http/client.cpp \
 	http/client.hpp \
+	base/error_reporter.hpp \
 	base/logger.hpp \
-	http/client.hpp \
+	base/media_type.hpp \
+	base/strings.hpp \
+	connection/connection.hpp \
+	http/client_error.hpp \
 	http/configuration.hpp \
+	http/request.hpp \
 	http/server.hpp \
-	http/utils.hpp
+	http/utils.hpp \
+	io/file.hpp \
+	io/file_resolver.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
