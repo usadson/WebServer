@@ -14,7 +14,7 @@ struct Policies {
 
 	// The amount of requests that may be made in a single connection (session).
 	// 0 means unlimited.
-	std::size_t maxRequestsPerConnection{ 10 };
+	std::size_t maxRequestsPerConnection{ 300 };
 
 };
 
