@@ -12,6 +12,7 @@ namespace Strings {
 
 extern const std::string DefaultWebPage;
 extern const std::string NotFoundPage;
+extern const std::string TooManyRequestsPage;
 
 namespace Response {
 	extern const std::string BadRequest;

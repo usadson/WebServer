@@ -14,6 +14,12 @@ const std::string NotFoundPage = "<!doctype html>"
 								 "<head><title>File Not Found</title></head>"
 								 "<body><h1>File Not Found</h1></body>"
 								 "</html>";
+const std::string TooManyRequestsPage = "<!doctype html>"
+								 "<html>"
+								 "<head><title>Too Many Requests</title></head>"
+								 "<body><h1>Too Many Requests!</h1></body>"
+								 "</html>";
+
 
 namespace Response {
 const std::string BadRequest = "HTTP/1.1 400 Bad Request";
