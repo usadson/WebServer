@@ -51,7 +51,6 @@ TEST_F(ClientTest, ConsumeMethodNormal) {
 	for (const std::string &method : { "GET ", "POST ", "UPDATEREDIRECTREF " }) {
 		ensureInputSize(method.length());
 		std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
-		std::cout << "length=" << internalData.input.size() << '\n';
 		auto error = client.ConsumeMethod();
 		ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 	}
