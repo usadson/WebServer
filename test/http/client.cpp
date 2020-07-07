@@ -33,8 +33,7 @@ protected:
 
 	void
 	ensureInputSize(std::size_t size) {
-		if (internalData.input.size() < size)
-			internalData.input.reserve(size);
+		internalData.input.resize(size);
 	}
 };
 
@@ -51,7 +50,8 @@ TEST_F(ClientTest, TestConnectionSetup) {
 TEST_F(ClientTest, ConsumeMethodNormal) {
 	for (const std::string &method : { "GET ", "POST ", "UPDATEREDIRECTREF " }) {
 		ensureInputSize(method.length());
-		std::copy(std::rbegin(method), std::rend(method), std::begin(internalData.input));
+		std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
+		std::cout << "length=" << internalData.input.size() << '\n';
 		ASSERT_EQ_CLIENT_ERROR(client.ConsumeMethod(), HTTP::ClientError::NO_ERROR);
 	}
 }
