@@ -221,6 +221,9 @@ Client::ConsumeMethod() noexcept {
 		}
 
 		if (character == ' ') {
+			if (buffer.empty()) {
+				return ClientError::EMPTY_METHOD;
+			}
 			this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
 			return ClientError::NO_ERROR;
 		}
