@@ -36,6 +36,10 @@ class Client {
 public:
 	Client(Server *server, int socket) noexcept;
 
+	// For testing purposes
+	inline Client(Server *server) : connection(nullptr), server(server) {
+	}
+
 TESTING_VISIBILITY:
 	std::unique_ptr<Connection> connection;
 	Request currentRequest;
