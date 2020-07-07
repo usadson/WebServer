@@ -20,8 +20,8 @@ namespace HTTP {
 
 class ClientTest : public ::testing::Test {
 protected:
-	ClientTest() : server(secPolicies), client(&server, 0) {
-		client.connection->userData = &internalData;
+	ClientTest() : server(secPolicies), client(&server) {
+		client.connection = std::make_unique<Connection>(0, server.config().useTransportSecurity, &internalData);
 	}
 
 	// void TearDown() override {}
