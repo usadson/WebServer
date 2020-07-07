@@ -11,6 +11,7 @@
 const char *
 ClientErrorToString(HTTP::ClientError error) {
 	std::array array = {
+		"EMPTY_METHOD",
 		"FAILED_READ_GENERIC",
 		"FAILED_READ_HEADER_FIELD_GENERIC",
 		"FAILED_READ_HEADER_FIELD_NAME",
