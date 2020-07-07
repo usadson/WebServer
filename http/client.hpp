@@ -19,6 +19,10 @@ struct MediaType;
 #include "http/client_error.hpp"
 #include "http/request.hpp"
 
+#ifndef TESTING_VISIBILITY
+#define TESTING_VISIBILITY private
+#endif
+
 namespace HTTP {
 
 	// Forward-decl from server.hpp
@@ -32,7 +36,7 @@ class Client {
 public:
 	Client(Server *server, int socket) noexcept;
 
-private:
+TESTING_VISIBILITY:
 	std::unique_ptr<Connection> connection;
 	Request currentRequest;
 
