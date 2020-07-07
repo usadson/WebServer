@@ -8,8 +8,8 @@
 
 #include <array>
 
-std::ostream &
-operator<<(std::ostream &stream, HTTP::ClientError error) {
+const char *
+ClientErrorToString(HTTP::ClientError error) {
 	std::array array = {
 		"FAILED_READ_GENERIC",
 		"FAILED_READ_HEADER_FIELD_GENERIC",
@@ -35,6 +35,10 @@ operator<<(std::ostream &stream, HTTP::ClientError error) {
 		"UNEXPECTED_CR_IN_FIELD_NAME",
 		"WHITESPACE_EXPECTED"
 	};
+	return array[static_cast<std::size_t>(error)];
+}
 
-	return stream << array[static_cast<std::size_t>(error)];
+std::ostream &
+operator<<(std::ostream &stream, HTTP::ClientError error) {
+	return stream << ClientErrorToString(error);
 }

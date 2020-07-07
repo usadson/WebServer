@@ -38,5 +38,8 @@ enum class ClientError {
 
 } // namespace HTTP
 
+const char *
+ClientErrorToString(HTTP::ClientError error);
+
 std::ostream &
 operator<<(std::ostream &stream, HTTP::ClientError error);
