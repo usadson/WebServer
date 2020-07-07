@@ -52,7 +52,8 @@ TEST_F(ClientTest, ConsumeMethodNormal) {
 		ensureInputSize(method.length());
 		std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
 		std::cout << "length=" << internalData.input.size() << '\n';
-		ASSERT_EQ_CLIENT_ERROR(client.ConsumeMethod(), HTTP::ClientError::NO_ERROR);
+		auto error = client.ConsumeMethod();
+		ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 	}
 }
 
