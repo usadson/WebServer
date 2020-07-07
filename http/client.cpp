@@ -390,7 +390,7 @@ Client::RecoverError(ClientError error) noexcept {
 
 bool
 Client::RecoverErrorBadRequest(const std::string &message) noexcept {
-	const std::string body = "Invalid request: " + message;
+	const std::string body = "Malformed request: " + message;
 
 	// Because the request parsing has abruptly failed, the connection is
 	// useless.
