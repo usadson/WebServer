@@ -106,6 +106,17 @@ private:
 	void
 	InterpretConnectionHeaders() noexcept;
 
+	// Mark the connection as to-be-closed. It will eventually be closed after a
+	// new run of Entrypoint's while loop.
+	//
+	// This function is useful when the request an user made was malformed.
+	// These problems arise when it receives incorrect data, and this problem is
+	// immediately handled. This means that when RunMessageExchange runs, the
+	// data in the buffer probably is from the previous request, where the
+	// consumer left off.
+	void
+	MarkConnectionClosing() noexcept;
+
 	// This function is called after a subroutine encounters an error. Some
 	// errors can be handled gracefully (e.g. FILE_NOT_FOUND), but some can't.
 	[[nodiscard]] bool

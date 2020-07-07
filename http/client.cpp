@@ -339,10 +339,16 @@ void
 Client::InterpretConnectionHeaders() noexcept {
 	if (persistentConnection) {
 		auto header = currentRequest.headers.find("connection");
-		if (header != std::end(currentRequest.headers) && strcasecmp(header->second.c_str(), "close") == 0) {
-			persistentConnection = false;
+		if (header != std::end(currentRequest.headers) &&
+			strcasecmp(header->second.c_str(), "close") == 0) {
+			MarkConnectionClosing();
 		}
 	}
+}
+
+void
+Client::MarkConnectionClosing() noexcept {
+	persistentConnection = false;
 }
 
 bool
@@ -388,7 +394,7 @@ Client::RecoverErrorBadRequest(const std::string &message) noexcept {
 
 	// Because the request parsing has abruptly failed, the connection is
 	// useless.
-	persistentConnection = false;
+	MarkConnectionClosing();
 
 	return SendMetadata(Strings::StatusLines::BadRequest, body.length(), MediaTypes::TEXT)
 			&& connection->WriteString(body);
@@ -413,7 +419,7 @@ Client::ResetExchangeState() noexcept {
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
 	if (server->config().securityPolicies.maxRequestsCloseImmediately && maxRequests != 0 && ++requestCount >= maxRequests) {
 		// Close the connection.
-		persistentConnection = false;
+		MarkConnectionClosing();
 	}
 }
 
