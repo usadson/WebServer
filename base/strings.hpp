@@ -14,6 +14,10 @@ extern const std::string DefaultWebPage;
 extern const std::string NotFoundPage;
 extern const std::string TooManyRequestsPage;
 
+namespace BadRequests {
+	extern const std::string EmptyMethod;
+} // namespace BadRequests
+
 namespace StatusLines {
 	extern const std::string BadRequest;
 	extern const std::string NotFound;

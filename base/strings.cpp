@@ -24,6 +24,21 @@ const std::string TooManyRequestsPage = "<!doctype html>"
 								 "</body>"
 								 "</html>";
 
+namespace BadRequests {
+const std::string EmptyMethod = "A method cannot be empty.\n"
+								"RFC 7230 section 3.1.1 specifies a method as follows:\n"
+								"     method = token\n"
+								"\n"
+								"Where 'token' is as follows:\n"
+								"     token          = 1*tchar\n"
+								"\n"
+								"At least one tchar is expected, and 'tchar' is specified as follows:\n"
+								"     tchar          = \"!\" / \"#\" / \"$\" / \"%\" / \"&\" / \"'\" / \"*\"\n"
+								"                    / \"+\" / \"-\" / \".\" / \"^\" / \"_\" / \"`\" / \"|\" / \"~\"\n"
+								"                    / DIGIT / ALPHA\n"
+								"                    ; any VCHAR, except delimiters\n";
+} // namespace BadRequests
+
 namespace StatusLines {
 const std::string BadRequest = "HTTP/1.1 400 Bad Request";
 const std::string NotFound = "HTTP/1.1 404 Not Found";
