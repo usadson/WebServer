@@ -4,6 +4,8 @@
  * See the COPYING file for licensing information.
  */
 
+#include <random>
+
 #include <gtest/gtest.h>
 
 #define TESTING_VISIBILITY public
@@ -61,6 +63,37 @@ TEST_F(ClientTest, ConsumeMethodZeroLength) {
 	internalData.input[0] = ' ';
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::EMPTY_METHOD);
+}
+
+TEST_F(ClientTest, ConsumeMethodRandomToken) {
+	for (size_t i = 0; i < 100; i++) {
+		static auto &tchar =
+			"!#$%&'*+-.^_`|~"
+			"0123456789"
+			"abcdefghijklmnopqrstuvwxyz"
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		thread_local static std::mt19937 randomGenerator{ std::random_device{}() };
+		thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(tchar) - 2);
+		thread_local static std::uniform_int_distribution<std::string::size_type> randomSize(1, 10);
+
+		auto &buf = internalData.input;
+		std::size_t size = randomSize(randomGenerator);
+		buf.resize(size + 1);
+		buf[0] = ' ';
+
+		std::generate_n(std::begin(buf) + 1, size, [](){
+			return tchar[pick(randomGenerator)];
+		});
+
+		auto copyOfBuf = buf;
+		copyOfBuf.push_back('\0');
+
+		auto error = client.ConsumeMethod();
+		ASSERT_EQ(error, HTTP::ClientError::NO_ERROR) << "Error: " << ClientErrorToString(error)
+			<< "\nConsumer didn't hold find: \"" << copyOfBuf.data()
+			<< "\" a correct method (i.e. token i.e. 1*tchar) string, while it is a valid method string.";
+	}
 }
 
 int
