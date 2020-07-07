@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 #define TESTING_VISIBILITY public
+#define ASSERT_EQ_CLIENT_ERROR(a, b) ASSERT_EQ(a, b) << ClientErrorToString(a) << " should be " << ClientErrorToString(b);
 
 #include "connection/memory_userdata.hpp"
 #include "http/client.hpp"
@@ -29,6 +30,12 @@ protected:
 	HTTP::Server server;
 	MemoryUserData internalData;
 	HTTP::Client client;
+
+	void
+	ensureInputSize(std::size_t size) {
+		if (internalData.input.size() < size)
+			internalData.input.reserve(size);
+	}
 };
 
 // Test if the Connection setup is correct
@@ -43,9 +50,9 @@ TEST_F(ClientTest, TestConnectionSetup) {
 
 TEST_F(ClientTest, ConsumeMethodNormal) {
 	for (const std::string &method : { "GET ", "POST ", "UPDATEREDIRECTREF " }) {
-		internalData.input.resize(method.length());
+		ensureInputSize(method.length());
 		std::copy(std::rbegin(method), std::rend(method), std::begin(internalData.input));
-		ASSERT_EQ(client.ConsumeMethod(), HTTP::ClientError::NO_ERROR);
+		ASSERT_EQ_CLIENT_ERROR(client.ConsumeMethod(), HTTP::ClientError::NO_ERROR);
 	}
 }
 
