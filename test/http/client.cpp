@@ -56,6 +56,13 @@ TEST_F(ClientTest, ConsumeMethodNormal) {
 	}
 }
 
+TEST_F(ClientTest, ConsumeMethodZeroLength) {
+	ensureInputSize(1);
+	internalData.input[0] = ' ';
+	auto error = client.ConsumeMethod();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::FAILED_READ_METHOD);
+}
+
 int
 main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
