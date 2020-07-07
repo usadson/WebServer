@@ -10,11 +10,10 @@
 
 #include "connection/memory_userdata.hpp"
 #include "http/client.hpp"
-#include "http/server.hpp"
+#include "http/client_error.hpp"
 #include "http/configuration.hpp"
+#include "http/server.hpp"
 #include "security/policies.hpp"
-
-namespace HTTP {
 
 // 	Configuration config;
 
@@ -27,9 +26,9 @@ protected:
 	// void TearDown() override {}
 
 	Security::Policies secPolicies;
-	Server server;
+	HTTP::Server server;
 	MemoryUserData internalData;
-	Client client;
+	HTTP::Client client;
 };
 
 // Test if the Connection setup is correct
@@ -42,7 +41,13 @@ TEST_F(ClientTest, TestConnectionSetup) {
 	ASSERT_EQ(internalData.input.size(), 0);
 }
 
-} // namespace HTTP
+TEST_F(ClientTest, ConsumeMethodNormal) {
+	for (const std::string &method : { "GET ", "POST ", "UPDATEREDIRECTREF " }) {
+		internalData.input.resize(method.length());
+		std::copy(std::rbegin(method), std::rend(method), std::begin(internalData.input));
+		ASSERT_EQ(client.ConsumeMethod(), HTTP::ClientError::NO_ERROR);
+	}
+}
 
 int
 main(int argc, char **argv) {
