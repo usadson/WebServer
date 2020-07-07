@@ -19,8 +19,6 @@ test: \
 	bin/test/http/client.o \
 	bin/test/http/utils.o
 
-# 	bin/test/http/server.o
-
 bin/test/http/client.o: test/http/client.cpp \
 	http/client.cpp \
 	http/client.hpp \
@@ -37,5 +35,5 @@ bin/test/http/utils.o: test/http/utils.cpp \
 	$(CXX) $(CXXFLAGS) -o $@ test/http/utils.cpp -L/usr/local/lib -lgtest -lpthread
 
 test-exec:
-	bin/test/http/server.o
+	bin/test/http/client.o
 	bin/test/http/utils.o
