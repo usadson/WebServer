@@ -17,8 +17,8 @@ struct Configuration;
 
 class Connection {
 public:
-	inline Connection(int socket, bool useTransportSecurity) noexcept
-		: internalSocket(socket), useTransportSecurity(useTransportSecurity) {
+	inline Connection(int socket, bool useTransportSecurity, void *userData=nullptr) noexcept
+		: userData(userData), internalSocket(socket), useTransportSecurity(useTransportSecurity) {
 	}
 
 	~Connection() noexcept;
@@ -47,6 +47,8 @@ public:
 
 	[[nodiscard]] bool
 	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
+
+	void *userData;
 
 private:
 	bool hasWriteFailed;
