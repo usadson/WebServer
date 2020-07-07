@@ -3,9 +3,29 @@
 
 CXXFLAGS += -I..
 
+TEST_LDFLAGS = $(LDFLAGS) -L/usr/local/lib -lgtest -lpthread
+TEST_GENERAL_DEPENDENCIES = \
+	bin/base/error_reporter.o \
+	bin/base/media_type.o \
+	bin/base/strings.o \
+	bin/http/client.o \
+	bin/http/client_error.o \
+	bin/http/server.o \
+	bin/http/server_launch_error.o \
+	bin/io/file.o \
+	bin/io/file_resolver.o
+
 test: \
-	bin/test/http/server.o \
+	bin/test/http/client.o \
 	bin/test/http/utils.o
+
+# 	bin/test/http/server.o
+
+bin/test/http/client.o: test/http/client.cpp \
+	http/client.cpp \
+	http/client.hpp \
+	bin/connection/memory_connection.o
+	$(CXX) $(CXXFLAGS) -o $@ test/http/client.cpp $(TEST_GENERAL_DEPENDENCIES) bin/connection/memory_connection.o $(TEST_LDFLAGS)
 
 bin/test/http/server.o: test/http/server.cpp \
 	http/server.cpp \
