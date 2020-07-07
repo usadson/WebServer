@@ -365,6 +365,8 @@ Client::RecoverError(ClientError error) noexcept {
 			}
 			ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
 			return RecoverErrorFileNotFound();
+		case ClientError::EMPTY_METHOD:
+			return RecoverErrorBadRequest(Strings::BadRequests::EmptyMethod);
 		case ClientError::INCORRECT_HEADER_FIELD_NAME:
 			return RecoverErrorBadRequest("invalid header field-name");
 		case ClientError::INCORRECT_HEADER_FIELD_NEWLINE:
