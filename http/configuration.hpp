@@ -19,7 +19,7 @@ namespace HTTP {
 
 struct Configuration {
 
-	inline Configuration(const Security::Policies &policies)
+	inline explicit Configuration(const Security::Policies &policies)
 		: securityPolicies(policies) {
 	}
 

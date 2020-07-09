@@ -37,7 +37,7 @@ public:
 	Client(Server *server, int socket) noexcept;
 
 	// For testing purposes
-	inline Client(Server *server) : connection(nullptr), server(server) {
+	inline explicit Client(Server *server) : connection(nullptr), server(server) {
 	}
 
 TESTING_VISIBILITY:
