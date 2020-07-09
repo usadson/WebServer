@@ -9,44 +9,56 @@
 #include <iostream>
 #include <string>
 
+namespace LoggerInternals {
+
+	struct LogLevel {
+		std::string_view name;
+		std::string_view terminalPrefix;
+		std::string_view terminalInfix;
+	};
+
+	const static LogLevel debug{ "debug", "[\x1b[34mDebug\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[35m" };
+	const static LogLevel error{ "error", "[\x1b[34mError\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[31m" };
+	const static LogLevel info{ "info", "[\x1b[34mInfo\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[32m" };
+	const static LogLevel log{ "log", "[\x1b[34mLog\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[37m" };
+	const static LogLevel severe{ "severe", "[\x1b[34mSevere\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[31m" };
+	const static LogLevel warning{ "warning", "[\x1b[34mWarning\x1b[0m] [\x1b[34m", "\x1b[0m] \x1b[33m" };
+
+	void
+	Perform(const LogLevel &, const std::string &, const std::string &);
+
+} // namespace LoggerInternals
+
 namespace Logger {
 
-static const char *loggerEndStr = "\x1b[0m\n";
-
-template <typename T>
 inline void
-Debug(const std::string &source, const T &message) {
-	std::cout << "[\x1b[34mDebug\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[35m" << message << loggerEndStr;
+Debug(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::debug, source, message);
 }
 
-template <typename T>
 inline void
-Error(const std::string &source, const T &message) {
-	std::clog << "[\x1b[34mError\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[31m" << message << loggerEndStr;
+Error(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::error, source, message);
 }
 
-template <typename T>
 inline void
-Info(const std::string &source, const T &message) {
-	std::cout << "[\x1b[34mInfo\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[32m" << message << loggerEndStr;
+Info(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::info, source, message);
 }
 
-template <typename T>
 inline void
-Log(const std::string &source, const T &message) {
-	std::cout << "[\x1b[34mLog\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[37m" << message << loggerEndStr;
+Log(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::log, source, message);
 }
 
-template <typename T>
 inline void
-Severe(const std::string &source, const T &message) {
-	std::clog << "[\x1b[34mSevere\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[31m" << message << loggerEndStr;
+Severe(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::severe, source, message);
 }
 
-template <typename T>
 inline void
-Warning(const std::string &source, const T &message) {
-	std::clog << "[\x1b[34mWarning\x1b[0m] [\x1b[34m" << source << "\x1b[0m] \x1b[33m" << message << loggerEndStr;
+Warning(const std::string &source, const std::string &message) {
+	LoggerInternals::Perform(LoggerInternals::warning, source, message);
 }
 
 } // namespace Logger
