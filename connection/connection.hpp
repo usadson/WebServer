@@ -51,7 +51,7 @@ public:
 	void *userData;
 
 private:
-	bool hasWriteFailed;
+	bool hasWriteFailed{ false };
 	int internalSocket;
 	bool useTransportSecurity;
 };
