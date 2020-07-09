@@ -7,9 +7,10 @@
  */
 
 #include <iosfwd>
+#include <vector>
 
 struct MemoryUserData {
-	std::vector<char> input;
-	std::vector<char> output;
-	bool writeSendFile;
+	std::vector<char> input{};
+	std::vector<char> output{};
+	bool writeSendFile{};
 };
