@@ -1,7 +1,7 @@
 # Copyright (C) 2020 Tristan. All Rights Reserved.
 # See the COPYING file for licensing information.
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := default
 
 include standard.Makefile
 
@@ -21,9 +21,11 @@ MAIN_BINARIES = bin/base/error_reporter.o \
 PREREQUISITE_BINARIES = $(MAIN_BINARIES) \
 	   bin/connection/memory_connection.o
 
+default: bin/test.txt $(PREREQUISITE_BINARIES) server
+
 # The 'all' target will compile all object files and generate the binary
 # executable. This is the default target for 'make'.
-all: bin/test.txt $(PREREQUISITE_BINARIES) $(TESTING_TARGETS) server
+all: default test
 
 # The 'objects' target will compile all object files, but not generate the
 # binary executable.
@@ -34,10 +36,6 @@ objects: bin/test.txt $(PREREQUISITE_BINARIES)
 clean:
 	rm -rf bin
 	rm -rf server
-
-# The 'fast' target will build 'all' target in parallel
-fast:
-	@tools/build-fast.sh
 
 # The 'server' target will build the final binary executable.
 server: main.cpp \
