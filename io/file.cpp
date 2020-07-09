@@ -25,5 +25,7 @@ IO::File::InternalInit(const char *path) {
 }
 
 IO::File::~File() noexcept {
-	close(fd);
+	if (fd != -1) {
+		close(fd);
+	}
 }
