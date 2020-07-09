@@ -30,7 +30,7 @@ protected:
 
 	Security::Policies secPolicies;
 	HTTP::Server server;
-	MemoryUserData internalData;
+	MemoryUserData internalData{};
 	HTTP::Client client;
 
 	void
