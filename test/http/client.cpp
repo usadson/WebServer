@@ -22,7 +22,7 @@
 
 class ClientTest : public ::testing::Test {
 protected:
-	ClientTest() : server(secPolicies), client(&server) {
+	ClientTest() : server(HTTP::Configuration(secPolicies)), client(&server) {
 		client.connection = std::make_unique<Connection>(0, server.config().useTransportSecurity, &internalData);
 	}
 
