@@ -440,6 +440,10 @@ Client::RunMessageExchange() noexcept {
 		return RecoverError(error);
 	}
 
+	if (!ValidateCurrentRequestPath()) {
+		return RecoverError(ClientError::INVALID_PATH);
+	}
+
 	error = ConsumeVersion();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
