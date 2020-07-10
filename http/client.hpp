@@ -159,6 +159,9 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	ServeDefaultPage() noexcept;
 
+	[[nodiscard]] bool
+	ValidateCurrentRequestPath() const noexcept;
+
 public:
 	// This value is encremented if Security::Policies::maxRequestsCloseImmediately
 	// is true: ResetExchangeState

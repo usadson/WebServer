@@ -489,4 +489,21 @@ Client::ServeDefaultPage() noexcept {
 			&& connection->WriteString(Strings::DefaultWebPage);
 }
 
+bool
+Client::ValidateCurrentRequestPath() const noexcept {
+	if (currentRequest.path.empty()) {
+		return false;
+	}
+
+	// We should preferably support:
+	//   - * for the OPTIONS method.
+	//   - the 'absolute-form' request-target type
+	//   -
+	if (currentRequest.path[0] != '/') {
+		return false;
+	}
+
+	return true;
+}
+
 } // namespace HTTP
