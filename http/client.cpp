@@ -520,10 +520,10 @@ Client::ServeDefaultPage() noexcept {
 			&& connection->WriteString(Strings::DefaultWebPage);
 }
 
-bool
+ClientError
 Client::ValidateCurrentRequestPath() const noexcept {
 	if (currentRequest.path.empty()) {
-		return false;
+		return ClientError::INVALID_PATH_EMPTY;
 	}
 
 	// We should preferably support:
@@ -531,10 +531,10 @@ Client::ValidateCurrentRequestPath() const noexcept {
 	//   - the 'absolute-form' request-target type
 	//   -
 	if (currentRequest.path[0] != '/') {
-		return false;
+		return ClientError::INVALID_PATH_NOT_ABSOLUTE;
 	}
 
-	return true;
+	return ClientError::NO_ERROR;
 }
 
 } // namespace HTTP
