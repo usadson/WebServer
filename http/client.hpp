@@ -51,6 +51,10 @@ TESTING_VISIBILITY:
 
 	Server *server;
 
+	// Checks if the file is valid (e.g. inside the actual rootDirectory).
+	[[nodiscard]] ClientError
+	CheckFileLocation(const std::string &) const noexcept;
+
 	// A before-destructor clean function, ran at the end of 'Entrypoint'.
 	void
 	Clean() noexcept;

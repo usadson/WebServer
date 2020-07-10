@@ -48,6 +48,11 @@ Client::Client(Server *server, int sock) noexcept :
 	server(server), thread(&Client::Entrypoint, this) {
 }
 
+ClientError
+Client::CheckFileLocation(const std::string &path) const noexcept {
+	return ClientError::NO_ERROR;
+}
+
 void
 Client::Clean() noexcept {
 	connection = nullptr;
@@ -338,6 +343,11 @@ Client::HandleRequest() noexcept {
 
 	if (!file) {
 		return ClientError::FILE_NOT_FOUND;
+	}
+
+	auto error = CheckFileLocation(file->Path());
+	if (error != ClientError::NO_ERROR) {
+		return error;
 	}
 
 	if (!SendMetadata(Strings::StatusLines::OK, file->Size(), server->config().mediaTypeFinder.DetectMediaType(file))) {
