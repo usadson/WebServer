@@ -313,6 +313,26 @@ Client::Entrypoint() {
 }
 
 ClientError
+Client::ExtractComponentsFromPath() noexcept {
+	std::string path(currentRequest.path);
+	auto questionMark = path.find('?');
+
+	if (questionMark == std::string::npos) {
+		return ClientError::NO_ERROR;
+	}
+
+	if (questionMark != path.rfind('?')) {
+		// Multiple ?'s in path
+		return ClientError::INVALID_PATH_MULTIPLE_QUESTION_MARKS;
+	}
+
+	currentRequest.path = path.substr(0, questionMark);
+	currentRequest.query = path.substr(questionMark + 1, path.length() - 1 - questionMark);
+
+	return ClientError::NO_ERROR;
+}
+
+ClientError
 Client::HandleRequest() noexcept {
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
 	if (!server->config().securityPolicies.maxRequestsCloseImmediately &&
@@ -444,6 +464,11 @@ Client::RunMessageExchange() noexcept {
 
 	if (!ValidateCurrentRequestPath()) {
 		return RecoverError(ClientError::INVALID_PATH);
+	}
+
+	error = ExtractComponentsFromPath();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
 	}
 
 	error = ConsumeVersion();

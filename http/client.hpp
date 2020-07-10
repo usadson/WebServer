@@ -104,6 +104,10 @@ TESTING_VISIBILITY:
 	void
 	Entrypoint();
 
+	// Extract things like the query parameters from the path.
+	[[nodiscard]] ClientError
+	ExtractComponentsFromPath() noexcept;
+
 	// This function handles the parsed HTTP message, and runs the correct calls
 	// to respond to this request.
 	//
