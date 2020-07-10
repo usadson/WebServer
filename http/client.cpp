@@ -464,8 +464,9 @@ Client::RunMessageExchange() noexcept {
 		return RecoverError(error);
 	}
 
-	if (!ValidateCurrentRequestPath()) {
-		return RecoverError(ClientError::INVALID_PATH);
+	error = ValidateCurrentRequestPath();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
 	}
 
 	error = ExtractComponentsFromPath();
