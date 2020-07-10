@@ -401,8 +401,10 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("request-line should end with a newline (CRLF)");
 		case ClientError::INCORRECT_VERSION:
 			return RecoverErrorBadRequest("invalid HTTP version as per RFC 7230 section 2.6");
-		case ClientError::INVALID_PATH:
-			return RecoverErrorBadRequest("unsupported request-target");
+		case ClientError::INVALID_PATH_EMPTY:
+			return RecoverErrorBadRequest("request-target was empty");
+		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
+			return RecoverErrorBadRequest("only absolute-path request-target supported");
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return RecoverErrorTooManyRequestsPerThisConnection();
 		default:
