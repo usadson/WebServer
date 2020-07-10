@@ -22,6 +22,8 @@
 #include <cstring>
 #include <strings.h>
 
+#include <limits.h>
+
 #include "base/error_reporter.hpp"
 #include "base/logger.hpp"
 #include "base/media_type.hpp"
@@ -50,6 +52,15 @@ Client::Client(Server *server, int sock) noexcept :
 
 ClientError
 Client::CheckFileLocation(const std::string &path) const noexcept {
+	std::array<char, PATH_MAX> dest{};
+	if (realpath(path.c_str(), dest.data()) == nullptr) {
+		return ClientError::CHECK_FILE_LOCATION_VERIFICATION_FAILURE;
+	}
+
+	if (!StringStartsWith(dest.data(), server->config().rootDirectory)) {
+		return ClientError::CHECK_FILE_LOCATION_OUTSIDE_ROOT_DIRECTORY;
+	}
+
 	return ClientError::NO_ERROR;
 }
 
