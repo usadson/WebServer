@@ -163,7 +163,7 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	ServeDefaultPage() noexcept;
 
-	[[nodiscard]] bool
+	[[nodiscard]] ClientError
 	ValidateCurrentRequestPath() const noexcept;
 
 public:
