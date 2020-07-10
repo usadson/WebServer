@@ -16,13 +16,11 @@
 #include <vector>
 
 #include <cctype>
+#include <climits>
 #include <csignal>
-#include <cstdint>
 #include <cstdio>
-#include <cstring>
+#include <cstdlib>
 #include <strings.h>
-
-#include <limits.h>
 
 #include "base/error_reporter.hpp"
 #include "base/logger.hpp"
@@ -33,6 +31,7 @@
 #include "http/utils.hpp"
 #include "io/file.hpp"
 #include "io/file_resolver.hpp"
+#include "security/policies.hpp"
 
 [[nodiscard]] inline bool
 StringStartsWith(const std::string &string, const std::string &prefix) {
@@ -187,7 +186,7 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 			(character >= '0' && character <= '9') ||
 			(character >= 'A' && character <= 'Z') ||
 			(character >= 'a' && character <= 'z')) {
-			dest->push_back(tolower(character));
+			dest->push_back(std::tolower(character));
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_NAME;
 		}
@@ -304,7 +303,7 @@ Client::ConsumeVersion() noexcept {
 void
 Client::Entrypoint() {
 	// Ignore SIGPIPE ~= accessing closed connection
-	signal(SIGPIPE, SIG_IGN);
+	std::signal(SIGPIPE, SIG_IGN);
 
 	if (!connection->Setup(server->config())) {
 		Logger::Error("Client::Entrypoint", "Failed to setup connection!");
