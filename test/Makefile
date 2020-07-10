@@ -6,6 +6,7 @@ CXXFLAGS += -I..
 TEST_LDFLAGS = $(LDFLAGS) -L/usr/local/lib -lgtest -lpthread
 TEST_GENERAL_DEPENDENCIES = \
 	bin/base/error_reporter.o \
+	bin/base/logger.o \
 	bin/base/media_type.o \
 	bin/base/strings.o \
 	bin/http/client.o \
