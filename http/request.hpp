@@ -13,7 +13,10 @@ namespace HTTP {
 
 struct Request {
 	std::string method;
+
 	std::string path;
+	std::string query;
+
 	// Version isn't worth/needed storing atm.
 
 	std::map<std::string, std::string> headers;
