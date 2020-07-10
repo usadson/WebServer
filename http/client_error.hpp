@@ -32,6 +32,7 @@ enum class ClientError {
 	INCORRECT_CRLF,
 	INCORRECT_VERSION,
 	INVALID_PATH, // supplied path is unrecognized, unprocessable or invalid in this context.
+	INVALID_PATH_MULTIPLE_QUESTION_MARKS,
 	NO_ERROR,
 	TOO_MANY_REQUESTS_PER_THIS_CONNECTION,
 	UNEXPECTED_CR_IN_FIELD_NAME,
