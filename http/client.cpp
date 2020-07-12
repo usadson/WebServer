@@ -440,20 +440,17 @@ Client::RecoverErrorBadRequest(const std::string &message) noexcept {
 	// useless.
 	MarkConnectionClosing();
 
-	return SendMetadata(Strings::StatusLines::BadRequest, body.length(), MediaTypes::TEXT)
-			&& connection->WriteString(body);
+	return ServeStringRequest(Strings::StatusLines::BadRequest, MediaTypes::TEXT, body);
 }
 
 bool
 Client::RecoverErrorFileNotFound() noexcept {
-	return SendMetadata(Strings::StatusLines::NotFound, Strings::NotFoundPage.length(), MediaTypes::HTML)
-			&& connection->WriteString(Strings::NotFoundPage);
+	return ServeStringRequest(Strings::StatusLines::NotFound, MediaTypes::HTML, Strings::NotFoundPage);
 }
 
 bool
 Client::RecoverErrorTooManyRequestsPerThisConnection() noexcept {
-	return SendMetadata(Strings::StatusLines::TooManyRequests, Strings::TooManyRequestsPage.length(), MediaTypes::HTML)
-			&& connection->WriteString(Strings::TooManyRequestsPage);
+	return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);
 }
 
 void
