@@ -160,6 +160,7 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type) noexcept;
 
+	// Run the CGI algorithm.
 	[[nodiscard]] bool
 	ServeCGI(const CGI::Script *) noexcept;
 
@@ -211,6 +212,7 @@ public:
 // as follows:
 // DIR/index.html
 // DIR/index.*
+// CGI script
 // default page
 //
 // The default page of the site is an example test page. This document is
