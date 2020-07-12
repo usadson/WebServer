@@ -12,6 +12,7 @@
 #include <thread>
 #include <vector>
 
+#include "cgi/manager.hpp"
 #include "http/client.hpp" // IWYU pragma: keep
 #include "http/configuration.hpp"
 #include "http/server_launch_error.hpp"
@@ -21,8 +22,9 @@ namespace HTTP {
 
 class Server {
 public:
-	inline explicit Server(const Configuration &configuration) :
-		fileResolver(configuration.rootDirectory), configuration(configuration) {
+	inline Server(const Configuration &configuration, const CGI::Manager &manager) :
+		fileResolver(configuration.rootDirectory), configuration(configuration),
+		manager(manager) {
 		CheckConfiguration();
 	}
 
@@ -52,6 +54,11 @@ public:
 		return configuration;
 	}
 
+	[[nodiscard]] inline constexpr const CGI::Manager &
+	cgi() const noexcept {
+		return manager;
+	}
+
 	IO::FileResolver fileResolver;
 #ifdef TESTING
 
@@ -62,6 +69,7 @@ private:
 #endif
 
 	Configuration configuration;
+	const CGI::Manager &manager;
 	std::unique_ptr<std::thread> internalThread{ nullptr };
 	int internalSocket{ -1 };
 
