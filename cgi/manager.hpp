@@ -7,6 +7,7 @@
  */
 
 #include <map>
+#include <string>
 
 #include "cgi/script.hpp"
 #include "http/request.hpp"

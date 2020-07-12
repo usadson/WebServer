@@ -10,12 +10,19 @@ namespace CGI {
 
 bool
 Manager::Load() {
+	scripts.insert({ std::string("/cgi"), { "/opt/test.sh", "Test CGI Script" } });
 	return true;
 }
 
 const Script *
-Manager::Lookup(const HTTP::Request &) const noexcept {
-	return nullptr;
+Manager::Lookup(const HTTP::Request &request) const noexcept {
+	auto iterator = scripts.find(request.path);
+
+	if (iterator == std::end(scripts)) {
+		return nullptr;
+	}
+
+	return &iterator->second;
 }
 
 } // namespace CGI
