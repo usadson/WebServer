@@ -8,31 +8,55 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
+
+#include <cstring>
 
 // From io/file.hpp:
 namespace IO { class File; }
 
 struct MediaType {
-	const std::string type;
-	const std::string subtype;
-	const std::string completeType;
+	friend class MediaTypeFinder;
+
+	const std::string_view type;
+	const std::string_view subtype;
 	const bool includeCharset;
 
-	inline MediaType(const std::string &type, const std::string &subtype,
+	inline MediaType(const char *type, const char *subtype,
 		bool includeCharset)
-		: type(type), subtype(subtype), completeType(type + '/' + subtype),
+		: type(type), subtype(subtype),
 		  includeCharset(includeCharset) {
 	}
 
-	inline MediaType(const std::string &type, const std::string &subtype)
-		: MediaType(type, subtype, type == "text") {
+	inline MediaType(const char *type, const char *subtype)
+		: MediaType(type, subtype, strcmp(type, "text") == 0) {
 	}
+
+	[[nodiscard]] const std::string &
+	Complete() const noexcept {
+		return completeType.value();
+	}
+
+protected:
+	// Exception-safe completeType generation.
+	void
+	SetCompleteType() {
+		std::string s = "";
+		s.reserve(type.length() + 1 + subtype.length());
+		s += type;
+		s += '/';
+		s += subtype;
+		completeType = std::move(s);
+	}
+
+private:
+	std::optional<std::string> completeType;
 };
 
 namespace MediaTypes {
-	const MediaType HTML { "text", "html" };
-	const MediaType TEXT { "text", "plain" };
+	extern MediaType HTML;
+	extern MediaType TEXT;
 } // namespace MediaTypes
 
 class MediaTypeFinder {

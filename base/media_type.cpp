@@ -15,7 +15,15 @@
 #include "base/logger.hpp"
 #include "io/file.hpp"
 
-static const MediaType genericType = { "application", "octet-stream" };
+static MediaType genericType = { "application", "octet-stream" };
+
+namespace MediaTypes {
+	// NOTE When adding members to this namespace, make sure to register it in
+	// MediaTypeFinder::MediaTypeFinder (call MediaType::SetCompleteType()).
+
+	MediaType HTML { "text", "html" };
+	MediaType TEXT { "text", "plain" };
+}
 
 MediaTypeFinder::MediaTypeFinder() noexcept
 	: mediaTypes({
@@ -49,6 +57,12 @@ MediaTypeFinder::MediaTypeFinder() noexcept
 		{ "xml",  { "application", "xml" } },               // RFC 7303
 		{ "zip",  { "application", "zip" } },               // https://www.iana.org/assignments/media-types/application/zip
 	}) {
+	genericType.SetCompleteType();
+	for (auto &pair : mediaTypes) {
+		pair.second.SetCompleteType();
+	}
+	MediaTypes::HTML.SetCompleteType();
+	MediaTypes::TEXT.SetCompleteType();
 }
 
 const MediaType &
