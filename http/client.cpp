@@ -437,14 +437,19 @@ Client::RecoverError(ClientError error) noexcept {
 }
 
 bool
-Client::RecoverErrorBadRequest(const std::string &message) noexcept {
-	const std::string body = "Malformed request: " + message;
+Client::RecoverErrorBadRequest(const std::string_view &message) noexcept {
+	// TODO this works, but isn't really nice.
+	const char prefix[] = "Malformed request: ";
+	std::vector<char> buf(19 + message.length() + 1);
+	std::copy(std::begin(prefix), std::end(prefix) - 1, std::begin(buf));
+	std::copy(std::begin(message), std::end(message), std::begin(buf) + sizeof(prefix) - 1);
+	buf.at(message.length() + 19) = '\0';
 
 	// Because the request parsing has abruptly failed, the connection is
 	// useless.
 	MarkConnectionClosing();
 
-	return ServeStringRequest(Strings::StatusLines::BadRequest, MediaTypes::TEXT, body);
+	return ServeStringRequest(Strings::StatusLines::BadRequest, MediaTypes::TEXT, std::string_view(buf.data(), buf.size()));
 }
 
 bool
@@ -511,7 +516,7 @@ Client::RunMessageExchange() noexcept {
 }
 
 bool
-Client::SendMetadata(const std::string &response, std::size_t contentLength, const MediaType &mediaType) noexcept {
+Client::SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &mediaType) noexcept {
 	std::stringstream metadata;
 	metadata << response;
 	metadata << "\r\nContent-Length: " << contentLength;
@@ -534,9 +539,9 @@ Client::ServeDefaultPage() noexcept {
 }
 
 bool
-Client::ServeStringRequest(const std::string &responseLine,
+Client::ServeStringRequest(const std::string_view &responseLine,
 							const MediaType &type,
-							const std::string &body) noexcept {
+							const std::string_view &body) noexcept {
 	if (!SendMetadata(responseLine, body.length(), type)) {
 		return false;
 	}
@@ -545,7 +550,7 @@ Client::ServeStringRequest(const std::string &responseLine,
 		return true;
 	}
 
-	return connection->WriteString(body);
+	return connection->WriteStringView(body);
 }
 
 ClientError

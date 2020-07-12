@@ -9,6 +9,7 @@
 #include <iosfwd>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -139,7 +140,7 @@ TESTING_VISIBILITY:
 	RecoverError(ClientError) noexcept;
 
 	[[nodiscard]] bool
-	RecoverErrorBadRequest(const std::string &) noexcept;
+	RecoverErrorBadRequest(const std::string_view &) noexcept;
 
 	// Handles the FILE_NOT_FOUND ClientError. Called by RecoverError.
 	[[nodiscard]] bool
@@ -156,7 +157,7 @@ TESTING_VISIBILITY:
 
 	// Sends the HTTP metadata. (See below for more information.)
 	[[nodiscard]] bool
-	SendMetadata(const std::string &response, std::size_t contentLength, const MediaType &type) noexcept;
+	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type) noexcept;
 
 	// When the homepage of the site couldn't be found. (See below for more
 	// information.)
@@ -165,7 +166,7 @@ TESTING_VISIBILITY:
 
 	// Send a response with a body defined in the base/strings.xpp files.
 	[[nodiscard]] bool
-	ServeStringRequest(const std::string &, const MediaType &, const std::string &body) noexcept;
+	ServeStringRequest(const std::string_view &, const MediaType &, const std::string_view &body) noexcept;
 
 	[[nodiscard]] ClientError
 	ValidateCurrentRequestPath() const noexcept;
