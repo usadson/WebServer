@@ -9,6 +9,7 @@ TEST_GENERAL_DEPENDENCIES = \
 	bin/base/logger.o \
 	bin/base/media_type.o \
 	bin/base/strings.o \
+	bin/cgi/manager.o \
 	bin/http/client.o \
 	bin/http/client_error.o \
 	bin/http/server.o \
