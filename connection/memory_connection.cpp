@@ -70,3 +70,16 @@ Connection::WriteString(const std::string &str, bool includeNullCharacter) noexc
 
 	return true;
 }
+
+bool
+Connection::WriteStringView(const std::string_view &str, bool includeNullCharacter) noexcept {
+	auto *internalData = reinterpret_cast<MemoryUserData *>(userData);
+
+	std::copy(std::cbegin(str), std::cend(str), std::back_inserter(internalData->output));
+
+	if (includeNullCharacter) {
+		internalData->output.push_back('\0');
+	}
+
+	return true;
+}
