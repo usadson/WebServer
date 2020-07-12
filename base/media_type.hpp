@@ -19,12 +19,12 @@ namespace IO { class File; }
 struct MediaType {
 	friend class MediaTypeFinder;
 
-	inline MediaType(const char *type, const char *subtype, bool includeCharset)
+	inline MediaType(const char *type, const char *subtype, bool includeCharset) noexcept
 		 : completeType(std::nullopt), type(type), subtype(subtype),
 		   includeCharset(includeCharset) {
 	}
 
-	inline MediaType(const char *type, const char *subtype)
+	inline MediaType(const char *type, const char *subtype) noexcept
 		 : MediaType(type, subtype, strcmp(type, "text") == 0) {
 	}
 

@@ -23,7 +23,8 @@ namespace MediaTypes {
 
 	MediaType HTML { "text", "html" };
 	MediaType TEXT { "text", "plain" };
-}
+
+} // namespace MediaTypes
 
 MediaTypeFinder::MediaTypeFinder()
 	: mediaTypes({
