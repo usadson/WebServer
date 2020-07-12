@@ -3,6 +3,7 @@
                     -fuchsia-default-arguments-calls,
                     -fuchsia-overloaded-operator,
                     -hicpp-no-array-decay,
+                    -cppcoreguidelines-macro-usage,
                     -cppcoreguidelines-pro-bounds-pointer-arithmetic,
                     -cppcoreguidelines-pro-type-reinterpret-cast,
                     -modernize-use-trailing-return-type,
