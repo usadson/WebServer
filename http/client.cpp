@@ -524,7 +524,7 @@ Client::SendMetadata(const std::string_view &response, std::size_t contentLength
 	metadata << "\r\nConnection: " << (persistentConnection ? "keep-alive" : "close");
 	metadata << "\r\nContent-Type: " << mediaType.Complete();
 
-	if (mediaType.includeCharset) {
+	if (mediaType.IncludeCharset()) {
 		metadata << ";charset=utf-8\r\n\r\n";
 	} else {
 		metadata << "\r\n\r\n";
