@@ -6,7 +6,7 @@
  * See the COPYING file for licensing information.
  */
 
-#include <optional>
+#include <map>
 
 #include "cgi/script.hpp"
 #include "http/request.hpp"
@@ -18,8 +18,12 @@ public:
 	[[nodiscard]] bool
 	Load();
 
-	[[nodiscard]] std::optional<const Script &>
+	// If ptr is nullptr, no CGI script was found.
+	[[nodiscard]] const Script *
 	Lookup(const HTTP::Request &) const noexcept;
+
+private:
+	std::map<std::string, Script> scripts;
 };
 
 } // namespace CGI

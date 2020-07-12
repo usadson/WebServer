@@ -4,7 +4,7 @@
  * See the COPYING file for licensing information.
  */
 
-#include "script.hpp"
+#include "cgi/manager.hpp"
 
 namespace CGI {
 
@@ -13,9 +13,9 @@ Manager::Load() {
 	return true;
 }
 
-std::optional<const Script &>
-Lookup(const HTTP::Request &request) const noexcept {
-	return std::nullopt;
+const Script *
+Manager::Lookup(const HTTP::Request &) const noexcept {
+	return nullptr;
 }
 
 } // namespace CGI

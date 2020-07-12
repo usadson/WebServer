@@ -13,6 +13,6 @@ namespace CGI {
 struct Script {
 	std::string Command;
 	std::string Name;
-}
+};
 
 } // namespace CGI
