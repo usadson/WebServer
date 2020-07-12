@@ -42,6 +42,7 @@ clean:
 # The 'server' target will build the final binary executable.
 server: main.cpp \
 	base/logger.hpp \
+	cgi/manager.hpp \
 	http/configuration.hpp \
 	http/server.hpp \
 	security/policies.hpp \
