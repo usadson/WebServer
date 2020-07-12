@@ -13,4 +13,4 @@ namespace LoggerInternals {
 		std::cout << level.terminalPrefix << source << level.terminalInfix << message << "\x1b[0m\n";
 	}
 
-} // namespace Logger
+} // namespace LoggerInternals

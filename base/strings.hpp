@@ -23,6 +23,6 @@ namespace StatusLines {
 	extern const std::string NotFound;
 	extern const std::string OK;
 	extern const std::string TooManyRequests;
-}
+} // namespace StatusLines
 
 } // namespace Strings
