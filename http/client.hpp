@@ -145,10 +145,6 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	RecoverErrorFileNotFound() noexcept;
 
-	// Handles TOO_MANY_REQUESTS_PER_THIS_CONNECTION. Called by RecoverError.
-	[[nodiscard]] bool
-	RecoverErrorTooManyRequestsPerThisConnection() noexcept;
-
 	// Clears the 'currentRequest' member variable.
 	void
 	ResetExchangeState() noexcept;

@@ -421,7 +421,7 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
-			return RecoverErrorTooManyRequestsPerThisConnection();
+			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
 		default:
 			break;
 	}
@@ -446,11 +446,6 @@ Client::RecoverErrorBadRequest(const std::string &message) noexcept {
 bool
 Client::RecoverErrorFileNotFound() noexcept {
 	return ServeStringRequest(Strings::StatusLines::NotFound, MediaTypes::HTML, Strings::NotFoundPage);
-}
-
-bool
-Client::RecoverErrorTooManyRequestsPerThisConnection() noexcept {
-	return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);
 }
 
 void
