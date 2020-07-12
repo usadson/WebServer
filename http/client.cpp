@@ -534,9 +534,7 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 
 bool
 Client::ServeDefaultPage() noexcept {
-	return SendMetadata(Strings::StatusLines::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML)
-			&& (currentRequest.method == "HEAD" ||
-				connection->WriteString(Strings::DefaultWebPage));
+	return ServeStringRequest(Strings::StatusLines::OK, MediaTypes::HTML, Strings::DefaultWebPage);
 }
 
 bool
