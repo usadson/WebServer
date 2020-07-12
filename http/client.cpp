@@ -364,7 +364,8 @@ Client::HandleRequest() noexcept {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
-	if (!connection->SendFile(file->Handle(), file->Size())) {
+	if (strcasecmp(currentRequest.method.c_str(), "HEAD") != 0 &&
+		!connection->SendFile(file->Handle(), file->Size())) {
 		perror("HandleRequest");
 		return ClientError::FAILED_WRITE_RESPONSE_BODY;
 	}
@@ -534,7 +535,8 @@ Client::SendMetadata(const std::string &response, std::size_t contentLength, con
 bool
 Client::ServeDefaultPage() noexcept {
 	return SendMetadata(Strings::StatusLines::OK, Strings::DefaultWebPage.length(), MediaTypes::HTML)
-			&& connection->WriteString(Strings::DefaultWebPage);
+			&& (strcasecmp(currentRequest.method.c_str(), "HEAD") == 0 ||
+				connection->WriteString(Strings::DefaultWebPage));
 }
 
 ClientError
