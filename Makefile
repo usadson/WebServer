@@ -57,6 +57,7 @@ server: main.cpp \
 bin/test.txt:
 	@mkdir bin
 	@mkdir bin/base
+	@mkdir bin/cgi
 	@mkdir bin/connection
 	@mkdir bin/http
 	@mkdir bin/io
