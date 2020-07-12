@@ -8,13 +8,14 @@
 
 #include <array>
 #include <iosfwd>
+#include <sstream>
 
 #include "logger.hpp"
 
 namespace ErrorReporter {
 
 struct ErrorInfo {
-	std::string name;
+	std::string_view name;
 	bool log;
 };
 
@@ -27,7 +28,11 @@ ReportError(Error error, const std::string &message) noexcept {
 	const auto &info = settings.at(static_cast<std::size_t>(error));
 
 	if (info.log) {
-		Logger::Warning("ErrorReported", '[' + info.name + "] " + message);
+		std::string str;
+		str.reserve(3 + info.name.length() + message.length());
+		std::stringstream warningLog(str);
+		warningLog << '[' << info.name << "] " << message;
+		Logger::Warning("ErrorReporter", warningLog.str());
 	}
 }
 
