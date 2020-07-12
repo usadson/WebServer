@@ -11,6 +11,7 @@ MAIN_BINARIES = bin/base/error_reporter.o \
 	   bin/base/logger.o \
 	   bin/base/media_type.o \
 	   bin/base/strings.o \
+	   bin/cgi/manager.o \
 	   bin/connection/connection.o \
 	   bin/http/client.o \
 	   bin/http/client_error.o \
@@ -83,6 +84,12 @@ bin/base/media_type.o: base/media_type.cpp \
 bin/base/strings.o: base/strings.cpp \
 	base/strings.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ base/strings.cpp
+
+bin/cgi/manager.o: cgi/manager.cpp \
+	cgi/manager.hpp \
+	cgi/script.hpp \
+	http/request.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ cgi/manager.cpp
 
 bin/connection/connection.o: connection/connection.cpp \
 	connection/connection.hpp
