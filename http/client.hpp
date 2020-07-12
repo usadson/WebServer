@@ -16,6 +16,7 @@
 // From base/media_type.hpp:
 struct MediaType;
 
+#include "cgi/script.hpp"
 #include "connection/connection.hpp"
 #include "http/client_error.hpp"
 #include "http/request.hpp"
@@ -158,6 +159,9 @@ TESTING_VISIBILITY:
 	// Sends the HTTP metadata. (See below for more information.)
 	[[nodiscard]] bool
 	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type) noexcept;
+
+	[[nodiscard]] bool
+	ServeCGI(const CGI::Script *) noexcept;
 
 	// When the homepage of the site couldn't be found. (See below for more
 	// information.)

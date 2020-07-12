@@ -26,6 +26,8 @@
 #include "base/logger.hpp"
 #include "base/media_type.hpp"
 #include "base/strings.hpp"
+#include "cgi/manager.hpp"
+#include "cgi/script.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "http/utils.hpp"
@@ -396,9 +398,15 @@ Client::MarkConnectionClosing() noexcept {
 bool
 Client::RecoverError(ClientError error) noexcept {
 	static const std::string indexPathTarget("/index.html");
+	const CGI::Script *script = nullptr;
 
 	switch (error) {
 		case ClientError::FILE_NOT_FOUND:
+			script = server->cgi().Lookup(currentRequest);
+			if (script != nullptr) {
+				return ServeCGI(script);
+			}
+
 			if (StringStartsWith(indexPathTarget, currentRequest.path)) {
 				return ServeDefaultPage();
 			}
@@ -531,6 +539,11 @@ Client::SendMetadata(const std::string_view &response, std::size_t contentLength
 	}
 
 	return connection->WriteString(metadata.str());
+}
+
+bool
+Client::ServeCGI(const CGI::Script *) noexcept {
+	return true;
 }
 
 bool
