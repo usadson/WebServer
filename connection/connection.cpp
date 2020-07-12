@@ -161,3 +161,23 @@ Connection::WriteString(const std::string &str, bool includeNullCharacter) noexc
 
 	return true;
 }
+
+bool
+Connection::WriteStringView(const std::string_view &str, bool includeNullCharacter) noexcept {
+	std::size_t off = 0;
+	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
+
+	while (len != 0) {
+		int status = write(internalSocket, str.data() + off, len);
+
+		if (status == -1) {
+			hasWriteFailed = true;
+			return false;
+		}
+
+		len -= status;
+		off += status;
+	}
+
+	return true;
+}
