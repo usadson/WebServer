@@ -25,7 +25,7 @@ namespace MediaTypes {
 	MediaType TEXT { "text", "plain" };
 }
 
-MediaTypeFinder::MediaTypeFinder() noexcept
+MediaTypeFinder::MediaTypeFinder()
 	: mediaTypes({
 		// NOTE This list must be kept minimal. There is no need to have every
 		//      extension in this list. Providing rarely used and obsolete

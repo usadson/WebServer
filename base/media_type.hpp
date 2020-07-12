@@ -19,30 +19,40 @@ namespace IO { class File; }
 struct MediaType {
 	friend class MediaTypeFinder;
 
-	const std::string_view type;
-	const std::string_view subtype;
-	const bool includeCharset;
-
-	inline MediaType(const char *type, const char *subtype,
-		bool includeCharset)
-		: type(type), subtype(subtype),
-		  includeCharset(includeCharset) {
+	inline MediaType(const char *type, const char *subtype, bool includeCharset)
+		 : completeType(std::nullopt), type(type), subtype(subtype),
+		   includeCharset(includeCharset) {
 	}
 
 	inline MediaType(const char *type, const char *subtype)
-		: MediaType(type, subtype, strcmp(type, "text") == 0) {
+		 : MediaType(type, subtype, strcmp(type, "text") == 0) {
 	}
 
 	[[nodiscard]] const std::string &
-	Complete() const noexcept {
+	Complete() const {
 		return completeType.value();
+	}
+
+	[[nodiscard]] bool
+	IncludeCharset() const noexcept {
+		return includeCharset;
+	}
+
+	[[nodiscard]] const std::string_view &
+	Subtype() const noexcept {
+		return subtype;
+	}
+
+	[[nodiscard]] const std::string_view &
+	Type() const noexcept {
+		return type;
 	}
 
 protected:
 	// Exception-safe completeType generation.
 	void
 	SetCompleteType() {
-		std::string s = "";
+		std::string s;
 		s.reserve(type.length() + 1 + subtype.length());
 		s += type;
 		s += '/';
@@ -52,6 +62,9 @@ protected:
 
 private:
 	std::optional<std::string> completeType;
+	const std::string_view type;
+	const std::string_view subtype;
+	const bool includeCharset;
 };
 
 namespace MediaTypes {
@@ -61,7 +74,7 @@ namespace MediaTypes {
 
 class MediaTypeFinder {
 public:
-	MediaTypeFinder() noexcept;
+	MediaTypeFinder();
 
 	[[nodiscard]] const MediaType &
 	DetectMediaType(const std::unique_ptr<IO::File> &) const noexcept;
