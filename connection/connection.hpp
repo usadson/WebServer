@@ -9,6 +9,7 @@
 #include <iosfwd>
 
 #include <string>
+#include <string_view>
 
 // ForwardDecl from http/configuration.hpp
 namespace HTTP {
@@ -47,6 +48,9 @@ public:
 
 	[[nodiscard]] bool
 	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
+
+	[[nodiscard]] bool
+	WriteStringView(const std::string_view &, bool includeNullCharacter = false) noexcept;
 
 	void *userData;
 
