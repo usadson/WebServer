@@ -167,6 +167,10 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	ServeDefaultPage() noexcept;
 
+	// Send a response with a body defined in the base/strings.xpp files.
+	[[nodiscard]] bool
+	ServeStringRequest(const std::string &, const MediaType &, const std::string &body) noexcept;
+
 	[[nodiscard]] ClientError
 	ValidateCurrentRequestPath() const noexcept;
 

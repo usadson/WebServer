@@ -539,6 +539,21 @@ Client::ServeDefaultPage() noexcept {
 				connection->WriteString(Strings::DefaultWebPage));
 }
 
+bool
+Client::ServeStringRequest(const std::string &responseLine,
+							const MediaType &type,
+							const std::string &body) noexcept {
+	if (!SendMetadata(responseLine, body.length(), type)) {
+		return false;
+	}
+
+	if (currentRequest.method == "HEAD") {
+		return true;
+	}
+
+	return connection->WriteString(body);
+}
+
 ClientError
 Client::ValidateCurrentRequestPath() const noexcept {
 	if (currentRequest.path.empty()) {
