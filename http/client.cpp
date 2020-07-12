@@ -76,8 +76,8 @@ Client::Clean() noexcept {
 
 ClientError
 Client::ConsumeCRLF() noexcept {
-	char cr;
-	char lf;
+	char cr; // NOLINT(cppcoreguidelines-init-variables)
+	char lf; // NOLINT(cppcoreguidelines-init-variables)
 	if (!connection->ReadChar(&cr) || !connection->ReadChar(&lf)) {
 		return ClientError::FAILED_READ_CRLF;
 	}
@@ -104,7 +104,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 
 	/* Consume OWS (Optional Whitespaces) */
 	while (true) {
-		char character;
+		char character; // NOLINT(cppcoreguidelines-init-variables)
 
 		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_HEADER_FIELD_GENERIC;
@@ -141,7 +141,7 @@ Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
 	/* obs-fold (optional line folding) isn't supported. */
 	while (true) {
 		/* Set next character */
-		char character;
+		char character; // NOLINT(cppcoreguidelines-init-variables)
 
 		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_HEADER_FIELD_VALUE;
@@ -174,7 +174,7 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 		= { '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
 
 	while (true) {
-		char character;
+		char character; // NOLINT(cppcoreguidelines-init-variables)
 
 		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_HEADER_FIELD_NAME;
@@ -200,7 +200,7 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 ClientError
 Client::ConsumeHeaders() noexcept {
 	do {
-		char character;
+		char character; // NOLINT(cppcoreguidelines-init-variables)
 		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_HEADER_FIELD_NAME;
 		}
@@ -315,7 +315,7 @@ Client::Entrypoint() {
 		return;
 	}
 
-	bool previousRequestSuccess;
+	bool previousRequestSuccess; // NOLINT(cppcoreguidelines-init-variables)
 
 	do {
 		previousRequestSuccess = RunMessageExchange();
