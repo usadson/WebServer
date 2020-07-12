@@ -20,6 +20,7 @@
     -hicpp-use-emplace,
     -hicpp-vararg,
     -llvm-header-guard,
+    -modernize-raw-string-literal
     -modernize-use-trailing-return-type,
     -readability-braces-around-statements,
     -readability-magic-numbers,
