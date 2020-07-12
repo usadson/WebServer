@@ -10,6 +10,7 @@
     -cppcoreguidelines-pro-type-vararg,
     -fuchsia-default-arguments-calls,
     -fuchsia-overloaded-operator,
+    -fuchsia-statically-constructed-objects,
     -google-readability-braces-around-statements,
     -google-readability-todo,
     -hicpp-braces-around-statements,
