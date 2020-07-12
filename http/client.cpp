@@ -522,7 +522,7 @@ Client::SendMetadata(const std::string_view &response, std::size_t contentLength
 	metadata << "\r\nContent-Length: " << contentLength;
 	metadata << "\r\nServer: " << server->config().serverProductName;
 	metadata << "\r\nConnection: " << (persistentConnection ? "keep-alive" : "close");
-	metadata << "\r\nContent-Type: " << mediaType.completeType;
+	metadata << "\r\nContent-Type: " << mediaType.Complete();
 
 	if (mediaType.includeCharset) {
 		metadata << ";charset=utf-8\r\n\r\n";
