@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include "base/logger.hpp"
+#include "base/media_type.hpp"
 #include "cgi/manager.hpp"
 #include "http/configuration.hpp"
 #include "http/server.hpp"
@@ -18,13 +19,20 @@
 int
 main() {
 	CGI::Manager manager{};
+	MediaTypeFinder mediaTypeFinder{};
 	Security::Policies securityPolicies{};
 
-	HTTP::Configuration config(securityPolicies);
-	config.rootDirectory = "/var/www/html";
+	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies);
+	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies);
+	httpConfig1.rootDirectory = "/var/www/html";
+	httpConfig1.port = 8080;
+	httpConfig2.rootDirectory = "/var/www";
+	httpConfig2.port = 8081;
 
-	HTTP::Server server(config, manager);
-	server.Start();
+	HTTP::Server httpServer1(httpConfig1, manager);
+	HTTP::Server httpServer2(httpConfig2, manager);
+	httpServer1.Start();
+	httpServer2.Start();
 
 	Logger::Log("Main", "Server Started");
 
@@ -33,8 +41,10 @@ main() {
 
 	Logger::Log("Main", "Stopping...");
 
-	server.SignalShutdown();
-	server.Join();
+	httpServer1.SignalShutdown();
+	httpServer2.SignalShutdown();
+	httpServer1.Join();
+	httpServer2.Join();
 
 	Logger::Log("Main", "Stopped!");
 	return EXIT_SUCCESS;
