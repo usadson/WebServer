@@ -8,10 +8,21 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <initializer_list>
+#include <iterator>
+#include <memory>
+#include <ostream>
+#include <string>
+
+#include <cstddef>
+
 #define TESTING_VISIBILITY public
 #define ASSERT_EQ_CLIENT_ERROR(a, b) ASSERT_EQ(a, b) << ClientErrorToString(a) << " should be " << ClientErrorToString(b);
 
+#include "base/media_type.hpp"
 #include "cgi/manager.hpp"
+#include "connection/connection.hpp"
 #include "connection/memory_userdata.hpp"
 #include "http/client.hpp"
 #include "http/client_error.hpp"
@@ -23,13 +34,14 @@
 
 class ClientTest : public ::testing::Test {
 protected:
-	ClientTest() : server(HTTP::Configuration(secPolicies), cgiManager), client(&server) {
+	ClientTest() : server(HTTP::Configuration(finder, secPolicies), cgiManager), client(&server) {
 		client.connection = std::make_unique<Connection>(0, server.config().useTransportSecurity, &internalData);
 	}
 
 	// void TearDown() override {}
 
 	CGI::Manager cgiManager;
+	MediaTypeFinder finder;
 	Security::Policies secPolicies;
 	HTTP::Server server;
 	MemoryUserData internalData{};
