@@ -47,5 +47,10 @@ main() {
 	httpServer2.Join();
 
 	Logger::Log("Main", "Stopped!");
+
+	fclose(stdin);
+	fclose(stdout);
+	fclose(stderr);
+
 	return EXIT_SUCCESS;
 }
