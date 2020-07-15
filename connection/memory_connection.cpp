@@ -4,6 +4,8 @@
  * See the COPYING file for licensing information.
  */
 
+#define CONNECTION_MEMORY_VARIANT
+
 #include "connection/connection.hpp"
 
 #include <vector>

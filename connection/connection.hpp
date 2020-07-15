@@ -18,9 +18,15 @@ struct Configuration;
 
 class Connection {
 public:
+#ifndef CONNECTION_MEMORY_VARIANT
 	inline Connection(int socket, bool useTransportSecurity, void *userData=nullptr) noexcept
 		: userData(userData), internalSocket(socket), useTransportSecurity(useTransportSecurity) {
 	}
+#else
+	inline explicit Connection(void *userData=nullptr) noexcept
+		: userData(userData) {
+	}
+#endif /* CONNECTION_MEMORY_VARIANT */
 
 	~Connection() noexcept;
 
@@ -54,8 +60,10 @@ public:
 
 	void *userData;
 
+#ifndef CONNECTION_MEMORY_VARIANT
 private:
 	bool hasWriteFailed{ false };
 	int internalSocket;
 	bool useTransportSecurity;
+#endif /* CONNECTION_MEMORY_VARIANT */
 };

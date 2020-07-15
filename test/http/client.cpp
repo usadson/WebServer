@@ -4,18 +4,19 @@
  * See the COPYING file for licensing information.
  */
 
-#include <random>
-
-#include <gtest/gtest.h>
+#define CONNECTION_MEMORY_VARIANT
 
 #include <algorithm>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
 #include <ostream>
+#include <random>
 #include <string>
 
 #include <cstddef>
+
+#include <gtest/gtest.h>
 
 #define TESTING_VISIBILITY public
 #define ASSERT_EQ_CLIENT_ERROR(a, b) ASSERT_EQ(a, b) << ClientErrorToString(a) << " should be " << ClientErrorToString(b);
@@ -35,7 +36,7 @@
 class ClientTest : public ::testing::Test {
 protected:
 	ClientTest() : server(HTTP::Configuration(finder, secPolicies), cgiManager), client(&server) {
-		client.connection = std::make_unique<Connection>(0, server.config().useTransportSecurity, &internalData);
+		client.connection = std::make_unique<Connection>(&internalData);
 	}
 
 	// void TearDown() override {}
