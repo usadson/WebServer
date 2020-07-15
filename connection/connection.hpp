@@ -64,6 +64,7 @@ public:
 private:
 	bool hasWriteFailed{ false };
 	int internalSocket;
+	void *securityContext{ nullptr };
 	bool useTransportSecurity;
 #endif /* CONNECTION_MEMORY_VARIANT */
 };

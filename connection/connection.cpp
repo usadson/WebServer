@@ -6,6 +6,8 @@
 
 #include "connection/connection.hpp"
 
+#define TLS_LIBRARY_OPENSSL
+
 #include <sstream>
 
 #include <cerrno>
@@ -26,13 +28,29 @@
 #include <array>
 #endif
 
+#if defined(TLS_LIBRARY_OPENSSL)
+#include <array>
+#include <openssl/ssl.h>
+#else
+#error Unsupported TLS Library
+#endif
+
 #include "base/logger.hpp"
+#include "http/configuration.hpp"
 
 Connection::~Connection() noexcept {
 	if (hasWriteFailed) {
 		// TODO Make sure if the socket can be viewed as void.
 		// ... <<< NOTE no close() call
 		return;
+	}
+
+	if (useTransportSecurity) {
+#if defined(TLS_LIBRARY_OPENSSL)
+		auto ssl = reinterpret_cast<SSL *>(securityContext);
+		SSL_shutdown(ssl);
+		SSL_free(ssl);
+#endif
 	}
 
 	// This makes sure all data has been transferred before closing the
@@ -53,15 +71,17 @@ Connection::~Connection() noexcept {
 }
 
 bool
-Connection::Setup(const HTTP::Configuration & /* configuration */) noexcept {
+Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 	int i = 1;
 	if (setsockopt(internalSocket, IPPROTO_TCP, TCP_NODELAY, static_cast<void *>(&i), sizeof(i)) == -1) {
 		return false;
 	}
 
 	if (useTransportSecurity) {
-		// TODO Use TLS wrapper
-		return false;
+#if defined(TLS_LIBRARY_OPENSSL)
+		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.serverSecurityContext));
+		return securityContext != nullptr;
+#endif
 	}
 
 	// No setup is needed for non-secure connections
@@ -76,8 +96,11 @@ Connection::ReadChar(char *buf) const noexcept {
 	}
 
 	if (useTransportSecurity) {
-		// TODO Use TLS wrapper
+#if defined(TLS_LIBRARY_OPENSSL)
+		return SSL_read(reinterpret_cast<SSL *>(securityContext), buf, 1) == 1;
+#else
 		return false;
+#endif
 	}
 
 	return read(internalSocket, buf, 1) != -1;
@@ -86,9 +109,28 @@ Connection::ReadChar(char *buf) const noexcept {
 bool
 Connection::SendFile(int fd, std::size_t count) noexcept {
 	if (useTransportSecurity) {
-		// TODO Use TLS wrapper
+		// TODO Use ktls for in-kernel TLS (= support for sendfile)
+#if defined(TLS_LIBRARY_OPENSSL)
+		std::array<char, 4096> buffer {};
+		do {
+			ssize_t result = read(fd, buffer.data(), 4096);
+			if (result == -1) {
+				return false;
+			}
+			count -= result;
+			do {
+				ssize_t writeResult = SSL_write(reinterpret_cast<SSL *>(securityContext), buffer.data(), result);
+				if (writeResult == -1) {
+					hasWriteFailed = true;
+					return false;
+				}
+				result -= writeResult;
+			} while (result != 0);
+		} while (count != 0);
+#else
 		hasWriteFailed = true;
 		return false;
+#endif
 	}
 
 #if defined(__FreeBSD__)
@@ -148,7 +190,14 @@ Connection::WriteString(const std::string &str, bool includeNullCharacter) noexc
 	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
 
 	while (len != 0) {
-		int status = write(internalSocket, str.c_str() + off, len);
+		ssize_t status;
+		if (useTransportSecurity) {
+#if defined(TLS_LIBRARY_OPENSSL)
+			status = SSL_write(reinterpret_cast<SSL *>(securityContext), str.c_str() + off, len);
+#endif
+		} else {
+			status = write(internalSocket, str.c_str() + off, len);
+		}
 
 		if (status == -1) {
 			hasWriteFailed = true;
@@ -168,7 +217,14 @@ Connection::WriteStringView(const std::string_view &str, bool includeNullCharact
 	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
 
 	while (len != 0) {
-		int status = write(internalSocket, str.data() + off, len);
+		ssize_t status;
+		if (useTransportSecurity) {
+#if defined(TLS_LIBRARY_OPENSSL)
+			status = SSL_write(reinterpret_cast<SSL *>(securityContext), str.data() + off, len);
+#endif
+		} else {
+			status = write(internalSocket, str.data() + off, len);
+		}
 
 		if (status == -1) {
 			hasWriteFailed = true;
