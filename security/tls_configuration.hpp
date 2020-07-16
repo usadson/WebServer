@@ -12,8 +12,8 @@ namespace Security {
 
 struct TLSConfiguration {
 
-	const std::string CertificateFile;
-	const std::string PrivateKeyFile;
+	std::string CertificateFile;
+	std::string PrivateKeyFile;
 
 };
 
