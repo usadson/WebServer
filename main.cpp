@@ -15,19 +15,22 @@
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "security/policies.hpp"
+#include "security/tls_configuration.hpp"
 
 int
 main() {
 	CGI::Manager manager{};
 	MediaTypeFinder mediaTypeFinder{};
 	Security::Policies securityPolicies{};
+	Security::TLSConfiguration tlsConfiguration{};
 
-	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies);
-	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies);
+	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies, tlsConfiguration);
+	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies, tlsConfiguration);
 	httpConfig1.rootDirectory = "/var/www/html";
 	httpConfig1.port = 8080;
 	httpConfig2.rootDirectory = "/var/www";
 	httpConfig2.port = 8081;
+	httpConfig2.useTransportSecurity = true;
 
 	HTTP::Server httpServer1(httpConfig1, manager);
 	HTTP::Server httpServer2(httpConfig2, manager);
