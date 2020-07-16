@@ -30,12 +30,13 @@
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "security/policies.hpp"
+#include "security/tls_configuration.hpp"
 
 // 	Configuration config;
 
 class ClientTest : public ::testing::Test {
 protected:
-	ClientTest() : server(HTTP::Configuration(finder, secPolicies), cgiManager), client(&server) {
+	ClientTest() : server(HTTP::Configuration(finder, secPolicies, tlsConfig), cgiManager), client(&server) {
 		client.connection = std::make_unique<Connection>(&internalData);
 	}
 
@@ -44,6 +45,7 @@ protected:
 	CGI::Manager cgiManager;
 	MediaTypeFinder finder;
 	Security::Policies secPolicies;
+	Security::TLSConfiguration tlsConfig;
 	HTTP::Server server;
 	MemoryUserData internalData{};
 	HTTP::Client client;
