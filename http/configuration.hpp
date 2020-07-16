@@ -14,13 +14,16 @@
 
 #include "base/media_type.hpp"
 #include "security/policies.hpp"
+#include "security/tls_configuration.hpp"
 
 namespace HTTP {
 
 struct Configuration {
 
-	inline Configuration(const MediaTypeFinder &mediaTypeFinder, const Security::Policies &policies)
-		: mediaTypeFinder(mediaTypeFinder), securityPolicies(policies) {
+	inline Configuration(const MediaTypeFinder &mediaTypeFinder, const Security::Policies &policies,
+						 const Security::TLSConfiguration &tlsConfiguration)
+		: mediaTypeFinder(mediaTypeFinder), securityPolicies(policies),
+		  tlsConfiguration(tlsConfiguration) {
 	}
 
 	// The amount of clients awaiting in the accept() queue
@@ -54,6 +57,9 @@ struct Configuration {
 	// The underlying object depends on the TLS library.
 	// OpenSSL: "void *" is actually "SSL_CTX *"
 	void *serverSecurityContext{ nullptr };
+
+	// The configuration for the TLS implementation.
+	const Security::TLSConfiguration &tlsConfiguration;
 
 	// Whether or a security layer should be used.
 	// The security layer is TLS.
