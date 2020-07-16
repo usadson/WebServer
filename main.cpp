@@ -17,12 +17,20 @@
 #include "security/policies.hpp"
 #include "security/tls_configuration.hpp"
 
+bool
+LoadTLSConfiguration(Security::TLSConfiguration &config);
+
 int
 main() {
 	CGI::Manager manager{};
 	MediaTypeFinder mediaTypeFinder{};
 	Security::Policies securityPolicies{};
 	Security::TLSConfiguration tlsConfiguration{};
+
+	if (!LoadTLSConfiguration(tlsConfiguration)) {
+		Logger::Error("Main", "Failed to load TLS configuration");
+		return EXIT_FAILURE;
+	}
 
 	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies, tlsConfiguration);
 	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies, tlsConfiguration);
@@ -56,4 +64,21 @@ main() {
 	fclose(stderr);
 
 	return EXIT_SUCCESS;
+}
+
+bool
+LoadTLSConfiguration(Security::TLSConfiguration &config) {
+	if (const char *certificateFile = std::getenv("WS_TLS_CERT")) {
+		if (const char *privateKeyFile = std::getenv("WS_TLS_PRIVATE_KEY")) {
+			config.CertificateFile = certificateFile;
+			config.PrivateKeyFile = privateKeyFile;
+			return true;
+		} else {
+			Logger::Error("TLS Configuration", "WS_TLS_PRIVATE_KEY not found in environment");
+		}
+	} else {
+		Logger::Error("TLS Configuration", "WS_TLS_CERT not found in environment");
+	}
+
+	return false;
 }
