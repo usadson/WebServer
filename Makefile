@@ -44,10 +44,12 @@ clean:
 # The 'server' target will build the final binary executable.
 server: main.cpp \
 	base/logger.hpp \
+	base/media_type.hpp \
 	cgi/manager.hpp \
 	http/configuration.hpp \
 	http/server.hpp \
 	security/policies.hpp \
+	security/tls_configuration.hpp \
 	$(MAIN_BINARIES)
 	$(CXX) $(CXXFLAGS) -o $@ main.cpp $(MAIN_BINARIES) $(LDFLAGS)
 
