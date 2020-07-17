@@ -98,7 +98,10 @@ bin/cgi/manager.o: cgi/manager.cpp \
 	$(CXX) $(CXXFLAGS) -c -o $@ cgi/manager.cpp
 
 bin/connection/connection.o: connection/connection.cpp \
-	connection/connection.hpp
+	connection/connection.hpp \
+	base/logger.hpp \
+	connection/security_internals.hpp \
+	http/configuration.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ connection/connection.cpp
 
 bin/connection/security_internals.o: connection/openssl.cpp \
