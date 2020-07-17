@@ -95,9 +95,13 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 			return false;
 		}
 
-		if (SSL_do_handshake(ctx) != 1) {
+		auto status = SSL_do_handshake(ctx);
+		if (status != 1) {
 			ERR_print_errors_fp(stderr);
-			Logger::Error("Connection::Setup", "Failed to perform TLS handshake");
+			std::stringstream error;
+			error << "Failed to perform TLS handshake. This is what OpenSSL has to say about it: \"";
+			error << SSL_get_error(ctx, status) << '"';
+			Logger::Error("Connection::Setup", error.str());
 			return false;
 		}
 
