@@ -61,10 +61,10 @@ public:
 	void *userData;
 	void *securityContext{ nullptr };
 
-#ifndef CONNECTION_ALLOW_EXTENDED_VISIBILITY
+#ifndef CONNECTION_MEMORY_VARIANT
 private:
 	bool hasWriteFailed{ false };
 	const int internalSocket;
 	const bool useTransportSecurity;
-#endif /* CONNECTION_ALLOW_EXTENDED_VISIBILITY */
+#endif /* CONNECTION_MEMORY_VARIANT */
 };

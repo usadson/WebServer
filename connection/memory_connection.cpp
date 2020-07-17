@@ -4,7 +4,7 @@
  * See the COPYING file for licensing information.
  */
 
-#define CONNECTION_ALLOW_EXTENDED_VISIBILITY
+#define CONNECTION_MEMORY_VARIANT
 
 #include "connection/connection.hpp"
 
