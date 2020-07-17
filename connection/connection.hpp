@@ -59,12 +59,12 @@ public:
 	WriteStringView(const std::string_view &) noexcept;
 
 	void *userData;
+	void *securityContext{ nullptr };
 
 #ifndef CONNECTION_MEMORY_VARIANT
 private:
 	bool hasWriteFailed{ false };
 	const int internalSocket;
-	void *securityContext{ nullptr };
 	const bool useTransportSecurity;
 #endif /* CONNECTION_MEMORY_VARIANT */
 };
