@@ -12,6 +12,8 @@ namespace Security {
 
 struct TLSConfiguration {
 
+	~TLSConfiguration();
+
 	[[nodiscard]] bool
 	CreateContext();
 

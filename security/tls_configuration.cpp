@@ -15,6 +15,11 @@
 #error Unsupported TLS Library
 #endif
 
+Security::TLSConfiguration::~TLSConfiguration() {
+	SSL_CTX_free(reinterpret_cast<SSL_CTX *>(context));
+	EVP_cleanup();
+}
+
 bool
 Security::TLSConfiguration::CreateContext() {
 	SSL_load_error_strings();
