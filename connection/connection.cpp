@@ -82,7 +82,9 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
 		if (securityContext == nullptr) {
 			ERR_print_errors_fp(stderr);
-			Logger::Error(__PRETTY_FUNCTION__, "SSL_new failed");
+			std::stringstream error;
+			error << "SSL_new failed. TLS context is " << configuration.tlsConfiguration.context;
+			Logger::Error(__PRETTY_FUNCTION__, error.str());
 			return false;
 		}
 		return true;
