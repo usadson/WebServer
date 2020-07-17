@@ -12,6 +12,9 @@ namespace Security {
 
 struct TLSConfiguration {
 
+	[[nodiscard]] bool
+	CreateContext();
+
 	std::string CertificateFile;
 	std::string PrivateKeyFile;
 
