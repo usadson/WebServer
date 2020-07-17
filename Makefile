@@ -141,14 +141,12 @@ bin/http/client.o: http/client.cpp \
 
 bin/http/server.o: http/server.cpp \
 	http/server.hpp \
+	cgi/manager.hpp \
+	base/logger.hpp \
 	http/client.hpp \
 	http/configuration.hpp \
 	http/server_launch_error.hpp \
 	io/file_resolver.hpp \
-	base/logger.hpp \
-	http/client.hpp \
-	http/configuration.hpp \
-	http/server_launch_error.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/server.cpp
 
 bin/http/server_launch_error.o: http/server_launch_error.cpp \
