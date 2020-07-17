@@ -63,8 +63,8 @@ public:
 #ifndef CONNECTION_MEMORY_VARIANT
 private:
 	bool hasWriteFailed{ false };
-	int internalSocket;
+	const int internalSocket;
 	void *securityContext{ nullptr };
-	bool useTransportSecurity;
+	const bool useTransportSecurity;
 #endif /* CONNECTION_MEMORY_VARIANT */
 };

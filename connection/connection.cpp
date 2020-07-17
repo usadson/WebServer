@@ -67,7 +67,6 @@ Connection::~Connection() noexcept {
 
 	/* ignore-return-value */ shutdown(internalSocket, SHUT_RDWR);
 	/* ignore-return-value */ close(internalSocket);
-	internalSocket = -1;
 }
 
 bool
