@@ -15,7 +15,8 @@ TEST_GENERAL_DEPENDENCIES = \
 	bin/http/server.o \
 	bin/http/server_launch_error.o \
 	bin/io/file.o \
-	bin/io/file_resolver.o
+	bin/io/file_resolver.o \
+	bin/security/tls_configuration.o
 
 test: \
 	bin/test/http/client.o \
