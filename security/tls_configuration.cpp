@@ -33,12 +33,12 @@ Security::TLSConfiguration::CreateContext() {
 
 	this->context = ctx;
 
-	if (SSL_CTX_use_certificate_file(ctx, CertificateFile.c_str(), SSL_FILETYPE_PEM) != 1) {
+	if (SSL_CTX_use_certificate_file(ctx, certificateFile.c_str(), SSL_FILETYPE_PEM) != 1) {
 		ERR_print_errors_fp(stderr);
 		return false;
 	}
 
-	if (SSL_CTX_use_PrivateKey_file(ctx, PrivateKeyFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
+	if (SSL_CTX_use_PrivateKey_file(ctx, privateKeyFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
 		ERR_print_errors_fp(stderr);
 		return false;
 	}

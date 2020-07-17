@@ -70,8 +70,8 @@ bool
 LoadTLSConfiguration(Security::TLSConfiguration &config) {
 	if (const char *certificateFile = std::getenv("WS_TLS_CERT")) {
 		if (const char *privateKeyFile = std::getenv("WS_TLS_PRIVATE_KEY")) {
-			config.CertificateFile = certificateFile;
-			config.PrivateKeyFile = privateKeyFile;
+			config.certificateFile = certificateFile;
+			config.privateKeyFile = privateKeyFile;
 		} else {
 			Logger::Error("TLS Configuration", "WS_TLS_PRIVATE_KEY not found in environment");
 			return false;

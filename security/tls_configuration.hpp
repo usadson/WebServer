@@ -17,8 +17,8 @@ struct TLSConfiguration {
 	[[nodiscard]] bool
 	CreateContext();
 
-	std::string CertificateFile;
-	std::string PrivateKeyFile;
+	std::string certificateFile;
+	std::string privateKeyFile;
 
 	// The underlying object depends on the TLS library.
 	// OpenSSL: "void *" is actually "SSL_CTX *"
