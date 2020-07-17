@@ -62,7 +62,9 @@ public:
 	void *securityContext{ nullptr };
 
 #ifndef CONNECTION_MEMORY_VARIANT
+#ifndef CONNECTION_ALLOW_EXTENDED_VISIBILITY
 private:
+#endif
 	bool hasWriteFailed{ false };
 	const int internalSocket;
 	const bool useTransportSecurity;
