@@ -10,6 +10,9 @@
 
 namespace Security {
 
+// The TLS configuration is how the security should be handled within Wizard.
+// This configuration isn't implementation specific, and should be implemented
+// and used with that in mind.
 struct TLSConfiguration {
 
 	~TLSConfiguration();
@@ -17,12 +20,30 @@ struct TLSConfiguration {
 	[[nodiscard]] bool
 	CreateContext();
 
+	// This is the full path for the certificate file. The certificate roughly
+	// speaking specifies the ownership of the domain, to ensure no
+	// man-in-the-middle attack can be performed.
+	// Read more at https://en.wikipedia.org/wiki/Public_key_certificate
+	// Read more at https://en.wikipedia.org/wiki/Man-in-the-middle_attack
 	std::string certificateFile;
+
+	// This is the full path for the certificate chain file. As each certificate
+	// depends on another (except for root certificates), the final certificate
+	// (simply called certificate) should be accompanied by the other related
+	// certificates. This file contains those very certificates.
+	// Read more at https://en.wikipedia.org/wiki/Chain_of_trust
 	std::string chainFile;
+
+	// This is the full path for the private key file. The private key contains
+	// information needed to succesfully decrypt a TLS message. As the name
+	// suggest, this file should be kept private.
+	// Read more at https://en.wikipedia.org/wiki/Public-key_cryptography
 	std::string privateKeyFile;
 
-	// The underlying object depends on the TLS library.
-	// OpenSSL: "void *" is actually "SSL_CTX *"
+	// The context is dependent on the TLS implementation, but often represents
+	// the compiled configuration, with loaded certificates and all.
+	//
+	// e.g. OpenSSL: "void *" is actually "SSL_CTX *"
 	void *context{ nullptr };
 
 };
