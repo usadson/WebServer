@@ -23,6 +23,9 @@
 static const char *
 GetSSLErrorString(int error);
 
+static void
+LogDescriptiveError(SSL *ssl, int status, const char *tag, const char *action);
+
 void
 ConnectionSecureInternals::Destruct(Connection *connection) {
 	auto *ssl = reinterpret_cast<SSL *>(connection->securityContext);
@@ -51,31 +54,13 @@ ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configurati
 
 	int status = SSL_accept(ssl);
 	if (status != 1) {
-		ERR_print_errors_fp(stderr);
-		Logger::Error("CSI[OSSL]::Setup", "Failed to setup TLS communication.");
-		std::stringstream error;
-		error << "This is what OpenSSL has to say about it: \"";
-		error << GetSSLErrorString(SSL_get_error(ssl, status)) << '"';
-		Logger::Error("CSI[OSSL]::Setup", error.str());
-		error = std::stringstream();
-		error << "This is what error has to say about it: \"";
-		error << std::strerror(errno) << '"';
-		Logger::Error("CSI[OSSL]::Setup", error.str());
+		LogDescriptiveError(ssl, status, "CSI[OSSL]::Setup", "setup TLS communication");
 		return false;
 	}
 
 	status = SSL_do_handshake(ssl);
 	if (status != 1) {
-		ERR_print_errors_fp(stderr);
-		Logger::Error("CSI[OSSL]::Setup", "Failed to perform TLS handshake.");
-		std::stringstream error;
-		error << "This is what OpenSSL has to say about it: \"";
-		error << GetSSLErrorString(SSL_get_error(ssl, status)) << '"';
-		Logger::Error("CSI[OSSL]::Setup", error.str());
-		error = std::stringstream();
-		error << "This is what error has to say about it: \"";
-		error << std::strerror(errno) << '"';
-		Logger::Error("Connection::Setup", error.str());
+		LogDescriptiveError(ssl, status, "CSI[OSSL]::Setup", "perform TLS handshake");
 		return false;
 	}
 
@@ -122,6 +107,23 @@ ConnectionSecureInternals::SendFile(Connection *connection, int fd, std::size_t 
 int
 ConnectionSecureInternals::Write(Connection *connection, const char *str, std::size_t len) {
 	return SSL_write(reinterpret_cast<SSL *>(connection->securityContext), str, len);
+}
+
+static void
+LogDescriptiveError(SSL *ssl, int status, const char *tag, const char *action) {
+	ERR_print_errors_fp(stderr);
+
+	Logger::Error(tag, std::string("Failed to ") + action);
+
+	std::stringstream error;
+	error << "This is what OpenSSL has to say about it: \"";
+	error << GetSSLErrorString(SSL_get_error(ssl, status)) << '"';
+	Logger::Error(tag, error.str());
+
+	error = std::stringstream();
+	error << "This is what error has to say about it: \"";
+	error << std::strerror(errno) << '"';
+	Logger::Error(tag, error.str());
 }
 
 static const char *
