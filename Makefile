@@ -13,6 +13,7 @@ MAIN_BINARIES = bin/base/error_reporter.o \
 	   bin/base/strings.o \
 	   bin/cgi/manager.o \
 	   bin/connection/connection.o \
+	   bin/connection/security_internals.o \
 	   bin/http/client.o \
 	   bin/http/client_error.o \
 	   bin/http/server.o \
@@ -97,6 +98,13 @@ bin/cgi/manager.o: cgi/manager.cpp \
 bin/connection/connection.o: connection/connection.cpp \
 	connection/connection.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ connection/connection.cpp
+
+bin/connection/security_internals.o: connection/openssl.cpp \
+	connection/security_internals.hpp \
+	base/logger.hpp \
+	connection/connection.hpp \
+	http/configuration.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ connection/openssl.cpp
 
 bin/connection/memory_connection.o: connection/memory_connection.cpp \
 	connection/connection.hpp \
