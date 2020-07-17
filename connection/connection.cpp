@@ -104,7 +104,9 @@ Connection::ReadChar(char *buf) const noexcept {
 
 	if (useTransportSecurity) {
 #if defined(TLS_LIBRARY_OPENSSL)
-		return SSL_read(reinterpret_cast<SSL *>(securityContext), buf, 1) == 1;
+		auto status = SSL_read(reinterpret_cast<SSL *>(securityContext), buf, 1);
+		ERR_print_errors_fp(stderr);
+		return status == 1;
 #else
 		return false;
 #endif
