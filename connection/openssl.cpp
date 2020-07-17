@@ -21,7 +21,7 @@
 #include "connection/connection.hpp"
 
 static const char *
-GetSSLErrorString(int);
+GetSSLErrorString(int error);
 
 void
 ConnectionSecureInternals::Destruct(Connection *connection) {
