@@ -126,6 +126,8 @@ bin/http/client.o: http/client.cpp \
 	base/logger.hpp \
 	base/media_type.hpp \
 	base/strings.hpp \
+	cgi/manager.hpp \
+	cgi/script.hpp \
 	connection/connection.hpp \
 	http/client_error.hpp \
 	http/configuration.hpp \
@@ -133,7 +135,8 @@ bin/http/client.o: http/client.cpp \
 	http/server.hpp \
 	http/utils.hpp \
 	io/file.hpp \
-	io/file_resolver.hpp
+	io/file_resolver.hpp \
+	security/policies.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/client.cpp
 
 bin/http/server.o: http/server.cpp \
