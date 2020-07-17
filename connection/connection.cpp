@@ -105,6 +105,9 @@ Connection::ReadChar(char *buf) const noexcept {
 	if (useTransportSecurity) {
 #if defined(TLS_LIBRARY_OPENSSL)
 		auto status = SSL_read(reinterpret_cast<SSL *>(securityContext), buf, 1);
+		std::stringstream error;
+		error << "SSL_read failed. securityContext is " << securityContext;
+		Logger::Error(__FUNCTION__, error.str());
 		ERR_print_errors_fp(stderr);
 		return status == 1;
 #else
