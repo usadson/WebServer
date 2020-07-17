@@ -50,11 +50,13 @@ Security::TLSConfiguration::CreateContext() {
 		Logger::Error("TLSConfiguration::CreateContext", "Failed to open chain file");
 		return false;
 	}
-	while (X509 *cert = PEM_read_X509(file, NULL, 0, NULL)) {
+	while (X509 *cert = PEM_read_X509(file, nullptr, 0, nullptr)) {
 		if (!SSL_CTX_add_extra_chain_cert(ctx, cert)) {
-			Logger::Error("TLSConfiguration::CreateContext", "Failed to add extra chain certificate");
 			ERR_print_errors_fp(stderr);
-			return 0;
+			Logger::Error("TLSConfiguration::CreateContext", "Failed to add extra chain certificate");
+			fclose(file);
+			X509_free(cert);
+			return false;
 		}
 	}
 	fclose(file);
