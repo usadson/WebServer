@@ -32,9 +32,10 @@ ConnectionSecureInternals::Destruct(Connection *connection) {
 
 bool
 ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configuration &configuration) {
-	auto *ctx = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
-	connection->securityContext = ctx;
-	if (ctx == nullptr) {
+	auto *ssl = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
+	connection->securityContext = ssl;
+
+	if (ssl == nullptr) {
 		ERR_print_errors_fp(stderr);
 		std::stringstream error;
 		error << "SSL_new failed. TLS context is " << configuration.tlsConfiguration.context;
@@ -42,19 +43,19 @@ ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configurati
 		return false;
 	}
 
-	if (SSL_set_fd(ctx, connection->internalSocket) == 0) {
+	if (SSL_set_fd(ssl, connection->internalSocket) == 0) {
 		ERR_print_errors_fp(stderr);
 		Logger::Error("CSI[OSSL]::Setup", "Failed to set socket (FD)");
 		return false;
 	}
 
-	int status = SSL_accept(ctx);
+	int status = SSL_accept(ssl);
 	if (status != 1) {
 		ERR_print_errors_fp(stderr);
 		Logger::Error("CSI[OSSL]::Setup", "Failed to setup TLS communication.");
 		std::stringstream error;
 		error << "This is what OpenSSL has to say about it: \"";
-		error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
+		error << GetSSLErrorString(SSL_get_error(ssl, status)) << '"';
 		Logger::Error("CSI[OSSL]::Setup", error.str());
 		error = std::stringstream();
 		error << "This is what error has to say about it: \"";
@@ -63,13 +64,13 @@ ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configurati
 		return false;
 	}
 
-	status = SSL_do_handshake(ctx);
+	status = SSL_do_handshake(ssl);
 	if (status != 1) {
 		ERR_print_errors_fp(stderr);
 		Logger::Error("CSI[OSSL]::Setup", "Failed to perform TLS handshake.");
 		std::stringstream error;
 		error << "This is what OpenSSL has to say about it: \"";
-		error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
+		error << GetSSLErrorString(SSL_get_error(ssl, status)) << '"';
 		Logger::Error("CSI[OSSL]::Setup", error.str());
 		error = std::stringstream();
 		error << "This is what error has to say about it: \"";
