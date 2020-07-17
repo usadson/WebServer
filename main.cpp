@@ -82,5 +82,5 @@ LoadTLSConfiguration(Security::TLSConfiguration &config) {
 		return false;
 	}
 
-	return config.CreateContext();
+	return config.CreateContext() && config.context != nullptr;
 }
