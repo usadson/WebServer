@@ -75,10 +75,12 @@ LoadTLSConfiguration(Security::TLSConfiguration &config) {
 			return true;
 		} else {
 			Logger::Error("TLS Configuration", "WS_TLS_PRIVATE_KEY not found in environment");
+			return false;
 		}
 	} else {
 		Logger::Error("TLS Configuration", "WS_TLS_CERT not found in environment");
+		return false;
 	}
 
-	return false;
+	return config.CreateContext();
 }
