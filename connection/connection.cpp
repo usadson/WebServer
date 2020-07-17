@@ -119,7 +119,22 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 			return false;
 		}
 
-		auto status = SSL_do_handshake(ctx);
+		int status = SSL_accept(ctx);
+		if (status != 1) {
+			ERR_print_errors_fp(stderr);
+			Logger::Error("Connection::Setup", "Failed to setup TLS communication.");
+			std::stringstream error;
+			error << "This is what OpenSSL has to say about it: \"";
+			error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
+			Logger::Error("Connection::Setup", error.str());
+			error = std::stringstream();
+			error << "This is what error has to say about it: \"";
+			error << std::strerror(errno) << '"';
+			Logger::Error("Connection::Setup", error.str());
+			return false;
+		}
+
+		status = SSL_do_handshake(ctx);
 		if (status != 1) {
 			ERR_print_errors_fp(stderr);
 			Logger::Error("Connection::Setup", "Failed to perform TLS handshake.");
