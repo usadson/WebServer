@@ -26,6 +26,11 @@ Security::TLSConfiguration::CreateContext() {
 	OpenSSL_add_ssl_algorithms();
 
 	auto ctx = SSL_CTX_new(SSLv23_method());
+
+	if (ctx == nullptr) {
+		return false;
+	}
+
 	this->context = ctx;
 
 	if (SSL_CTX_use_certificate_file(ctx, CertificateFile.c_str(), SSL_FILETYPE_PEM) != 1) {
@@ -35,7 +40,7 @@ Security::TLSConfiguration::CreateContext() {
 
 	if (SSL_CTX_use_PrivateKey_file(ctx, PrivateKeyFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
 		ERR_print_errors_fp(stderr);
-		return 0;
+		return false;
 	}
 
 	SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
