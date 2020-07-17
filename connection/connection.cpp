@@ -30,6 +30,7 @@
 
 #if defined(TLS_LIBRARY_OPENSSL)
 #include <array>
+#include <openssl/err.h>
 #include <openssl/ssl.h>
 #else
 #error Unsupported TLS Library
@@ -80,6 +81,7 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 #if defined(TLS_LIBRARY_OPENSSL)
 		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
 		if (securityContext == nullptr) {
+			ERR_print_errors_fp(stderr);
 			Logger::Error(__PRETTY_FUNCTION__, "SSL_new failed");
 			return false;
 		}
