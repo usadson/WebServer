@@ -15,6 +15,8 @@
 #error Unsupported TLS Library
 #endif
 
+#include "base/logger.hpp"
+
 Security::TLSConfiguration::~TLSConfiguration() {
 	SSL_CTX_free(reinterpret_cast<SSL_CTX *>(context));
 	EVP_cleanup();
@@ -42,6 +44,20 @@ Security::TLSConfiguration::CreateContext() {
 		ERR_print_errors_fp(stderr);
 		return false;
 	}
+
+	FILE *file = fopen(chainFile.c_str(), "r");
+	if (file == nullptr) {
+		Logger::Error("TLSConfiguration::CreateContext", "Failed to open chain file");
+		return false;
+	}
+	while (X509 *cert = PEM_read_X509(file, NULL, 0, NULL)) {
+		if (!SSL_CTX_add_extra_chain_cert(ctx, cert)) {
+			Logger::Error("TLSConfiguration::CreateContext", "Failed to add extra chain certificate");
+			ERR_print_errors_fp(stderr);
+			return 0;
+		}
+	}
+	fclose(file);
 
 	SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 
