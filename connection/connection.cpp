@@ -39,6 +39,30 @@
 #include "base/logger.hpp"
 #include "http/configuration.hpp"
 
+#ifdef TLS_LIBRARY_OPENSSL
+static const char *
+GetSSLErrorString(int error) {
+	switch (error) {
+		case SSL_ERROR_NONE:
+			return "SSL_ERROR_NONE";
+		case SSL_ERROR_ZERO_RETURN:
+			return "SSL_ERROR_ZERO_RETURN";
+		case SSL_ERROR_WANT_READ:
+			return "SSL_ERROR_WANT_READ or WRITE";
+		case SSL_ERROR_WANT_CONNECT:
+			return "SSL_ERROR_WANT_CONNECT or ACCEPT";
+		case SSL_ERROR_WANT_X509_LOOKUP:
+			return "SSL_ERROR_WANT_X509_LOOKUP";
+		case SSL_ERROR_SYSCALL:
+			return "SSL_ERROR_SYSCALL";
+		case SSL_ERROR_SSL:
+			return "SSL_ERROR_SSL";
+		default:
+			return "no string for this OpenSSL error code";
+	}
+}
+#endif
+
 Connection::~Connection() noexcept {
 	if (hasWriteFailed) {
 		// TODO Make sure if the socket can be viewed as void.
@@ -100,7 +124,7 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 			ERR_print_errors_fp(stderr);
 			std::stringstream error;
 			error << "Failed to perform TLS handshake. This is what OpenSSL has to say about it: \"";
-			error << SSL_get_error(ctx, status) << '"';
+			error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
 			Logger::Error("Connection::Setup", error.str());
 			return false;
 		}
