@@ -36,7 +36,7 @@ main() {
 	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies, tlsConfiguration);
 	httpConfig1.rootDirectory = "/var/www/html";
 	httpConfig1.port = 8080;
-	httpConfig2.rootDirectory = "/var/www";
+	httpConfig2.rootDirectory = "/var/www/html";
 	httpConfig2.port = 8081;
 	httpConfig2.useTransportSecurity = true;
 
