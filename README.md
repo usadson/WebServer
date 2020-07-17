@@ -30,5 +30,12 @@ As the project is currently in development stages, no system(ctl/d/etc.) support
 atm. Simply run the executable with `./server`. You may need to `chmod +x server`
 it.
 
+To stop the server, a forceful Control+C can be inputted, but a better thing to do
+is to type some text and then hitting enter:
+```cpp
+std::string test;
+std::cin >> test;
+```
+
 ## Licensing
 This project is [licensed](COPYING) under a 2 Clause BSD-like license.
