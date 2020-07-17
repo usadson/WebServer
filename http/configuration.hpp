@@ -54,10 +54,6 @@ struct Configuration {
 	// The 'Server' header field value as defined per RFC 7231 § 7.4.2
 	std::string serverProductName { "Wizard" };
 
-	// The underlying object depends on the TLS library.
-	// OpenSSL: "void *" is actually "SSL_CTX *"
-	void *serverSecurityContext{ nullptr };
-
 	// The configuration for the TLS implementation.
 	const Security::TLSConfiguration &tlsConfiguration;
 

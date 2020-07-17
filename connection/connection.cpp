@@ -79,7 +79,7 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 
 	if (useTransportSecurity) {
 #if defined(TLS_LIBRARY_OPENSSL)
-		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.serverSecurityContext));
+		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
 		return securityContext != nullptr;
 #endif
 	}

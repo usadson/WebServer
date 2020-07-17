@@ -15,6 +15,10 @@ struct TLSConfiguration {
 	std::string CertificateFile;
 	std::string PrivateKeyFile;
 
+	// The underlying object depends on the TLS library.
+	// OpenSSL: "void *" is actually "SSL_CTX *"
+	void *context{ nullptr };
+
 };
 
 } // namespace Security
