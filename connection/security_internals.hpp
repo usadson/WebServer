@@ -4,10 +4,10 @@
  * See the COPYING file for licensing information.
  */
 
+#include <cstddef> // for std::size_t
+
 #include "connection/connection.hpp"
 #include "http/configuration.hpp"
-
-#include <cstddef> // for std::size_t
 
 namespace ConnectionSecureInternals {
 
