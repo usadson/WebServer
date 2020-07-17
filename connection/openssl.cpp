@@ -38,39 +38,39 @@ ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configurati
 		ERR_print_errors_fp(stderr);
 		std::stringstream error;
 		error << "SSL_new failed. TLS context is " << configuration.tlsConfiguration.context;
-		Logger::Error(__PRETTY_FUNCTION__, error.str());
+		Logger::Error("CSI[OSSL]::Setup", error.str());
 		return false;
 	}
 
 	if (SSL_set_fd(ctx, connection->internalSocket) == 0) {
 		ERR_print_errors_fp(stderr);
-		Logger::Error("Connection::Setup", "Failed to set socket (FD)");
+		Logger::Error("CSI[OSSL]::Setup", "Failed to set socket (FD)");
 		return false;
 	}
 
 	int status = SSL_accept(ctx);
 	if (status != 1) {
 		ERR_print_errors_fp(stderr);
-		Logger::Error("Connection::Setup", "Failed to setup TLS communication.");
+		Logger::Error("CSI[OSSL]::Setup", "Failed to setup TLS communication.");
 		std::stringstream error;
 		error << "This is what OpenSSL has to say about it: \"";
 		error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
-		Logger::Error("Connection::Setup", error.str());
+		Logger::Error("CSI[OSSL]::Setup", error.str());
 		error = std::stringstream();
 		error << "This is what error has to say about it: \"";
 		error << std::strerror(errno) << '"';
-		Logger::Error("Connection::Setup", error.str());
+		Logger::Error("CSI[OSSL]::Setup", error.str());
 		return false;
 	}
 
 	status = SSL_do_handshake(ctx);
 	if (status != 1) {
 		ERR_print_errors_fp(stderr);
-		Logger::Error("Connection::Setup", "Failed to perform TLS handshake.");
+		Logger::Error("CSI[OSSL]::Setup", "Failed to perform TLS handshake.");
 		std::stringstream error;
 		error << "This is what OpenSSL has to say about it: \"";
 		error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
-		Logger::Error("Connection::Setup", error.str());
+		Logger::Error("CSI[OSSL]::Setup", error.str());
 		error = std::stringstream();
 		error << "This is what error has to say about it: \"";
 		error << std::strerror(errno) << '"';
@@ -91,7 +91,7 @@ ConnectionSecureInternals::ReadChar(const Connection *connection, char *buf) {
 
 	std::stringstream error;
 	error << "SSL_read failed. securityContext is " << connection->securityContext;
-	Logger::Error(__FUNCTION__, error.str());
+	Logger::Error("CSI[OSSL]::ReadChar", error.str());
 	ERR_print_errors_fp(stderr);
 	return false;
 }
