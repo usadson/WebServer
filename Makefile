@@ -146,7 +146,7 @@ bin/http/server.o: http/server.cpp \
 	http/client.hpp \
 	http/configuration.hpp \
 	http/server_launch_error.hpp \
-	io/file_resolver.hpp \
+	io/file_resolver.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ http/server.cpp
 
 bin/http/server_launch_error.o: http/server_launch_error.cpp \
