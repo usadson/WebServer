@@ -45,7 +45,7 @@ Connection::~Connection() noexcept {
 		return;
 	}
 
-	if (useTransportSecurity) {
+	if (useTransportSecurity && securityContext != nullptr) {
 #if defined(TLS_LIBRARY_OPENSSL)
 		auto ssl = reinterpret_cast<SSL *>(securityContext);
 		SSL_shutdown(ssl);
