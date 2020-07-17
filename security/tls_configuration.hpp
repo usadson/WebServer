@@ -18,6 +18,7 @@ struct TLSConfiguration {
 	CreateContext();
 
 	std::string certificateFile;
+	std::string chainFile;
 	std::string privateKeyFile;
 
 	// The underlying object depends on the TLS library.
