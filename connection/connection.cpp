@@ -127,7 +127,7 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 			error << "This is what OpenSSL has to say about it: \"";
 			error << GetSSLErrorString(SSL_get_error(ctx, status)) << '"';
 			Logger::Error("Connection::Setup", error.str());
-			error.clear();
+			error = std::stringstream();
 			error << "This is what error has to say about it: \"";
 			error << std::strerror(errno) << '"';
 			Logger::Error("Connection::Setup", error.str());
