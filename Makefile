@@ -18,7 +18,8 @@ MAIN_BINARIES = bin/base/error_reporter.o \
 	   bin/http/server.o \
 	   bin/http/server_launch_error.o \
 	   bin/io/file.o \
-	   bin/io/file_resolver.o
+	   bin/io/file_resolver.o \
+	   bin/security/tls_configuration.o
 
 PREREQUISITE_BINARIES = $(MAIN_BINARIES) \
 	   bin/connection/memory_connection.o
@@ -63,6 +64,7 @@ bin/test.txt:
 	@mkdir bin/connection
 	@mkdir bin/http
 	@mkdir bin/io
+	@mkdir bin/security
 	@mkdir bin/test
 	@mkdir bin/test/http
 	@touch bin/test.txt
@@ -146,6 +148,11 @@ bin/io/file_resolver.o: io/file_resolver.cpp \
 	http/request.hpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ io/file_resolver.cpp
+
+bin/security/tls_configuration.o: security/tls_configuration.cpp \
+	security/tls_configuration.hpp \
+	base/logger.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ security/tls_configuration.cpp
 
 # the 'memory' target will invoke Valgrind, which will run the executable and
 # can track memory usage. Memory leaks, double free()'s, use-after-free,
