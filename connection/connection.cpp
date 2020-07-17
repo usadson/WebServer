@@ -79,7 +79,8 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 
 	if (useTransportSecurity) {
 #if defined(TLS_LIBRARY_OPENSSL)
-		securityContext = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
+		auto ctx = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
+		securityContext = ctx;
 		if (securityContext == nullptr) {
 			ERR_print_errors_fp(stderr);
 			std::stringstream error;
@@ -87,6 +88,19 @@ Connection::Setup(const HTTP::Configuration &configuration) noexcept {
 			Logger::Error(__PRETTY_FUNCTION__, error.str());
 			return false;
 		}
+
+		if (SSL_set_fd(ctx, internalSocket) == 0) {
+			ERR_print_errors_fp(stderr);
+			Logger::Error("Connection::Setup", "Failed to set socket (FD)");
+			return false;
+		}
+
+		if (SSL_do_handshake(ctx) != 1) {
+			ERR_print_errors_fp(stderr);
+			Logger::Error("Connection::Setup", "Failed to perform TLS handshake");
+			return false;
+		}
+
 		return true;
 #endif
 	}
