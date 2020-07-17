@@ -8,6 +8,8 @@
 
 #define TLS_LIBRARY_OPENSSL
 
+#include <cstdlib>
+
 #if defined(TLS_LIBRARY_OPENSSL)
 #include <openssl/err.h>
 #include <openssl/ssl.h>
@@ -27,7 +29,7 @@ Security::TLSConfiguration::CreateContext() {
 	SSL_load_error_strings();
 	OpenSSL_add_ssl_algorithms();
 
-	auto ctx = SSL_CTX_new(SSLv23_method());
+	auto *ctx = SSL_CTX_new(SSLv23_method());
 
 	if (ctx == nullptr) {
 		return false;
@@ -45,12 +47,14 @@ Security::TLSConfiguration::CreateContext() {
 		return false;
 	}
 
-	FILE *file = fopen(chainFile.c_str(), "r");
+	FILE *file = std::fopen(chainFile.c_str(), "r");
+
 	if (file == nullptr) {
 		Logger::Error("TLSConfiguration::CreateContext", "Failed to open chain file");
 		return false;
 	}
-	while (X509 *cert = PEM_read_X509(file, nullptr, 0, nullptr)) {
+
+	while (X509 *cert = PEM_read_X509(file, nullptr, nullptr, nullptr)) {
 		if (!SSL_CTX_add_extra_chain_cert(ctx, cert)) {
 			ERR_print_errors_fp(stderr);
 			Logger::Error("TLSConfiguration::CreateContext", "Failed to add extra chain certificate");
@@ -59,7 +63,8 @@ Security::TLSConfiguration::CreateContext() {
 			return false;
 		}
 	}
-	fclose(file);
+
+	std::fclose(file);
 
 	SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 
