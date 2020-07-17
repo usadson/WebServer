@@ -61,27 +61,19 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str, bool includeNullCharacter) noexcept {
+Connection::WriteString(const std::string &str) noexcept {
 	auto *internalData = reinterpret_cast<MemoryUserData *>(userData);
 
 	std::copy(std::cbegin(str), std::cend(str), std::back_inserter(internalData->output));
-
-	if (includeNullCharacter) {
-		internalData->output.push_back('\0');
-	}
 
 	return true;
 }
 
 bool
-Connection::WriteStringView(const std::string_view &str, bool includeNullCharacter) noexcept {
+Connection::WriteStringView(const std::string_view &str) noexcept {
 	auto *internalData = reinterpret_cast<MemoryUserData *>(userData);
 
 	std::copy(std::cbegin(str), std::cend(str), std::back_inserter(internalData->output));
-
-	if (includeNullCharacter) {
-		internalData->output.push_back('\0');
-	}
 
 	return true;
 }

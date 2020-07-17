@@ -263,9 +263,9 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str, bool includeNullCharacter) noexcept {
+Connection::WriteString(const std::string &str) noexcept {
 	std::size_t off = 0;
-	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
+	std::size_t len = str.length();
 
 	while (len != 0) {
 		ssize_t status;
@@ -290,9 +290,9 @@ Connection::WriteString(const std::string &str, bool includeNullCharacter) noexc
 }
 
 bool
-Connection::WriteStringView(const std::string_view &str, bool includeNullCharacter) noexcept {
+Connection::WriteStringView(const std::string_view &str) noexcept {
 	std::size_t off = 0;
-	std::size_t len = str.length() + (includeNullCharacter ? 1 : 0);
+	std::size_t len = str.length();
 
 	while (len != 0) {
 		ssize_t status;

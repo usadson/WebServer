@@ -53,10 +53,10 @@ public:
 	Setup(const HTTP::Configuration &) noexcept;
 
 	[[nodiscard]] bool
-	WriteString(const std::string &, bool includeNullCharacter = false) noexcept;
+	WriteString(const std::string &) noexcept;
 
 	[[nodiscard]] bool
-	WriteStringView(const std::string_view &, bool includeNullCharacter = false) noexcept;
+	WriteStringView(const std::string_view &) noexcept;
 
 	void *userData;
 
