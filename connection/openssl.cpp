@@ -25,14 +25,14 @@ GetSSLErrorString(int);
 
 void
 ConnectionSecureInternals::Destruct(Connection *connection) {
-	auto ssl = reinterpret_cast<SSL *>(connection->securityContext);
+	auto *ssl = reinterpret_cast<SSL *>(connection->securityContext);
 	SSL_shutdown(ssl);
 	SSL_free(ssl);
 }
 
 bool
 ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configuration &configuration) {
-	auto ctx = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
+	auto *ctx = SSL_new(reinterpret_cast<SSL_CTX *>(configuration.tlsConfiguration.context));
 	connection->securityContext = ctx;
 	if (ctx == nullptr) {
 		ERR_print_errors_fp(stderr);
