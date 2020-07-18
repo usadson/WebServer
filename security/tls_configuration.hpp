@@ -40,6 +40,16 @@ struct TLSConfiguration {
 	// Read more at https://en.wikipedia.org/wiki/Public-key_cryptography
 	std::string privateKeyFile;
 
+	// This cipher list is a list of ciphers that TLSv1.2 should use.
+	// Read more at https://www.openssl.org/docs/man1.1.1/man1/ciphers.html
+	// TODO better further reading source
+	std::string cipherList;
+
+	// This cipher list is a list of cipher suites that TLSv1.3 should use.
+	// Read more at https://www.openssl.org/docs/man1.1.1/man3/SSL_set_ciphersuites.html
+	// TODO better further reading source
+	std::string cipherSuites;
+
 	// The context is dependent on the TLS implementation, but often represents
 	// the compiled configuration, with loaded certificates and all.
 	//
