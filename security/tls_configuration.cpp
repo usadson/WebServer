@@ -68,5 +68,17 @@ Security::TLSConfiguration::CreateContext() {
 
 	SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 
+	if (!cipherList.empty() &&
+		!SSL_CTX_set_cipher_list(ctx, cipherList.c_str())) {
+		ERR_print_errors_fp(stderr);
+		return false;
+	}
+
+	if (!cipherSuites.empty() &&
+		!SSL_CTX_set_ciphersuites(ctx, cipherSuites.c_str())) {
+		ERR_print_errors_fp(stderr);
+		return false;
+	}
+
 	return true;
 }
