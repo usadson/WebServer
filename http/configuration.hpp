@@ -67,6 +67,9 @@ struct Configuration {
 	// The configuration for the TLS implementation.
 	const Security::TLSConfiguration &tlsConfiguration;
 
+	// Use when on port 80. Redirect all OK requests to HTTPS.
+	bool upgradeToHTTPS{ false };
+
 	// Whether or a security layer should be used.
 	// The security layer is TLS.
 	bool useTransportSecurity { false };
