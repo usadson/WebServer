@@ -69,24 +69,30 @@ main() {
 
 bool
 LoadTLSConfiguration(Security::TLSConfiguration &config) {
-	if (const char *certificateFile = std::getenv("WS_TLS_CERT")) {
-		if (const char *privateKeyFile = std::getenv("WS_TLS_PRIVATE_KEY")) {
-			if (const char *chainFile = std::getenv("WS_TLS_CHAIN")) {
-				config.certificateFile = certificateFile;
-				config.chainFile = chainFile;
-				config.privateKeyFile = privateKeyFile;
-			} else {
-				Logger::Error("TLS Configuration", "WS_TLS_CHAIN not found in environment");
-				return false;
-			}
-		} else {
-			Logger::Error("TLS Configuration", "WS_TLS_PRIVATE_KEY not found in environment");
-			return false;
-		}
-	} else {
+	auto *certificateFile = std::getenv("WS_TLS_CERT");
+
+	if (!certificateFile) {
 		Logger::Error("TLS Configuration", "WS_TLS_CERT not found in environment");
 		return false;
 	}
+
+	auto *chainFile = std::getenv("WS_TLS_CHAIN");
+
+	if (chainFile == nullptr) {
+		Logger::Error("TLS Configuration", "WS_TLS_CHAIN not found in environment");
+		return false;
+	}
+
+	auto *privateKeyFile = std::getenv("WS_TLS_PRIVATE_KEY");
+
+	if (privateKeyFile == nullptr) {
+		Logger::Error("TLS Configuration", "WS_TLS_PRIVATE_KEY not found in environment");
+		return false;
+	}
+
+	config.certificateFile = certificateFile;
+	config.chainFile = chainFile;
+	config.privateKeyFile = privateKeyFile;
 
 	config.cipherList =
 		"ECDHE-ECDSA-AES128-GCM-SHA256:"
