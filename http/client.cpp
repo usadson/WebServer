@@ -513,6 +513,11 @@ Client::RunMessageExchange() noexcept {
 		return RecoverError(error);
 	}
 
+	error = CheckUpgradeHTTPS();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
 	InterpretConnectionHeaders();
 
 	error = HandleRequest();
