@@ -69,6 +69,15 @@ Client::CheckFileLocation(const std::string &path) const noexcept {
 	return ClientError::NO_ERROR;
 }
 
+ClientError
+Client::CheckUpgradeHTTPS() const noexcept {
+	if (server->config().upgradeToHTTPS) {
+		return ClientError::UPGRADE_TO_HTTPS;
+	}
+
+	return ClientError::NO_ERROR;
+}
+
 void
 Client::Clean() noexcept {
 	connection = nullptr;
