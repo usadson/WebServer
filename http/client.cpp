@@ -541,7 +541,7 @@ Client::RunMessageExchange() noexcept {
 }
 
 bool
-Client::SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &mediaType) noexcept {
+Client::SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &mediaType, const char *additionalMetaData) noexcept {
 	std::stringstream metadata;
 	metadata << response;
 	metadata << "\r\nContent-Length: " << contentLength;
@@ -555,10 +555,16 @@ Client::SendMetadata(const std::string_view &response, std::size_t contentLength
 	metadata << "\r\nContent-Type: " << mediaType.Complete();
 
 	if (mediaType.IncludeCharset()) {
-		metadata << ";charset=utf-8\r\n\r\n";
+		metadata << ";charset=utf-8\r\n";
 	} else {
-		metadata << "\r\n\r\n";
+		metadata << "\r\n";
 	}
+
+	if (additionalMetaData) {
+		metadata << additionalMetaData;
+	}
+
+	metadata << "\r\n";
 
 	return connection->WriteString(metadata.str());
 }

@@ -161,7 +161,7 @@ TESTING_VISIBILITY:
 
 	// Sends the HTTP metadata. (See below for more information.)
 	[[nodiscard]] bool
-	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type) noexcept;
+	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type, const char *additionalMetaData = nullptr) noexcept;
 
 	// Run the CGI algorithm.
 	[[nodiscard]] bool
