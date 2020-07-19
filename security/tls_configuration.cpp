@@ -38,11 +38,13 @@ Security::TLSConfiguration::CreateContext() {
 	this->context = ctx;
 
 	if (SSL_CTX_use_certificate_file(ctx, certificateFile.c_str(), SSL_FILETYPE_PEM) != 1) {
+		Logger::Error("TLSConfiguration::CreateContext", "Failed to load certificate file!");
 		ERR_print_errors_fp(stderr);
 		return false;
 	}
 
 	if (SSL_CTX_use_PrivateKey_file(ctx, privateKeyFile.c_str(), SSL_FILETYPE_PEM) <= 0) {
+		Logger::Error("TLSConfiguration::CreateContext", "Failed to load private key file!");
 		ERR_print_errors_fp(stderr);
 		return false;
 	}
