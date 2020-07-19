@@ -57,6 +57,9 @@ TESTING_VISIBILITY:
 	[[nodiscard]] ClientError
 	CheckFileLocation(const std::string &) const noexcept;
 
+	[[nodiscard]] ClientError
+	CheckUpgradeHTTPS() const noexcept;
+
 	// A before-destructor clean function, ran at the end of 'Entrypoint'.
 	void
 	Clean() noexcept;
