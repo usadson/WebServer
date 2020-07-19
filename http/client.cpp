@@ -530,6 +530,11 @@ Client::SendMetadata(const std::string_view &response, std::size_t contentLength
 	metadata << "\r\nContent-Length: " << contentLength;
 	metadata << "\r\nServer: " << server->config().serverProductName;
 	metadata << "\r\nConnection: " << (persistentConnection ? "keep-alive" : "close");
+
+	if (!server->config().hsts.empty()) {
+		metadata << "\r\nStrict-Transport-Security: " << server->config().hsts;
+	}
+
 	metadata << "\r\nContent-Type: " << mediaType.Complete();
 
 	if (mediaType.IncludeCharset()) {
