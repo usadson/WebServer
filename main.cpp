@@ -48,10 +48,11 @@ main() {
 		return EXIT_FAILURE;
 	}
 
-	httpConfig1.rootDirectory = "/var/www/html";
-	httpConfig1.port = 8080;
+	httpConfig1.rootDirectory = "/dev/null";
+	httpConfig1.port = 80;
+	httpConfig1.upgradeToHTTPS = true;
 	httpConfig2.rootDirectory = "/var/www/html";
-	httpConfig2.port = 8081;
+	httpConfig2.port = 443;
 	httpConfig2.useTransportSecurity = true;
 
 	HTTP::Server httpServer1(httpConfig1, manager);
