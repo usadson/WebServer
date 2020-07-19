@@ -4,11 +4,14 @@
  * See the COPYING file for licensing information.
  */
 
+#include <array>
 #include <iostream>
+#include <iterator>
 #include <string>
 
 #include <cstdio>
 #include <cstdlib>
+#include <unistd.h>
 
 #include "base/logger.hpp"
 #include "base/media_type.hpp"
@@ -20,6 +23,9 @@
 
 bool
 LoadTLSConfiguration(Security::TLSConfiguration &config);
+
+bool
+LoadHostName(HTTP::Configuration &config);
 
 int
 main() {
@@ -35,6 +41,13 @@ main() {
 
 	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies, tlsConfiguration);
 	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies, tlsConfiguration);
+
+	if ((httpConfig1.hostname.empty() && !LoadHostName(httpConfig1)) ||
+		(httpConfig1.hostname.empty() && !LoadHostName(httpConfig1))) {
+		Logger::Error("Main", "Failed to retrieve hostname");
+		return EXIT_FAILURE;
+	}
+
 	httpConfig1.rootDirectory = "/var/www/html";
 	httpConfig1.port = 8080;
 	httpConfig2.rootDirectory = "/var/www/html";
@@ -105,4 +118,18 @@ LoadTLSConfiguration(Security::TLSConfiguration &config) {
 		"DHE-RSA-AES256-GCM-SHA384";
 
 	return config.CreateContext() && config.context != nullptr;
+}
+
+bool
+LoadHostName(HTTP::Configuration &config) {
+	std::array<char, 256> buffer;
+
+	if (gethostname(buffer.data(), buffer.size()) != 0) {
+		perror("LoadHostName gethostname(2)");
+		return false;
+	}
+
+	config.hostname = std::string(std::begin(buffer), std::end(buffer));
+	Logger::Debug(__FUNCTION__, "HostName is '" + config.hostname + "'");
+	return true;
 }
