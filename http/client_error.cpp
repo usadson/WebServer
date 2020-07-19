@@ -39,6 +39,7 @@ ClientErrorToString(HTTP::ClientError error) {
 		"NO_ERROR",
 		"TOO_MANY_REQUESTS_PER_THIS_CONNECTION",
 		"UNEXPECTED_CR_IN_FIELD_NAME",
+		"UPGRADE_TO_HTTPS",
 		"WHITESPACE_EXPECTED"
 	};
 	return array[static_cast<std::size_t>(error)];
