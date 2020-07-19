@@ -443,6 +443,10 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
+		case ClientError::UPGRADE_TO_HTTPS:
+			SendMetadata(Strings::StatusLines::MovedPermanently, MediaTypes::HTML, 0);
+			// Notify to close connection
+			return false;
 		default:
 			break;
 	}
