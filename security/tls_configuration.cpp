@@ -80,5 +80,7 @@ Security::TLSConfiguration::CreateContext() {
 		return false;
 	}
 
+	ERR_print_errors_fp(stderr);
+
 	return true;
 }
