@@ -122,6 +122,14 @@ LoadTLSConfiguration(Security::TLSConfiguration &config) {
 
 bool
 LoadHostName(HTTP::Configuration &config) {
+	auto *envHostName = std::getenv("WS_HOSTNAME");
+
+	if (envHostName) {
+		config.hostname = std::string(envHostName);
+		return false;
+	}
+
+
 	std::array<char, 256> buffer;
 
 	if (gethostname(buffer.data(), buffer.size()) != 0) {
@@ -130,6 +138,5 @@ LoadHostName(HTTP::Configuration &config) {
 	}
 
 	config.hostname = std::string(buffer.data());
-	Logger::Debug(__FUNCTION__, "HostName is '" + config.hostname + "'");
 	return true;
 }
