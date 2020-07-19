@@ -129,7 +129,7 @@ LoadHostName(HTTP::Configuration &config) {
 		return false;
 	}
 
-	config.hostname = std::string(std::begin(buffer), std::end(buffer));
+	config.hostname = std::string(buffer.data());
 	Logger::Debug(__FUNCTION__, "HostName is '" + config.hostname + "'");
 	return true;
 }
