@@ -26,6 +26,10 @@ struct Configuration {
 		  tlsConfiguration(tlsConfiguration) {
 	}
 
+	// The hostname (domain name) of the server.
+	// If unset, will try to get it from the POSIX gethostname(2) API.
+	std::string hostname;
+
 	// The header value of "Strict-Transport-Security".
 	// Empty means omit header.
 	// Spec: RFC 6797
