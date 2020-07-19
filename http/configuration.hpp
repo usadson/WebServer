@@ -26,6 +26,11 @@ struct Configuration {
 		  tlsConfiguration(tlsConfiguration) {
 	}
 
+	// The header value of "Strict-Transport-Security".
+	// Empty means omit header.
+	// Spec: RFC 6797
+	std::string hsts{ "max-age=31536000" };
+
 	// The amount of clients awaiting in the accept() queue
 	std::size_t listenerBacklog { 100 };
 
