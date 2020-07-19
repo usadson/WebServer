@@ -20,6 +20,7 @@ namespace BadRequests {
 
 namespace StatusLines {
 	extern const std::string_view BadRequest;
+	extern const std::string_view MovedPermanently;
 	extern const std::string_view NotFound;
 	extern const std::string_view OK;
 	extern const std::string_view TooManyRequests;

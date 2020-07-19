@@ -44,6 +44,7 @@ const std::string_view EmptyMethod =
 
 namespace StatusLines {
 const std::string_view BadRequest = "HTTP/1.1 400 Bad Request";
+const std::string_view MovedPermanently = "HTTP/1.1 301 Moved Permanently";
 const std::string_view NotFound = "HTTP/1.1 404 Not Found";
 const std::string_view OK = "HTTP/1.1 200 OK";
 const std::string_view TooManyRequests = "HTTP/1.1 429 Too Many Requests";
