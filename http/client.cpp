@@ -444,9 +444,8 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
 		case ClientError::UPGRADE_TO_HTTPS:
-			SendMetadata(Strings::StatusLines::MovedPermanently, MediaTypes::HTML, 0);
 			// Notify to close connection
-			return false;
+			return SendMetadata(Strings::StatusLines::MovedPermanently, 0, MediaTypes::HTML) && false;
 		default:
 			break;
 	}
