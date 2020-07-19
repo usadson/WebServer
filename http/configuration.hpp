@@ -27,7 +27,8 @@ struct Configuration {
 	}
 
 	// The hostname (domain name) of the server.
-	// If unset, will try to get it from the POSIX gethostname(2) API.
+	// If unset, will try to get it from the environment.
+	// If not in environment, try to get it from the POSIX gethostname(2) API.
 	std::string hostname;
 
 	// The header value of "Strict-Transport-Security".
