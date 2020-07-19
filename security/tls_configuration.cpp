@@ -66,6 +66,10 @@ Security::TLSConfiguration::CreateContext() {
 		}
 	}
 
+	// Clear errors from PEM_read_X509 since the error stack probably contains
+	// an error regarding an EOF in the chain file.
+	ERR_clear_error();
+
 	std::fclose(file);
 
 	SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
