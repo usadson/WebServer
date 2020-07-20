@@ -108,10 +108,17 @@ Server::CloseSocket() noexcept {
 
 ServerLaunchError
 Server::ConfigureSocketBind() noexcept {
+#ifdef HTTP_SERVER_FORCE_IPV4
 	struct sockaddr_in address;
 	address.sin_family = AF_INET;
 	address.sin_port = htons(configuration.port);
 	address.sin_addr.s_addr = htonl(INADDR_ANY);
+#else
+	struct sockaddr_in6 address;
+	address.sin6_family = AF_INET6;
+	address.sin6_port = htons(configuration.port);
+	address.sin6_addr = IN6ADDR_ANY_INIT;
+#endif
 
 	if (bind(internalSocket, reinterpret_cast<struct sockaddr *>(&address), sizeof(address)) == -1) {
 		switch (errno) {
@@ -167,7 +174,11 @@ Server::CreateServer() noexcept {
 
 ServerLaunchError
 Server::CreateSocket() noexcept {
+#ifdef HTTP_SERVER_FORCE_IPV4
 	internalSocket = socket(AF_INET, SOCK_STREAM, 0);
+#else
+	internalSocket = socket(AF_INET6, SOCK_STREAM, 0);
+#endif
 
 	if (internalSocket == -1) {
 		return ServerLaunchError::SOCKET_CREATION;
