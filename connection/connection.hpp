@@ -9,7 +9,8 @@
 #include <iosfwd>
 
 #include <string>
-#include <string_view>
+
+#include "base/string.hpp"
 
 // ForwardDecl from http/configuration.hpp
 namespace HTTP {
@@ -56,7 +57,7 @@ public:
 	WriteString(const std::string &) noexcept;
 
 	[[nodiscard]] bool
-	WriteStringView(const std::string_view &) noexcept;
+	WriteBaseString(const base::String &) noexcept;
 
 	void *userData;
 	void *securityContext{ nullptr };
