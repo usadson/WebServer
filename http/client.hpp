@@ -9,13 +9,13 @@
 #include <iosfwd>
 #include <memory>
 #include <string>
-#include <string_view>
 #include <thread>
 #include <vector>
 
 // From base/media_type.hpp:
 struct MediaType;
 
+#include "base/string.hpp"
 #include "cgi/script.hpp"
 #include "connection/connection.hpp"
 #include "http/client_error.hpp"
@@ -144,7 +144,7 @@ TESTING_VISIBILITY:
 	RecoverError(ClientError) noexcept;
 
 	[[nodiscard]] bool
-	RecoverErrorBadRequest(const std::string_view &) noexcept;
+	RecoverErrorBadRequest(const base::String &) noexcept;
 
 	// Handles the FILE_NOT_FOUND ClientError. Called by RecoverError.
 	[[nodiscard]] bool
@@ -161,7 +161,7 @@ TESTING_VISIBILITY:
 
 	// Sends the HTTP metadata. (See below for more information.)
 	[[nodiscard]] bool
-	SendMetadata(const std::string_view &response, std::size_t contentLength, const MediaType &type, const char *additionalMetaData = nullptr) noexcept;
+	SendMetadata(const base::String &response, std::size_t contentLength, const MediaType &type, const char *additionalMetaData = nullptr) noexcept;
 
 	// Run the CGI algorithm.
 	[[nodiscard]] bool
@@ -174,7 +174,7 @@ TESTING_VISIBILITY:
 
 	// Send a response with a body defined in the base/strings.xpp files.
 	[[nodiscard]] bool
-	ServeStringRequest(const std::string_view &, const MediaType &, const std::string_view &body) noexcept;
+	ServeStringRequest(const base::String &, const MediaType &, const base::String &body) noexcept;
 
 	[[nodiscard]] ClientError
 	ValidateCurrentRequestPath() const noexcept;
