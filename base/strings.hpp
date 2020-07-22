@@ -6,24 +6,24 @@
  * See the COPYING file for licensing information.
  */
 
-#include <string_view>
+#include "string.hpp"
 
 namespace Strings {
 
-extern const std::string_view DefaultWebPage;
-extern const std::string_view NotFoundPage;
-extern const std::string_view TooManyRequestsPage;
+extern const base::String DefaultWebPage;
+extern const base::String NotFoundPage;
+extern const base::String TooManyRequestsPage;
 
 namespace BadRequests {
-	extern const std::string_view EmptyMethod;
+	extern const base::String EmptyMethod;
 } // namespace BadRequests
 
 namespace StatusLines {
-	extern const std::string_view BadRequest;
-	extern const std::string_view MovedPermanently;
-	extern const std::string_view NotFound;
-	extern const std::string_view OK;
-	extern const std::string_view TooManyRequests;
+	extern const base::String BadRequest;
+	extern const base::String MovedPermanently;
+	extern const base::String NotFound;
+	extern const base::String OK;
+	extern const base::String TooManyRequests;
 } // namespace StatusLines
 
 } // namespace Strings
