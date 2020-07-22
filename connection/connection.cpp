@@ -180,7 +180,7 @@ Connection::WriteString(const std::string &str) noexcept {
 }
 
 bool
-Connection::WriteStringView(const std::string_view &str) noexcept {
+Connection::WriteBaseString(const base::String &str) noexcept {
 	std::size_t off = 0;
 	std::size_t len = str.length();
 
