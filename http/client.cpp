@@ -487,6 +487,8 @@ Client::RecoverError(ClientError error) noexcept {
 			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::MethodTooLong);
 		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
 			return ServeStringRequest(Strings::StatusLines::URITooLong, MediaTypes::TEXT, Strings::BadRequests::RequestTargetTooLong);
+		case ClientError::POLICY_TOO_MANY_OWS:
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::TooManyOWSs);
 
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
