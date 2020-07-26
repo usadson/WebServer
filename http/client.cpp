@@ -483,6 +483,8 @@ Client::RecoverError(ClientError error) noexcept {
 
 		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME:
 			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::HeaderFieldNameTooLong);
+		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE:
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::HeaderFieldValueTooLong);
 		case ClientError::POLICY_TOO_LONG_METHOD:
 			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::MethodTooLong);
 		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
