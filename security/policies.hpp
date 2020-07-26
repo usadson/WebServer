@@ -12,6 +12,13 @@ namespace Security {
 
 struct Policies {
 
+	// The maximum length of the header field-name.
+	// At this time, the longest registered header field-name is
+	// 'Include-Referred-Token-Binding-ID', with a length of 33 characters.
+	// The default is rounded up.
+	// 0 means unlimited.
+	std::size_t maxHeaderFieldNameLength{ 40 };
+
 	// The maximum method length.
 	// At this time, the longest registered method is 'UPDATEREDIRECTREF', with
 	// a length of 17, therefore the default value is 18 (17 + 0 for the null
