@@ -119,6 +119,9 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 		return subroutineError;
 	}
 
+	const auto maxOWS = server->config().securityPolicies.maxWhiteSpacesInHeaderField;
+	std::size_t owsCount = 0;
+
 	/* Consume OWS (Optional Whitespaces) */
 	while (true) {
 		char character; // NOLINT(cppcoreguidelines-init-variables)
@@ -130,6 +133,10 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 		if (character != ' ' && character != '\t') {
 			buffers.fieldValue.push_back(character);
 			break;
+		}
+
+		if (maxOWS != 0 && ++owsCount == maxOWS) {
+			return ClientError::POLICY_TOO_MANY_OWS;
 		}
 	}
 
