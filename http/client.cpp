@@ -219,6 +219,11 @@ Client::ConsumeHeaderFieldName() noexcept {
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_NAME;
 		}
+
+		const auto max = server->config().securityPolicies.maxHeaderFieldNameLength;
+		if (max != 0 && buffers.fieldName.size() == max) {
+			return ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME;
+		}
 	}
 }
 
