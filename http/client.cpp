@@ -469,6 +469,8 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 
+		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME:
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::HeaderFieldNameTooLong);
 		case ClientError::POLICY_TOO_LONG_METHOD:
 			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::MethodTooLong);
 		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
