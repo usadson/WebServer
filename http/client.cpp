@@ -467,6 +467,8 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 		case ClientError::POLICY_TOO_LONG_METHOD:
 			return RecoverErrorBadRequest("method too long");
+		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
+			return RecoverErrorBadRequest("request-target too long");
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
 		case ClientError::UPGRADE_TO_HTTPS:
