@@ -43,6 +43,14 @@ struct Policies {
 	// 0 means unlimited.
 	std::size_t maxRequestTargetLength{ 255 };
 
+	// The maximum amount of spaces in header field (between the field-name + ':'
+	// and the header field-value).
+	// This policy isn't to stop resource exhaustion in the form of memory, like
+	// what similar policies try to achieve, but is here to stop attackers from
+	// keeping the program in an infinite loop.
+	// 0 means unlimited.
+	std::size_t maxWhiteSpacesInHeaderField{ 20 };
+
 };
 
 } // namespace Security
