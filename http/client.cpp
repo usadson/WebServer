@@ -53,6 +53,11 @@ StringStartsWith(const std::string &string, const std::string &prefix) {
 
 namespace HTTP {
 
+ClientBuffers::ClientBuffers() noexcept {
+	fieldName.reserve(MAGIC_FIELD_NAME_AVG_LENGTH);
+	fieldName.reserve(MAGIC_FIELD_VALUE_AVG_LENGTH);
+}
+
 Client::Client(Server *server, int sock) noexcept :
 	connection(std::make_unique<Connection>(sock, server->config().useTransportSecurity)),
 	server(server), thread(&Client::Entrypoint, this) {

@@ -34,6 +34,17 @@ namespace HTTP {
 
 namespace HTTP {
 
+// Buffers associated with the client, nicely organized.
+struct ClientBuffers {
+	// Header field name buffer
+	std::vector<char> fieldName;
+
+	// Header field value buffer
+	std::vector<char> fieldValue;
+
+	ClientBuffers() noexcept;
+};
+
 class Client {
 public:
 	Client(Server *server, int socket) noexcept;
@@ -43,6 +54,7 @@ public:
 	}
 
 TESTING_VISIBILITY:
+	ClientBuffers buffers;
 	std::unique_ptr<Connection> connection;
 	Request currentRequest;
 
