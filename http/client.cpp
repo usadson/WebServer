@@ -35,6 +35,9 @@
 #include "io/file_resolver.hpp"
 #include "security/policies.hpp"
 
+#define MAGIC_FIELD_NAME_AVG_LENGTH 12
+#define MAGIC_FIELD_VALUE_AVG_LENGTH 30
+
 //#define SIG_IGN  ((__sighandler_t)  1)
 #undef SIG_IGN
 #define SIG_IGN reinterpret_cast<__sighandler_t>(1)
@@ -103,7 +106,8 @@ Client::ConsumeCRLF() noexcept {
 ClientError
 Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	std::vector<char> fieldName;
-	std::vector<char> fieldValue;
+	fieldName.reserve(MAGIC_FIELD_NAME_AVG_LENGTH);
+
 	ClientError subroutineError;
 
 	/* Consume field-name */
@@ -112,6 +116,9 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	if (subroutineError != ClientError::NO_ERROR) {
 		return subroutineError;
 	}
+
+	std::vector<char> fieldValue;
+	fieldValue.reserve(MAGIC_FIELD_VALUE_AVG_LENGTH);
 
 	/* Consume OWS (Optional Whitespaces) */
 	while (true) {
