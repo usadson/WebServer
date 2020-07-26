@@ -32,9 +32,9 @@
 #include "security/policies.hpp"
 #include "security/tls_configuration.hpp"
 
-class PoliciesTest : public ::testing::Test {
+class PolicyBase : public ::testing::Test {
 protected:
-	PoliciesTest() : server(HTTP::Configuration(finder, secPolicies, tlsConfig), cgiManager), client(&server) {
+	PolicyBase() : server(HTTP::Configuration(finder, secPolicies, tlsConfig), cgiManager), client(&server) {
 		client.connection = std::make_unique<Connection>(&internalData);
 	}
 
@@ -53,24 +53,29 @@ protected:
 	}
 };
 
+class ConsumeMethodTest : public PolicyBase {};
+class ConsumePathTest : public PolicyBase {};
+class ConsumeHeaderFieldTest : public PolicyBase {};
+class ConsumeHeaderFieldNameTest : public PolicyBase {};
+
 // Function: ConsumeMethod
 // Policy:   maxMethodLength
 // Error:    POLICY_TOO_LONG_METHOD
-TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_Unlimited) {
+TEST_F(ConsumeMethodTest, MaxMethodLengthUnlimited) {
 	secPolicies.maxMethodLength = 0;
 	setInput("VERYVERYLONGSTRINGASTESTOFMETHODwecanalsoIncludeLowerCaSE / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_WithinBounds) {
+TEST_F(ConsumeMethodTest, MaxMethodLengthWithinBounds) {
 	secPolicies.maxMethodLength = 4;
 	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
+TEST_F(ConsumeMethodTest, MaxMethodLengthOutOfBounds) {
 	secPolicies.maxMethodLength = 3;
 	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
@@ -80,21 +85,21 @@ TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
 // Function: ConsumePath
 // Policy:   maxRequestTargetLength
 // Error:    POLICY_TOO_LONG_REQUEST_TARGET
-TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_Unlimited) {
+TEST_F(ConsumePathTest, MaxRequestTargetLengthUnlimited) {
 	secPolicies.maxRequestTargetLength = 0;
 	setInput("/this-request-target-is-long-but-never-ever-too-long HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_WithinBounds) {
+TEST_F(ConsumePathTest, MaxRequestTargetLengthWithinBounds) {
 	secPolicies.maxRequestTargetLength = 21;
 	setInput("/ThisPathIsntTooLong HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
+TEST_F(ConsumePathTest, MaxRequestTargetLengthOutOfBounds) {
 	secPolicies.maxRequestTargetLength = 3;
 	setInput("/this-request-target-is-too-long HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
@@ -104,21 +109,21 @@ TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
 // Function: ConsumeHeaderFieldName
 // Policy:   maxHeaderFieldNameLength
 // Error:    POLICY_TOO_LONG_HEADER_FIELD_NAME
-TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_Unlimited) {
+TEST_F(ConsumeHeaderFieldNameTest, MaxHeaderFieldNameLengthUnlimited) {
 	secPolicies.maxHeaderFieldNameLength = 0;
 	setInput("This-Is-A-Header-Name-With-Allowed-Characters-And-Is-Very-Long: value\r\n");
 	auto error = client.ConsumeHeaderFieldName();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_WithinBounds) {
+TEST_F(ConsumeHeaderFieldNameTest, MaxHeaderFieldNameLengthWithinBounds) {
 	secPolicies.maxHeaderFieldNameLength = 20;
 	setInput("Header-Field-Name: value\r\n");
 	auto error = client.ConsumeHeaderFieldName();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_OutOfBounds) {
+TEST_F(ConsumeHeaderFieldNameTest, MaxHeaderFieldNameLengthOutOfBounds) {
 	secPolicies.maxHeaderFieldNameLength = 3;
 	setInput("This-Is-A-Header-Name-With-Allowed-Characters-And-Is-Very-Long: value\r\n");
 	auto error = client.ConsumeHeaderFieldName();
@@ -128,7 +133,7 @@ TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_OutOfBounds
 // Function: ConsumeHeaderField
 // Policy:   maxWhiteSpacesInHeaderField
 // Error:    POLICY_TOO_MANY_OWS
-TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_Unlimited) {
+TEST_F(ConsumeHeaderFieldTest, MaxWhiteSpacesInHeaderFieldUnlimited) {
 	secPolicies.maxHeaderFieldNameLength = 0;
 	secPolicies.maxWhiteSpacesInHeaderField = 0;
 	setInput("field-name:\t\t\t\t\t\t\t\t\t\t\t\t\t\t              \t\t\t\t\tfield-value\r\n");
@@ -136,7 +141,7 @@ TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_Unlimited) {
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
-TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_One) {
+TEST_F(ConsumeHeaderFieldTest, MaxWhiteSpacesInHeaderFieldOne) {
 	secPolicies.maxHeaderFieldNameLength = 0;
 	secPolicies.maxWhiteSpacesInHeaderField = 1;
 	setInput("field-name: field-value\r\n");
@@ -148,7 +153,7 @@ TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_One) {
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_MANY_OWS);
 }
 
-TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_OutOfBounds) {
+TEST_F(ConsumeHeaderFieldTest, MaxWhiteSpacesInHeaderFieldOutOfBounds) {
 	secPolicies.maxHeaderFieldNameLength = 0;
 	secPolicies.maxWhiteSpacesInHeaderField = 3;
 	setInput("field-name:\t\t\t\t\t\t\t\t\t\t\t\t\t\t              \t\t\t\t\tfield-value\r\n");
