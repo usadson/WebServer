@@ -16,6 +16,8 @@ extern const base::String TooManyRequestsPage;
 
 namespace BadRequests {
 	extern const base::String EmptyMethod;
+	extern const base::String MethodTooLong;
+	extern const base::String RequestTargetTooLong;
 } // namespace BadRequests
 
 namespace StatusLines {

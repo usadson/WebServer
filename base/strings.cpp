@@ -40,6 +40,8 @@ const base::String EmptyMethod =
 	"                    / \"+\" / \"-\" / \".\" / \"^\" / \"_\" / \"`\" / \"|\" / \"~\"\n"
 	"                    / DIGIT / ALPHA\n"
 	"                    ; any VCHAR, except delimiters\n";
+const base::String MethodTooLong = "method too long";
+const base::String RequestTargetTooLong = "request-target too long";
 } // namespace BadRequests
 
 namespace StatusLines {
