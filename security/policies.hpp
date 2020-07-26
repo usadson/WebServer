@@ -19,6 +19,10 @@ struct Policies {
 	// 0 means unlimited.
 	std::size_t maxHeaderFieldNameLength{ 40 };
 
+	// The maximum length of the header field-value.
+	// 0 means unlimited.
+	std::size_t maxHeaderFieldValueLength{ 255 };
+
 	// The maximum method length.
 	// At this time, the longest registered method is 'UPDATEREDIRECTREF', with
 	// a length of 17, therefore the default value is 18 (17 + 0 for the null
