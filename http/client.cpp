@@ -197,6 +197,11 @@ Client::ConsumeHeaderFieldValue() noexcept {
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_VALUE;
 		}
+
+		const auto max = server->config().securityPolicies.maxHeaderFieldValueLength;
+		if (max != 0 && buffers.fieldValue.size() == max) {
+			return ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE;
+		}
 	}
 }
 
