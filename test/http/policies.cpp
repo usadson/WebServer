@@ -82,6 +82,36 @@ TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_METHOD);
 }
 
+// Function: ConsumePath
+// Policy:   maxRequestTargetLength
+// Error:    POLICY_TOO_LONG_REQUEST_TARGET
+TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_Unlimited) {
+	secPolicies.maxRequestTargetLength = 0;
+	std::string input("/VERYVERYLONGSTRINGASTESTOFRequestTARGETwecanalsoIncludeLowerCaSE HTTP/1.1\r\n");
+	ensureInputSize(input.length());
+	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	auto error = client.ConsumePath();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_WithinBounds) {
+	secPolicies.maxRequestTargetLength = 20;
+	std::string input("/within_bounds HTTP/1.1\r\n");
+	ensureInputSize(input.length());
+	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	auto error = client.ConsumePath();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
+	secPolicies.maxRequestTargetLength = 3;
+	std::string input("/toolong HTTP/1.1\r\n");
+	ensureInputSize(input.length());
+	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	auto error = client.ConsumePath();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_REQUEST_TARGET);
+}
+
 int
 main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
