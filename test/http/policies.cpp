@@ -52,6 +52,9 @@ protected:
 	}
 };
 
+// Function: ConsumeMethod
+// Policy:   maxMethodLength
+// Error:    POLICY_TOO_LONG_METHOD
 TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_Unlimited) {
 	secPolicies.maxMethodLength = 0;
 	std::string method("VERYVERYLONGSTRINGASTESTOFMETHODwecanalsoIncludeLowerCaSE / HTTP/1.1\r\n");
