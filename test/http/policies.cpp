@@ -50,6 +50,12 @@ protected:
 	ensureInputSize(std::size_t size) {
 		internalData.input.resize(size);
 	}
+
+	void
+	setInput(std::string input) {
+		ensureInputSize(input.length());
+		std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	}
 };
 
 // Function: ConsumeMethod
@@ -57,27 +63,21 @@ protected:
 // Error:    POLICY_TOO_LONG_METHOD
 TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_Unlimited) {
 	secPolicies.maxMethodLength = 0;
-	std::string method("VERYVERYLONGSTRINGASTESTOFMETHODwecanalsoIncludeLowerCaSE / HTTP/1.1\r\n");
-	ensureInputSize(method.length());
-	std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
+	setInput("VERYVERYLONGSTRINGASTESTOFMETHODwecanalsoIncludeLowerCaSE / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_WithinBounds) {
 	secPolicies.maxMethodLength = 4;
-	std::string method("GET / HTTP/1.1\r\n");
-	ensureInputSize(method.length());
-	std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
+	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
 	secPolicies.maxMethodLength = 3;
-	std::string method("GET / HTTP/1.1\r\n");
-	ensureInputSize(method.length());
-	std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
+	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_METHOD);
 }
@@ -87,27 +87,21 @@ TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
 // Error:    POLICY_TOO_LONG_REQUEST_TARGET
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_Unlimited) {
 	secPolicies.maxRequestTargetLength = 0;
-	std::string input("/VERYVERYLONGSTRINGASTESTOFRequestTARGETwecanalsoIncludeLowerCaSE HTTP/1.1\r\n");
-	ensureInputSize(input.length());
-	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_WithinBounds) {
 	secPolicies.maxRequestTargetLength = 20;
-	std::string input("/within_bounds HTTP/1.1\r\n");
-	ensureInputSize(input.length());
-	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
 	secPolicies.maxRequestTargetLength = 3;
-	std::string input("/toolong HTTP/1.1\r\n");
-	ensureInputSize(input.length());
-	std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
+	setInput("GET / HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_REQUEST_TARGET);
 }
