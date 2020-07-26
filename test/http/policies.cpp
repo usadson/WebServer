@@ -125,6 +125,37 @@ TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_OutOfBounds
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME);
 }
 
+// Function: ConsumeHeaderField
+// Policy:   maxWhiteSpacesInHeaderField
+// Error:    POLICY_TOO_MANY_OWS
+TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_Unlimited) {
+	secPolicies.maxHeaderFieldNameLength = 0;
+	secPolicies.maxWhiteSpacesInHeaderField = 0;
+	setInput("field-name:\t\t\t\t\t\t\t\t\t\t\t\t\t\t              \t\t\t\t\tfield-value\r\n");
+	auto error = client.ConsumeHeaderField('A');
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_One) {
+	secPolicies.maxHeaderFieldNameLength = 0;
+	secPolicies.maxWhiteSpacesInHeaderField = 1;
+	setInput("field-name: field-value\r\n");
+	auto error = client.ConsumeHeaderField('A');
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+
+	setInput("field-name:  field-value\r\n");
+	error = client.ConsumeHeaderField('A');
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_MANY_OWS);
+}
+
+TEST_F(PoliciesTest, ConsumeHeaderField_maxWhiteSpacesInHeaderField_OutOfBounds) {
+	secPolicies.maxHeaderFieldNameLength = 0;
+	secPolicies.maxWhiteSpacesInHeaderField = 3;
+	setInput("field-name:\t\t\t\t\t\t\t\t\t\t\t\t\t\t              \t\t\t\t\tfield-value\r\n");
+	auto error = client.ConsumeHeaderField('A');
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_MANY_OWS);
+}
+
 int
 main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
