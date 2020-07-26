@@ -47,13 +47,8 @@ protected:
 	HTTP::Client client;
 
 	void
-	ensureInputSize(std::size_t size) {
-		internalData.input.resize(size);
-	}
-
-	void
 	setInput(std::string input) {
-		ensureInputSize(input.length());
+		internalData.input.resize(input.length());
 		std::copy(std::crbegin(input), std::crend(input), std::begin(internalData.input));
 	}
 };
