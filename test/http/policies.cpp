@@ -101,6 +101,30 @@ TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_REQUEST_TARGET);
 }
 
+// Function: ConsumeHeaderFieldName
+// Policy:   maxHeaderFieldNameLength
+// Error:    POLICY_TOO_LONG_HEADER_FIELD_NAME
+TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_Unlimited) {
+	secPolicies.maxHeaderFieldNameLength = 0;
+	setInput("This-Is-A-Header-Name-With-Allowed-Characters-And-Is-Very-Long: value\r\n");
+	auto error = client.ConsumeHeaderFieldName();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_WithinBounds) {
+	secPolicies.maxHeaderFieldNameLength = 20;
+	setInput("Header-Field-Name: value\r\n");
+	auto error = client.ConsumeHeaderFieldName();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(PoliciesTest, ConsumeHeaderFieldName_maxHeaderFieldNameLength_OutOfBounds) {
+	secPolicies.maxHeaderFieldNameLength = 3;
+	setInput("This-Is-A-Header-Name-With-Allowed-Characters-And-Is-Very-Long: value\r\n");
+	auto error = client.ConsumeHeaderFieldName();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME);
+}
+
 int
 main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
