@@ -468,11 +468,11 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("request-target was empty");
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
-		case ClientError::POLICY_TOO_LONG_METHOD:
 
-			return RecoverErrorBadRequest("method too long");
+		case ClientError::POLICY_TOO_LONG_METHOD:
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::MethodTooLong);
 		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
-			return RecoverErrorBadRequest("request-target too long");
+			return ServeStringRequest(Strings::StatusLines::URITooLong, MediaTypes::TEXT, Strings::BadRequests::RequestTargetTooLong);
 
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
