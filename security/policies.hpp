@@ -32,6 +32,10 @@ struct Policies {
 	//   Strings::TooManyRequestsPage
 	bool maxRequestsCloseImmediately{ false };
 
+	// The maximum request-target (also known as path) length.
+	// 0 means unlimited.
+	std::size_t maxRequestTargetLength{ 255 };
+
 };
 
 } // namespace Security
