@@ -43,6 +43,7 @@ const base::String EmptyMethod =
 const base::String HeaderFieldNameTooLong = "header field-name too long";
 const base::String MethodTooLong = "method too long";
 const base::String RequestTargetTooLong = "request-target too long";
+const base::String TooManyOWSs = "too many ows's";
 } // namespace BadRequests
 
 namespace StatusLines {

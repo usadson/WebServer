@@ -19,6 +19,7 @@ namespace BadRequests {
 	extern const base::String HeaderFieldNameTooLong;
 	extern const base::String MethodTooLong;
 	extern const base::String RequestTargetTooLong;
+	extern const base::String TooManyOWSs;
 } // namespace BadRequests
 
 namespace StatusLines {
