@@ -308,6 +308,11 @@ Client::ConsumePath() noexcept {
 		}
 
 		buffer.push_back(character);
+
+		const auto max = server->config().securityPolicies.maxRequestTargetLength;
+		if (max != 0 && buffer.size() == max) {
+			return ClientError::POLICY_TOO_LONG_REQUEST_TARGET;
+		}
 	}
 }
 
