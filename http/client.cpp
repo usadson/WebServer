@@ -110,14 +110,11 @@ Client::ConsumeCRLF() noexcept {
 
 ClientError
 Client::ConsumeHeaderField(char firstCharacter) noexcept {
-	std::vector<char> fieldName;
-	fieldName.reserve(MAGIC_FIELD_NAME_AVG_LENGTH);
-
 	ClientError subroutineError;
 
 	/* Consume field-name */
-	fieldName.push_back(firstCharacter);
-	subroutineError = ConsumeHeaderFieldName(&fieldName);
+	buffers.fieldName.push_back(firstCharacter);
+	subroutineError = ConsumeHeaderFieldName();
 	if (subroutineError != ClientError::NO_ERROR) {
 		return subroutineError;
 	}
@@ -146,7 +143,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 	}
 
 	/* Store in strings */
-	fieldName.push_back('\0');
+	buffers.fieldName.push_back('\0');
 	fieldValue.push_back('\0');
 
 	/* Trim end of OWS's. */
@@ -155,7 +152,12 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 
 	auto endIterator = spaceIterator < tabIterator ? spaceIterator : tabIterator;
 
-	currentRequest.headers.insert({ std::string(fieldName.data()), std::string(std::begin(fieldValue), endIterator - 1) });
+	currentRequest.headers.insert({ std::string(buffers.fieldName.data()), std::string(std::begin(fieldValue), endIterator - 1) });
+
+	// Clear buffers (this won't reset the capacity, e.g. the buffer itself).
+	buffers.fieldName.clear();
+	buffers.fieldValue.clear();
+
 	return ClientError::NO_ERROR;
 }
 
@@ -192,7 +194,7 @@ Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
 }
 
 ClientError
-Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
+Client::ConsumeHeaderFieldName() noexcept {
 	static const std::vector<char> unreservedCharacters
 		= { '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
 
@@ -213,7 +215,7 @@ Client::ConsumeHeaderFieldName(std::vector<char> *dest) noexcept {
 			(character >= '0' && character <= '9') ||
 			(character >= 'A' && character <= 'Z') ||
 			(character >= 'a' && character <= 'z')) {
-			dest->push_back(std::tolower(character));
+			buffers.fieldName.push_back(std::tolower(character));
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_NAME;
 		}

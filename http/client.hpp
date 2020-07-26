@@ -88,7 +88,7 @@ TESTING_VISIBILITY:
 	// See RFC 7230 § 3.2
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#header.fields
 	[[nodiscard]] ClientError
-	ConsumeHeaderFieldName(std::vector<char> *) noexcept;
+	ConsumeHeaderFieldName() noexcept;
 
 	// See RFC 7230 § 3.2
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#header.fields
