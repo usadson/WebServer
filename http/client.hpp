@@ -93,7 +93,7 @@ TESTING_VISIBILITY:
 	// See RFC 7230 § 3.2
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#header.fields
 	[[nodiscard]] ClientError
-	ConsumeHeaderFieldValue(std::vector<char> *) noexcept;
+	ConsumeHeaderFieldValue() noexcept;
 
 	// Consumes headers. This function effectively repeatedly calls
 	// ConsumeHeaderField until time a blank line is encountered.

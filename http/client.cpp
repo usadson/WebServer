@@ -119,9 +119,6 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 		return subroutineError;
 	}
 
-	std::vector<char> fieldValue;
-	fieldValue.reserve(MAGIC_FIELD_VALUE_AVG_LENGTH);
-
 	/* Consume OWS (Optional Whitespaces) */
 	while (true) {
 		char character; // NOLINT(cppcoreguidelines-init-variables)
@@ -131,28 +128,31 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 		}
 
 		if (character != ' ' && character != '\t') {
-			fieldValue.push_back(character);
+			buffers.fieldValue.push_back(character);
 			break;
 		}
 	}
 
 	/* Consume header-value */
-	subroutineError = ConsumeHeaderFieldValue(&fieldValue);
+	subroutineError = ConsumeHeaderFieldValue();
 	if (subroutineError != ClientError::NO_ERROR) {
 		return subroutineError;
 	}
 
 	/* Store in strings */
 	buffers.fieldName.push_back('\0');
-	fieldValue.push_back('\0');
+	buffers.fieldValue.push_back('\0');
 
 	/* Trim end of OWS's. */
-	auto spaceIterator = std::find(std::begin(fieldValue), std::end(fieldValue), ' ');
-	auto tabIterator = std::find(std::begin(fieldValue), std::end(fieldValue), '\t');
+	auto spaceIterator = std::find(std::begin(buffers.fieldValue), std::end(buffers.fieldValue), ' ');
+	auto tabIterator = std::find(std::begin(buffers.fieldValue), std::end(buffers.fieldValue), '\t');
 
 	auto endIterator = spaceIterator < tabIterator ? spaceIterator : tabIterator;
 
-	currentRequest.headers.insert({ std::string(buffers.fieldName.data()), std::string(std::begin(fieldValue), endIterator - 1) });
+	currentRequest.headers.insert({
+		std::string(buffers.fieldName.data()),
+		std::string(std::begin(buffers.fieldValue), endIterator - 1)
+	});
 
 	// Clear buffers (this won't reset the capacity, e.g. the buffer itself).
 	buffers.fieldName.clear();
@@ -162,7 +162,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 }
 
 ClientError
-Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
+Client::ConsumeHeaderFieldValue() noexcept {
 	/* obs-fold (optional line folding) isn't supported. */
 	while (true) {
 		/* Set next character */
@@ -186,7 +186,7 @@ Client::ConsumeHeaderFieldValue(std::vector<char> *dest) noexcept {
 		if ((uc >= 0x21 && uc <= 0x7E) || // VCHAR
 			(uc >= 0x80 && uc <= 0xFF) || // obs-text
 			character == ' ' || character == '\t') {	// SP / HTAB
-			dest->push_back(character);
+			buffers.fieldValue.push_back(character);
 		} else {
 			return ClientError::INCORRECT_HEADER_FIELD_VALUE;
 		}
