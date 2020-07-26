@@ -20,6 +20,7 @@ TEST_GENERAL_DEPENDENCIES = \
 
 test: \
 	bin/test/http/client.o \
+	bin/test/http/policies.o \
 	bin/test/http/utils.o
 
 bin/test/http/client.o: test/http/client.cpp \
@@ -35,6 +36,20 @@ bin/test/http/client.o: test/http/client.cpp \
 	security/policies.hpp \
 	bin/connection/memory_connection.o
 	$(CXX) $(CXXFLAGS) -o $@ test/http/client.cpp $(TEST_GENERAL_DEPENDENCIES) bin/connection/memory_connection.o $(TEST_LDFLAGS)
+
+bin/test/http/policies.o: test/http/policies.cpp \
+	http/client.cpp \
+	base/media_type.hpp \
+	cgi/manager.hpp \
+	connection/connection.hpp \
+	connection/memory_userdata.hpp \
+	http/client.hpp \
+	http/client_error.hpp \
+	http/configuration.hpp \
+	http/server.hpp \
+	security/policies.hpp \
+	bin/connection/memory_connection.o
+	$(CXX) $(CXXFLAGS) -o $@ test/http/policies.cpp $(TEST_GENERAL_DEPENDENCIES) bin/connection/memory_connection.o $(TEST_LDFLAGS)
 
 bin/test/http/server.o: test/http/server.cpp \
 	http/server.cpp \
