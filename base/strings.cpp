@@ -49,7 +49,9 @@ const base::String BadRequest = "HTTP/1.1 400 Bad Request";
 const base::String MovedPermanently = "HTTP/1.1 301 Moved Permanently";
 const base::String NotFound = "HTTP/1.1 404 Not Found";
 const base::String OK = "HTTP/1.1 200 OK";
+const base::String PayloadTooLarge = "HTTP/1.1 413 Payload Too Large";
 const base::String TooManyRequests = "HTTP/1.1 429 Too Many Requests";
+const base::String URITooLong = "HTTP/1.1 414 URI Too Long";
 } // namespace StatusLines
 
 } // namespace Strings
