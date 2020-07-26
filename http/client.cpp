@@ -135,7 +135,7 @@ Client::ConsumeHeaderField(char firstCharacter) noexcept {
 			break;
 		}
 
-		if (maxOWS != 0 && ++owsCount == maxOWS) {
+		if (maxOWS != 0 && ++owsCount > maxOWS) {
 			return ClientError::POLICY_TOO_MANY_OWS;
 		}
 	}
