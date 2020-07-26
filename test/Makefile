@@ -62,4 +62,5 @@ bin/test/http/utils.o: test/http/utils.cpp \
 
 test-exec:
 	bin/test/http/client.o
+	bin/test/http/policies.o
 	bin/test/http/utils.o
