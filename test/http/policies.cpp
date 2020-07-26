@@ -57,6 +57,7 @@ class ConsumeMethodTest : public PolicyBase {};
 class ConsumePathTest : public PolicyBase {};
 class ConsumeHeaderFieldTest : public PolicyBase {};
 class ConsumeHeaderFieldNameTest : public PolicyBase {};
+class ConsumeHeaderFieldValueTest : public PolicyBase {};
 
 // Function: ConsumeMethod
 // Policy:   maxMethodLength
@@ -159,6 +160,30 @@ TEST_F(ConsumeHeaderFieldTest, MaxWhiteSpacesInHeaderFieldOutOfBounds) {
 	setInput("field-name:\t\t\t\t\t\t\t\t\t\t\t\t\t\t              \t\t\t\t\tfield-value\r\n");
 	auto error = client.ConsumeHeaderField('A');
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_MANY_OWS);
+}
+
+// Function: ConsumeHeaderFieldValue
+// Policy:   maxHeaderFieldValueLength
+// Error:    POLICY_TOO_LONG_HEADER_FIELD_VALUE
+TEST_F(ConsumeHeaderFieldValueTest, MaxHeaderFieldNameLengthUnlimited) {
+	secPolicies.maxHeaderFieldValueLength = 0;
+	setInput("This-Is-A-Header-Value With %20; Allowed-Characters-And-Is-Very-Long\r\n");
+	auto error = client.ConsumeHeaderFieldValue();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(ConsumeHeaderFieldValueTest, MaxHeaderFieldNameLengthWithinBounds) {
+	secPolicies.maxHeaderFieldValueLength = 6;
+	setInput("value\r\n");
+	auto error = client.ConsumeHeaderFieldValue();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
+}
+
+TEST_F(ConsumeHeaderFieldValueTest, MaxHeaderFieldNameLengthOutOfBounds) {
+	secPolicies.maxHeaderFieldValueLength = 3;
+	setInput("value\r\n");
+	auto error = client.ConsumeHeaderFieldValue();
+	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE);
 }
 
 int
