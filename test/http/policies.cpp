@@ -32,15 +32,11 @@
 #include "security/policies.hpp"
 #include "security/tls_configuration.hpp"
 
-// 	Configuration config;
-
 class PoliciesTest : public ::testing::Test {
 protected:
 	PoliciesTest() : server(HTTP::Configuration(finder, secPolicies, tlsConfig), cgiManager), client(&server) {
 		client.connection = std::make_unique<Connection>(&internalData);
 	}
-
-	// void TearDown() override {}
 
 	CGI::Manager cgiManager;
 	MediaTypeFinder finder;
