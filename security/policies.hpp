@@ -25,6 +25,13 @@ struct Policies {
 	//   Strings::TooManyRequestsPage
 	bool maxRequestsCloseImmediately{ false };
 
+	// The maximum method length.
+	// At this time, the longest registered method is 'UPDATEREDIRECTREF', with
+	// a length of 17, therefore the default value is 18 (17 + 0 for the null
+	// terminator).
+	// 0 means unlimited.
+	std::size_t maxMethodLength{ 18 };
+
 };
 
 } // namespace Security
