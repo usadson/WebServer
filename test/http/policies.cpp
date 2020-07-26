@@ -82,21 +82,21 @@ TEST_F(PoliciesTest, ConsumeMethod_MaxMethodLength_OutOfBounds) {
 // Error:    POLICY_TOO_LONG_REQUEST_TARGET
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_Unlimited) {
 	secPolicies.maxRequestTargetLength = 0;
-	setInput("GET / HTTP/1.1\r\n");
+	setInput("/this-request-target-is-long-but-never-ever-too-long HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_WithinBounds) {
-	secPolicies.maxRequestTargetLength = 20;
-	setInput("GET / HTTP/1.1\r\n");
+	secPolicies.maxRequestTargetLength = 21;
+	setInput("/ThisPathIsntTooLong HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 }
 
 TEST_F(PoliciesTest, ConsumePath_MaxRequestTargetLength_OutOfBounds) {
 	secPolicies.maxRequestTargetLength = 3;
-	setInput("GET / HTTP/1.1\r\n");
+	setInput("/this-request-target-is-too-long HTTP/1.1\r\n");
 	auto error = client.ConsumePath();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_REQUEST_TARGET);
 }
