@@ -460,6 +460,8 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("request-target was empty");
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
+		case ClientError::POLICY_TOO_LONG_METHOD:
+			return RecoverErrorBadRequest("method too long");
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
 		case ClientError::UPGRADE_TO_HTTPS:
