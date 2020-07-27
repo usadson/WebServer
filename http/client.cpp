@@ -512,7 +512,7 @@ Client::RecoverError(ClientError error) noexcept {
 	}
 
 	std::stringstream test;
-	test << "Error Occurred: " << error << '\n';
+	test << "Error Occurred: " << error;
 	Logger::Info("HTTPClient::RecoverError", test.str());
 	return false;
 }
