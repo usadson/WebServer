@@ -37,6 +37,7 @@
 
 #define MAGIC_FIELD_NAME_AVG_LENGTH 12
 #define MAGIC_FIELD_VALUE_AVG_LENGTH 30
+#define MAGIC_METHOD_AVG_LENGTH 4
 
 //#define SIG_IGN  ((__sighandler_t)  1)
 #undef SIG_IGN
@@ -270,7 +271,7 @@ Client::ConsumeMethod() noexcept {
 
 	// Reserve 4 octets because GET & POST fit in 4 octets, so no reallocation
 	// is needed.
-	buffer.reserve(4);
+	buffer.reserve(MAGIC_METHOD_AVG_LENGTH);
 
 	while (true) {
 		char character = 0;
