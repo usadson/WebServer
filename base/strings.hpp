@@ -14,14 +14,14 @@ extern const base::String DefaultWebPage;
 extern const base::String NotFoundPage;
 extern const base::String TooManyRequestsPage;
 
-namespace BadRequests {
+namespace BadRequestMessages {
 	extern const base::String EmptyMethod;
 	extern const base::String HeaderFieldNameTooLong;
 	extern const base::String HeaderFieldValueTooLong;
 	extern const base::String MethodTooLong;
 	extern const base::String RequestTargetTooLong;
 	extern const base::String TooManyOWSs;
-} // namespace BadRequests
+} // namespace BadRequestMessages
 
 namespace StatusLines {
 	extern const base::String BadRequest;

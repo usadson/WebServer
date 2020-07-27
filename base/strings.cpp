@@ -26,7 +26,7 @@ const base::String TooManyRequestsPage =
 	"</body>"
 	"</html>";
 
-namespace BadRequests {
+namespace BadRequestMessages {
 const base::String EmptyMethod =
 	"A method cannot be empty.\n"
 	"RFC 7230 section 3.1.1 specifies a method as follows:\n"
