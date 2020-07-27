@@ -1,6 +1,21 @@
+# Copyright (C) 2020 Tristan. All Rights Reserved.
+# See the COPYING file for licensing information.
+
+# Binary files
 bin/
-server
 infer-out/
+server
+
+# Mask log files
 *.log
+
+# Automatic files
+/.idea
+.DS_store
 .kateproject
 kate.project.ctags.*
+.vs
+.vscode
+
+# Git files
+*.orig
