@@ -4,6 +4,18 @@
  * See the COPYING file for licensing information.
  */
 
+/**
+ * A "memory" connection is the implementation of the Connection class as
+ * defined by 'connection.hpp'. Instead of using POSIX sockets like the normal
+ * implementation, this file uses vectors, hence the "memory" name.
+ *
+ * This is useful for tests, since they can simply use this implementation BLOB.
+ * Otherwise they should create a temporary server which is a big hassle.
+ *
+ * The data of this class is defined in memory_userdata.hpp, upcasted to void *
+ * and stored in "Connection::userData".
+ */
+
 #define CONNECTION_MEMORY_VARIANT
 
 #include "connection/connection.hpp"
