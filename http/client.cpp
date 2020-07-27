@@ -467,7 +467,7 @@ Client::RecoverError(ClientError error) noexcept {
 			ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
 			return RecoverErrorFileNotFound();
 		case ClientError::EMPTY_METHOD:
-			return RecoverErrorBadRequest(Strings::BadRequests::EmptyMethod);
+			return RecoverErrorBadRequest(Strings::BadRequestMessages::EmptyMethod);
 
 		case ClientError::INCORRECT_HEADER_FIELD_NAME:
 			return RecoverErrorBadRequest("invalid header field-name");
@@ -491,15 +491,15 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 
 		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME:
-			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::HeaderFieldNameTooLong);
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequestMessages::HeaderFieldNameTooLong);
 		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE:
-			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::HeaderFieldValueTooLong);
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequestMessages::HeaderFieldValueTooLong);
 		case ClientError::POLICY_TOO_LONG_METHOD:
-			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::MethodTooLong);
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequestMessages::MethodTooLong);
 		case ClientError::POLICY_TOO_LONG_REQUEST_TARGET:
-			return ServeStringRequest(Strings::StatusLines::URITooLong, MediaTypes::TEXT, Strings::BadRequests::RequestTargetTooLong);
+			return ServeStringRequest(Strings::StatusLines::URITooLong, MediaTypes::TEXT, Strings::BadRequestMessages::RequestTargetTooLong);
 		case ClientError::POLICY_TOO_MANY_OWS:
-			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequests::TooManyOWSs);
+			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequestMessages::TooManyOWSs);
 
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
