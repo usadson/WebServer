@@ -77,6 +77,8 @@ public:
 	[[nodiscard]] bool
 	WriteBaseString(const base::String &) noexcept;
 
+	// Is used by memory_connection.hpp but isn't used in the normal
+	// implementation.
 	void *userData;
 	void *securityContext{ nullptr };
 
