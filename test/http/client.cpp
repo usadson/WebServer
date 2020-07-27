@@ -70,6 +70,10 @@ TEST_F(ClientTest, ConsumeMethodNormal) {
 	for (const std::string &method : { "GET ", "POST ", "UPDATEREDIRECTREF " }) {
 		ensureInputSize(method.length());
 		std::copy(std::crbegin(method), std::crend(method), std::begin(internalData.input));
+
+		/* Clear buffer(s) */
+		client.currentRequest.method.clear();
+
 		auto error = client.ConsumeMethod();
 		ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::NO_ERROR);
 	}
@@ -78,6 +82,10 @@ TEST_F(ClientTest, ConsumeMethodNormal) {
 TEST_F(ClientTest, ConsumeMethodZeroLength) {
 	ensureInputSize(1);
 	internalData.input[0] = ' ';
+
+	/* Clear buffer(s) */
+	client.currentRequest.method.clear();
+
 	auto error = client.ConsumeMethod();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::EMPTY_METHOD);
 }
@@ -105,6 +113,9 @@ TEST_F(ClientTest, ConsumeMethodRandomToken) {
 
 		auto copyOfBuf = buf;
 		copyOfBuf.push_back('\0');
+
+		/* Clear buffer(s) */
+		client.currentRequest.method.clear();
 
 		auto error = client.ConsumeMethod();
 		ASSERT_EQ(error, HTTP::ClientError::NO_ERROR) << "Error: " << ClientErrorToString(error)
