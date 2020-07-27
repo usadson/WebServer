@@ -41,6 +41,8 @@
 #define MAGIC_METHOD_AVG_LENGTH 4
 #define MAGIC_PATH_AVG_LENGTH 8
 
+#define MAGIC_METHOD_MAX_BUFFER_SIZE_ON_RESET MAGIC_METHOD_AVG_LENGTH
+
 //#define SIG_IGN  ((__sighandler_t)  1)
 #undef SIG_IGN
 #define SIG_IGN reinterpret_cast<__sighandler_t>(1)
@@ -540,13 +542,29 @@ Client::RecoverErrorFileNotFound() noexcept {
 
 void
 Client::ResetExchangeState() noexcept {
-	this->currentRequest = Request();
-
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
 	if (server->config().securityPolicies.maxRequestsCloseImmediately && maxRequests != 0 && ++requestCount >= maxRequests) {
 		// Close the connection.
 		MarkConnectionClosing();
+		return;
 	}
+
+	/* Keep capacity but remove contents */
+	if (this->currentRequest.method.capacity() > MAGIC_METHOD_MAX_BUFFER_SIZE_ON_RESET) {
+		// How can we optimize this?
+		// I want to reserve() but backwards.
+		this->currentRequest.method.resize(MAGIC_METHOD_MAX_BUFFER_SIZE_ON_RESET, 0);
+		this->currentRequest.method.clear();
+	} else {
+		this->currentRequest.method.clear();
+	}
+
+	// Clear the headers
+	this->currentRequest.headers.clear();
+
+	// Clear the rest of the std::string's
+	this->currentRequest.path.clear();
+	this->currentRequest.query.clear();
 }
 
 bool
