@@ -68,6 +68,12 @@ public:
 	[[nodiscard]] bool
 	WriteString(const std::string &) noexcept;
 
+	// Writes the contents of the string. Doens't include the null termination
+	// character.
+	//
+	// Won't/can't modify the [string] parameter.
+	//
+	// Returns success status
 	[[nodiscard]] bool
 	WriteBaseString(const base::String &) noexcept;
 
