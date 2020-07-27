@@ -207,7 +207,7 @@ Client::ConsumeHeaderFieldValue() noexcept {
 
 ClientError
 Client::ConsumeHeaderFieldName() noexcept {
-	static const std::vector<char> unreservedCharacters
+	static const std::array unreservedCharacters
 		= { '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' };
 
 	while (true) {
