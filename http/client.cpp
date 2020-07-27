@@ -241,7 +241,7 @@ Client::ConsumeHeaderFieldName() noexcept {
 
 ClientError
 Client::ConsumeHeaders() noexcept {
-	do {
+	while (true) {
 		char character; // NOLINT(cppcoreguidelines-init-variables)
 		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_HEADER_FIELD_NAME;
@@ -254,16 +254,14 @@ Client::ConsumeHeaders() noexcept {
 			if (character != '\n') {
 				return ClientError::UNEXPECTED_CR_IN_FIELD_NAME;
 			}
-			break;
+			return ClientError::NO_ERROR;
 		}
 
 		auto error = ConsumeHeaderField(character);
 		if (error != ClientError::NO_ERROR) {
 			return error;
 		}
-	} while (true);
-
-	return ClientError::NO_ERROR;
+	}
 }
 
 ClientError
