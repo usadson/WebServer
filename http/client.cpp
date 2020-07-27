@@ -337,18 +337,19 @@ Client::ConsumePath() noexcept {
 
 ClientError
 Client::ConsumeVersion() noexcept {
-	std::array<char, 8> buffer{};
-
 	std::array<char, 7> expectedChars = {
 		'H', 'T', 'T', 'P', '/', '1', '.'
 	};
 
 	for (std::size_t i = 0; i < 8; i++) {
-		if (!connection->ReadChar(&buffer[i])) {
+		char character;
+		if (!connection->ReadChar(&character)) {
 			return ClientError::FAILED_READ_VERSION;
 		}
 
-		if (i == 7 ? !Utils::IsNumericCharacter(buffer[i]) : (buffer[i] != expectedChars[i])) {
+		if (i == 7 ?
+			(!Utils::IsNumericCharacter(character)) :
+			(character != expectedChars[i])) {
 			return ClientError::INCORRECT_VERSION;
 		}
 	}
