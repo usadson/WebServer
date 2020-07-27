@@ -19,41 +19,41 @@ public:
 		: str(str), internalLength(strlen(str)) {
 	}
 
-	inline String(const char *str, std::size_t len)
+	inline constexpr String(const char *str, std::size_t len)
 		: str(str), internalLength(len) {
 	}
 
-	[[nodiscard]] inline const char *
+	[[nodiscard]] inline constexpr const char *
 	c_str() const noexcept {
 		return str;
 	}
 
-	[[nodiscard]] inline const char *
+	[[nodiscard]] inline constexpr const char *
 	data() const noexcept {
 		return str;
 	}
 
-	[[nodiscard]] inline auto
+	[[nodiscard]] inline constexpr auto
 	cbegin() const noexcept {
 		return str;
 	}
 
-	[[nodiscard]] inline auto
+	[[nodiscard]] inline constexpr auto
 	begin() const noexcept {
 		return str;
 	}
 
-	[[nodiscard]] inline auto
+	[[nodiscard]] inline constexpr auto
 	cend() const noexcept {
 		return str + internalLength;
 	}
 
-	[[nodiscard]] inline auto
+	[[nodiscard]] inline constexpr auto
 	end() const noexcept {
 		return str + internalLength;
 	}
 
-	[[nodiscard]] inline std::size_t
+	[[nodiscard]] inline constexpr std::size_t
 	length() const noexcept {
 		return internalLength;
 	}
