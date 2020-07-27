@@ -8,11 +8,12 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace HTTP {
 
 struct Request {
-	std::string method;
+	std::vector<char> method;
 
 	std::string path;
 	std::string query;
@@ -20,6 +21,15 @@ struct Request {
 	// Version isn't worth/needed storing atm.
 
 	std::map<std::string, std::string> headers;
+
+	// Is method head
+	[[nodiscard]] inline bool
+	IsHead() {
+		const char head[] = "HEAD";
+		return std::mismatch(std::begin(method), std::end(method),
+							 std::begin(head), std::begin(head) + 4)
+				.first == std::end(method);
+	}
 };
 
 } // namespace HTTP

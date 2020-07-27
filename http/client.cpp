@@ -269,7 +269,7 @@ Client::ConsumeHeaders() noexcept {
 
 ClientError
 Client::ConsumeMethod() noexcept {
-	std::vector<char> buffer;
+	std::vector<char> &buffer = this->currentRequest.method;
 
 	// Reserve 4 octets because GET & POST fit in 4 octets, so no reallocation
 	// is needed.
@@ -286,7 +286,6 @@ Client::ConsumeMethod() noexcept {
 			if (buffer.empty()) {
 				return ClientError::EMPTY_METHOD;
 			}
-			this->currentRequest.method = std::string(std::begin(buffer), std::end(buffer));
 			return ClientError::NO_ERROR;
 		}
 
@@ -408,7 +407,7 @@ Client::HandleRequest() noexcept {
 		return ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION;
 	}
 
-	auto file = server->fileResolver.Resolve(currentRequest);
+	const auto file = server->fileResolver.Resolve(currentRequest);
 
 	if (!file) {
 		return ClientError::FILE_NOT_FOUND;
@@ -423,7 +422,7 @@ Client::HandleRequest() noexcept {
 		return ClientError::FAILED_WRITE_RESPONSE_METADATA;
 	}
 
-	if (currentRequest.method != "HEAD" &&
+	if (!currentRequest.IsHead() &&
 		!connection->SendFile(file->Handle(), file->Size())) {
 		perror("HandleRequest");
 		return ClientError::FAILED_WRITE_RESPONSE_BODY;
@@ -649,7 +648,7 @@ Client::ServeStringRequest(const base::String &responseLine,
 		return false;
 	}
 
-	if (currentRequest.method == "HEAD") {
+	if (currentRequest.IsHead()) {
 		return true;
 	}
 
