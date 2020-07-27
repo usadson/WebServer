@@ -50,6 +50,12 @@ public:
 	[[nodiscard]] bool
 	SendFile(int fd, std::size_t count) noexcept;
 
+	// Will setup the connection. If the configuration specifies the use of TLS,
+	// it will setup this as well.
+	//
+	// Won't/can't modify the [configuration] parameter.
+	//
+	// Returns success status
 	[[nodiscard]] bool
 	Setup(const HTTP::Configuration &) noexcept;
 
