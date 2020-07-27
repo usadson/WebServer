@@ -80,6 +80,8 @@ public:
 	// Is used by memory_connection.hpp but isn't used in the normal
 	// implementation.
 	void *userData;
+
+	// Will be modified by Setup and its descendants if TLS is enabled.
 	void *securityContext{ nullptr };
 
 #ifndef CONNECTION_MEMORY_VARIANT
