@@ -20,11 +20,18 @@
 #include "base/logger.hpp"
 #include "connection/connection.hpp"
 
+//////////////////////////////////////////////////////////////////////
+// To enable OpenSSL debug information, enable the following macro: //
+//             #define TLSIMPL_ENABLE_DEBUG_INFORMATION             //
+//////////////////////////////////////////////////////////////////////
+
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
 static const char *
 GetSSLErrorString(int error);
 
 static void
 LogDescriptiveError(SSL *ssl, int status, const char *tag, const char *action);
+#endif
 
 void
 ConnectionSecureInternals::Destruct(Connection *connection) {
@@ -39,28 +46,38 @@ ConnectionSecureInternals::Setup(Connection *connection, const HTTP::Configurati
 	connection->securityContext = ssl;
 
 	if (ssl == nullptr) {
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
 		ERR_print_errors_fp(stderr);
 		std::stringstream error;
 		error << "SSL_new failed. TLS context is " << configuration.tlsConfiguration.context;
 		Logger::Error("CSI[OSSL]::Setup", error.str());
+#endif
 		return false;
 	}
 
 	if (SSL_set_fd(ssl, connection->internalSocket) == 0) {
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
 		ERR_print_errors_fp(stderr);
 		Logger::Error("CSI[OSSL]::Setup", "Failed to set socket (FD)");
+#endif
 		return false;
 	}
 
 	int status = SSL_accept(ssl);
 	if (status != 1) {
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
+		ERR_print_errors_fp(stderr);
 		LogDescriptiveError(ssl, status, "CSI[OSSL]::Setup", "setup TLS communication");
+#endif
 		return false;
 	}
 
 	status = SSL_do_handshake(ssl);
 	if (status != 1) {
-		LogDescriptiveError(ssl, status, "CSI[OSSL]::Setup", "perform TLS handshake");
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
+			ERR_print_errors_fp(stderr);
+			LogDescriptiveError(ssl, status, "CSI[OSSL]::Setup", "perform TLS handshake");
+#endif
 		return false;
 	}
 
@@ -75,9 +92,6 @@ ConnectionSecureInternals::ReadChar(const Connection *connection, char *buf) {
 		return true;
 	}
 
-	std::stringstream error;
-	error << "SSL_read failed. securityContext is " << connection->securityContext;
-	Logger::Error("CSI[OSSL]::ReadChar", error.str());
 	ERR_print_errors_fp(stderr);
 	return false;
 }
@@ -108,6 +122,8 @@ int
 ConnectionSecureInternals::Write(Connection *connection, const char *str, std::size_t len) {
 	return SSL_write(reinterpret_cast<SSL *>(connection->securityContext), str, len);
 }
+
+#ifdef TLSIMPL_ENABLE_DEBUG_INFORMATION
 
 static void
 LogDescriptiveError(SSL *ssl, int status, const char *tag, const char *action) {
@@ -147,3 +163,5 @@ GetSSLErrorString(int error) {
 			return "no string for this OpenSSL error code";
 	}
 }
+
+#endif
