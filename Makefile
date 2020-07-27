@@ -88,7 +88,8 @@ bin/base/media_type.o: base/media_type.cpp \
 	$(CXX) $(CXXFLAGS) -c -o $@ base/media_type.cpp
 
 bin/base/strings.o: base/strings.cpp \
-	base/strings.hpp
+	base/strings.hpp \
+	base/string.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ base/strings.cpp
 
 bin/cgi/manager.o: cgi/manager.cpp \
