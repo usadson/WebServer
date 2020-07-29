@@ -643,29 +643,29 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	metadata.insert(std::end(metadata), std::cbegin(response), std::cend(response));
 
 	const char contentLengthName[] = "\r\nContent-Length: ";
-	metadata.insert(std::end(metadata), std::cbegin(contentLengthName), std::cend(contentLengthName));
+	metadata.insert(std::end(metadata), std::cbegin(contentLengthName), std::cend(contentLengthName) - 1);
 	metadata.insert(std::end(metadata), std::cbegin(contentLengthValue), std::cend(contentLengthValue));
 
 	const char serverHeaderName[] = "\r\nServer: ";
-	metadata.insert(std::end(metadata), std::cbegin(serverHeaderName), std::cend(serverHeaderName));
+	metadata.insert(std::end(metadata), std::cbegin(serverHeaderName), std::cend(serverHeaderName) - 1);
 	metadata.insert(std::end(metadata), std::cbegin(server->config().serverProductName), std::cend(server->config().serverProductName));
 
 	const char connectionHeaderAlive[] = "\r\nConnection: keep-alive";
 	const char connectionHeaderClose[] = "\r\nConnection: close";
 	if (persistentConnection) {
-		metadata.insert(std::end(metadata), std::cbegin(connectionHeaderAlive), std::cend(connectionHeaderAlive));
+		metadata.insert(std::end(metadata), std::cbegin(connectionHeaderAlive), std::cend(connectionHeaderAlive) - 1);
 	} else {
-		metadata.insert(std::end(metadata), std::cbegin(connectionHeaderClose), std::cend(connectionHeaderClose));
+		metadata.insert(std::end(metadata), std::cbegin(connectionHeaderClose), std::cend(connectionHeaderClose) - 1);
 	}
 
 	if (useHSTS) {
 		const char stsHeader[] = "\r\nStrict-Transport-Security: ";
-		metadata.insert(std::end(metadata), std::cbegin(stsHeader), std::cend(stsHeader));
+		metadata.insert(std::end(metadata), std::cbegin(stsHeader), std::cend(stsHeader) - 1);
 		metadata.insert(std::end(metadata), std::cbegin(server->config().hsts), std::cend(server->config().hsts));
 	}
 
 	const char contentTypeName[] = "\r\nContent-Type: ";
-	metadata.insert(std::end(metadata), std::cbegin(contentTypeName), std::cend(contentTypeName));
+	metadata.insert(std::end(metadata), std::cbegin(contentTypeName), std::cend(contentTypeName) - 1);
 	metadata.insert(std::end(metadata), std::cbegin(mediaTypeValue), std::cend(mediaTypeValue));
 
 	const char crlf[] = "\r\n";
@@ -681,9 +681,6 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	}
 
 	metadata.insert(std::end(metadata), std::begin(crlf), std::end(crlf));
-	std::stringstream report;
-	report << "Report. Used " << metadata.size() << " octets out of " << metadata.capacity() << " allocated with size=" << size;
-	Logger::Debug(__PRETTY_FUNCTION__, report.str());
 
 	return connection->WriteBaseString(base::String(metadata.data(), metadata.size()));
 }
