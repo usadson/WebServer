@@ -96,7 +96,7 @@ void
 Client::Clean() noexcept {
 	connection = nullptr;
 
-	server->SignalClientDeath(thread);
+	server->SignalClientDeath();
 }
 
 ClientError
