@@ -24,5 +24,6 @@ namespace psx {
 	} // namespace OpenMode
 
 	using ::fstat;
+	using ::open;
 
 } // namespace psx

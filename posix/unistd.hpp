@@ -20,7 +20,6 @@
 namespace psx {
 
 	using ::close;
-	using ::open;
 	using ::read;
 	using ::write;
 
