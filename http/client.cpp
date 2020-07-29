@@ -671,16 +671,16 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	const char crlf[] = "\r\n";
 	const char charset[] = ";charset=utf-8\r\n";
 	if (mediaType.IncludeCharset()) {
-		metadata.insert(std::end(metadata), std::begin(charset), std::end(charset));
+		metadata.insert(std::end(metadata), std::begin(charset), std::end(charset) - 1);
 	} else {
-		metadata.insert(std::end(metadata), std::begin(crlf), std::end(crlf));
+		metadata.insert(std::end(metadata), std::begin(crlf), std::end(crlf) - 1);
 	}
 
 	if (additionalMetaData) {
 		metadata.insert(std::end(metadata), additionalMetaData, additionalMetaData + additionalMetaDataLen);
 	}
 
-	metadata.insert(std::end(metadata), std::begin(crlf), std::end(crlf));
+	metadata.insert(std::end(metadata), std::begin(crlf), std::end(crlf) - 1);
 
 	return connection->WriteBaseString(base::String(metadata.data(), metadata.size()));
 }
