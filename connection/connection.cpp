@@ -12,7 +12,6 @@
 
 #include <cerrno>
 #include <ctime>
-#include <unistd.h>
 
 #if defined(__FreeBSD__)
 #include <sys/socket.h>
@@ -39,6 +38,7 @@
 #include "base/logger.hpp"
 #include "connection/security_internals.hpp"
 #include "http/configuration.hpp"
+#include "posix/unistd.hpp"
 
 Connection::~Connection() noexcept {
 	if (hasWriteFailed) {
@@ -93,7 +93,7 @@ Connection::ReadChar(char *buf) const noexcept {
 		return ConnectionSecureInternals::ReadChar(this, buf);
 	}
 
-	return read(internalSocket, buf, 1) != -1;
+	return psx::read(internalSocket, buf, 1) != -1;
 }
 
 bool
@@ -137,13 +137,13 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 #else
 	std::array<char, 4096> buffer {};
 	do {
-		ssize_t result = read(fd, buffer.data(), 4096);
+		ssize_t result = psx::read(fd, buffer.data(), 4096);
 		if (result == -1) {
 			return false;
 		}
 		count -= result;
 		do {
-			ssize_t writeResult = write(internalSocket, buffer.data(), result);
+			ssize_t writeResult = psx::write(internalSocket, buffer.data(), result);
 			if (writeResult == -1) {
 				hasWriteFailed = true;
 				return false;
@@ -164,7 +164,7 @@ Connection::WriteString(const std::string &str) noexcept {
 		if (useTransportSecurity) {
 			status = ConnectionSecureInternals::Write(this, str.c_str() + off, len);
 		} else {
-			status = write(internalSocket, str.c_str() + off, len);
+			status = psx::write(internalSocket, str.c_str() + off, len);
 		}
 
 		if (status == -1) {
@@ -189,7 +189,7 @@ Connection::WriteBaseString(const base::String &str) noexcept {
 		if (useTransportSecurity) {
 			status = ConnectionSecureInternals::Write(this, str.data() + off, len);
 		} else {
-			status = write(internalSocket, str.data() + off, len);
+			status = psx::write(internalSocket, str.data() + off, len);
 		}
 
 		if (status == -1) {
