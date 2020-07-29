@@ -38,6 +38,7 @@
 #include "base/logger.hpp"
 #include "connection/security_internals.hpp"
 #include "http/configuration.hpp"
+#include "posix/fcntl.hpp"
 #include "posix/unistd.hpp"
 
 Connection::~Connection() noexcept {
