@@ -216,13 +216,16 @@ Server::HandlePollFailure() {
 // and if it was possible, it would mean a deadlock since the destructor
 // can't be called.
 void
-Server::SignalClientDeath() noexcept {
+Server::SignalClientDeath(std::reference_wrapper<std::thread> thread) noexcept {
 	// Lock the mutex to prevent modifications as we access 'clients'.
 	const std::lock_guard<std::mutex> lock(clientsMutex);
 
+	// Detach the thread so we can remove the client.
+	thread.get().detach();
+
 	auto iterator = std::find_if(std::begin(clients), std::end(clients),
-		[](const auto &client) {
-			return client->thread.get_id() == std::this_thread::get_id();
+		[thread](const auto &client) {
+			return client->thread.get_id() == thread.get().get_id();
 		}
 	);
 

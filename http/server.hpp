@@ -42,7 +42,7 @@ public:
 	}
 
 	void
-	SignalClientDeath() noexcept;
+	SignalClientDeath(std::reference_wrapper<std::thread>) noexcept;
 
 	inline void
 	SignalShutdown() noexcept {
