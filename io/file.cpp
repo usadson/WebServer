@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "posix/fcntl.hpp"
+#include "posix/stat.hpp"
 #include "posix/unistd.hpp"
 
 void
