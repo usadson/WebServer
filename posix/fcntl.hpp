@@ -15,7 +15,7 @@
  * used anywhere official AFAIK. Therefore, we'll use 'libposix'.
  */
 
-#include <unistd.h>
+#include <fcntl.h>
 
 namespace psx {
 
@@ -23,7 +23,6 @@ namespace psx {
 		constexpr int readOnly = 0;
 	} // namespace OpenMode
 
-	using ::fstat;
 	using ::open;
 
 } // namespace psx
