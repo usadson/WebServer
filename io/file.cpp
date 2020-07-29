@@ -9,23 +9,26 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "posix/fcntl.hpp"
+#include "posix/unistd.hpp"
+
 void
 IO::File::InternalInit(const char *path) {
 	if (fd != -1) {
-		close(fd);
+		psx::close(fd);
 	}
 
 	internalPath = path;
-	fd = open(path, O_RDONLY);
+	fd = psx::open(path, psx::OpenMode::readOnly);
 
-	if (fd != -1 && fstat(fd, &status) == -1) {
-		close(fd);
+	if (fd != -1 && psx::fstat(fd, &status) == -1) {
+		psx::close(fd);
 		fd = -1;
 	}
 }
 
 IO::File::~File() noexcept {
 	if (fd != -1) {
-		close(fd);
+		psx::close(fd);
 	}
 }
