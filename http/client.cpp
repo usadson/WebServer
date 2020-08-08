@@ -625,6 +625,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	const std::string contentLengthValue = std::to_string(contentLength);
 	const bool useHSTS = server->config().useTransportSecurity && !server->config().hsts.empty();
 	const bool preventContentTypeSniffing = server->config().securityPolicies.enableContentTypeNosniffing;
+	const bool preventIframing = server->config().securityPolicies.denyIFraming;
 	const std::size_t additionalMetaDataLen = additionalMetaData == nullptr ? 0 : strlen(additionalMetaData);
 	const std::string &mediaTypeValue = mediaType.Complete();
 
@@ -635,6 +636,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 		 (persistentConnection ? 26 : 21) +
 		 (useHSTS ? 31 + server->config().hsts.length() : 0) +
 		 (preventContentTypeSniffing ? 33 : 0) +
+		 (preventIframing ? 29 : 0) +
 		 18 + mediaTypeValue.length() +
 		 (mediaType.IncludeCharset() ? 18 : 2) +
 		 (additionalMetaData != nullptr ? additionalMetaDataLen : 0) +
@@ -669,6 +671,11 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	if (preventContentTypeSniffing) {
 		const char xctoHeader[] = "\r\nX-Content-Type-Options: nosniff";
 		metadata.insert(std::end(metadata), std::cbegin(xctoHeader), std::cend(xctoHeader) - 1);
+	}
+
+	if (preventIframing) {
+		const char xfoHeader[] = "\r\nX-Frame-Options: SAMEORIGIN";
+		metadata.insert(std::end(metadata), std::cbegin(xfoHeader), std::cend(xfoHeader) - 1);
 	}
 
 	const char contentTypeName[] = "\r\nContent-Type: ";
