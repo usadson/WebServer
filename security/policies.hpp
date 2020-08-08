@@ -26,7 +26,7 @@ struct Policies {
 	//
 	// Spec:
 	// https://w3c.github.io/webappsec-csp/2/#directive-default-src
-	const base::String contentSecurityPolicy{ "default-src 'self'; style-src 'unsafe-inline';" };
+	const base::String contentSecurityPolicy{ "default-src 'none'; font-src https://fonts.gstatic.com; img-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;" };
 
 	// Enables the "X-Frame-Options" header.
 	// Prevents browsers from attacks that try to <iframe> the page.
