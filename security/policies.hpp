@@ -12,6 +12,13 @@ namespace Security {
 
 struct Policies {
 
+	// Enables the "X-Content-Type-Options: no-sniff" header
+	// Prevents browsers from executing scripts accidentally.
+	//
+	// See more at: https://infosec.mozilla.org/guidelines/web_security#x-content-type-options
+	// Spec: https://fetch.spec.whatwg.org/#x-content-type-options-header
+	bool enableContentTypeNosniffing{ true };
+
 	// The maximum length of the header field-name.
 	// At this time, the longest registered header field-name is
 	// 'Include-Referred-Token-Binding-ID', with a length of 33 characters.
