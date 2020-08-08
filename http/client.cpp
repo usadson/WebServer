@@ -627,6 +627,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	const bool preventContentTypeSniffing = server->config().securityPolicies.enableContentTypeNosniffing;
 	const bool preventIframing = server->config().securityPolicies.denyIFraming;
 	const bool enableXSSPrevention = server->config().securityPolicies.enableXSSProtectionHeader;
+	const bool enableContentSecurityPolicy = server->config().securityPolicies.contentSecurityPolicy.length() != 0;
 	const std::size_t additionalMetaDataLen = additionalMetaData == nullptr ? 0 : strlen(additionalMetaData);
 	const std::string &mediaTypeValue = mediaType.Complete();
 
@@ -639,6 +640,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 		 (preventContentTypeSniffing ? 33 : 0) +
 		 (preventIframing ? 29 : 0) +
 		 (enableXSSPrevention ? 33 : 0) +
+		 (enableContentSecurityPolicy ? 27 + server->config().securityPolicies.contentSecurityPolicy.length() : 0) +
 		 18 + mediaTypeValue.length() +
 		 (mediaType.IncludeCharset() ? 18 : 2) +
 		 (additionalMetaData != nullptr ? additionalMetaDataLen : 0) +
@@ -683,6 +685,13 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	if (enableXSSPrevention) {
 		const char xxpHeader[] = "\r\nX-XSS-Protection: 1; mode=block";
 		metadata.insert(std::end(metadata), std::cbegin(xxpHeader), std::cend(xxpHeader) - 1);
+	}
+
+	if (enableContentSecurityPolicy) {
+		const auto &value = server->config().securityPolicies.contentSecurityPolicy;
+		const char cspHeader[] = "\r\nContent-Security-Policy: ";
+		metadata.insert(std::end(metadata), std::cbegin(cspHeader), std::cend(cspHeader) - 1);
+		metadata.insert(std::end(metadata), std::cbegin(value), std::cend(value));
 	}
 
 	const char contentTypeName[] = "\r\nContent-Type: ";
