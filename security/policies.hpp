@@ -19,6 +19,13 @@ struct Policies {
 	// Spec: https://tools.ietf.org/html/rfc7034
 	bool denyIFraming{ true };
 
+	// Enables the "X-XSS-Protection" header.
+	// Prevents browsers from executing cross site scripts.
+	//
+	// See more at: https://infosec.mozilla.org/guidelines/web_security#x-xss-protection
+	// Informative header (X prefix).
+	bool enableXSSProtectionHeader{ true };
+
 	// Enables the "X-Content-Type-Options: no-sniff" header.
 	// Prevents browsers from executing scripts accidentally.
 	//
