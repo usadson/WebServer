@@ -8,9 +8,25 @@
 
 #include <iosfwd>
 
+#include "base/string.hpp"
+
 namespace Security {
 
 struct Policies {
+
+	// Sets the value of the "Content-Security-Policy" header.
+	// E.g. can tell browsers what sources are allowed.
+	// Empty means not sending the header at all.
+	//
+	// See more at Mozilla Infosec:
+	// https://infosec.mozilla.org/guidelines/web_security#content-security-policy
+	//
+	// Read further at MDN:
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/default-src
+	//
+	// Spec:
+	// https://w3c.github.io/webappsec-csp/2/#directive-default-src
+	const base::String contentSecurityPolicy{ "default-src 'self'; style-src 'unsafe-inline';" };
 
 	// Enables the "X-Frame-Options" header.
 	// Prevents browsers from attacks that try to <iframe> the page.
