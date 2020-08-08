@@ -12,7 +12,14 @@ namespace Security {
 
 struct Policies {
 
-	// Enables the "X-Content-Type-Options: no-sniff" header
+	// Enables the "X-Frame-Options" header.
+	// Prevents browsers from attacks that try to <iframe> the page.
+	//
+	// See more at: https://infosec.mozilla.org/guidelines/web_security#x-frame-options
+	// Spec: https://tools.ietf.org/html/rfc7034
+	bool denyIFraming{ true };
+
+	// Enables the "X-Content-Type-Options: no-sniff" header.
 	// Prevents browsers from executing scripts accidentally.
 	//
 	// See more at: https://infosec.mozilla.org/guidelines/web_security#x-content-type-options
