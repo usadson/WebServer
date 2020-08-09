@@ -35,8 +35,7 @@ stick with it for now. It should work out of the box.
 
 ## Running
 As the project is currently in development stages, no system(ctl/d/etc.) support
-atm. Simply run the executable with `./server`. You may need to `chmod +x server`
-it.
+at the moment. Simply run the executable with `./server`.
 
 To stop the server, you can force the server to stop immediately by hitting
 control + c, but a better thing to do is to shutdown the server gracefully by
