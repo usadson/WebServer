@@ -42,6 +42,18 @@ control + c, but a better thing to do is to shutdown the server gracefully by
 typing something and then hitting enter (making a non-blank newline). This
 should trigger shutdown. If it doesn't work, try the control + c method.
 
+## Configuring
+Configuring this server is done at compile-time, except for the certificates and
+private keys used by TLS. This compile-time configuration is done for security,
+performance and personal preference reasons. The configuration can be found in
+code and is well documented.
+
+See:
+ * [http/configuration.hpp](http/configuration.hpp)
+ * [security/policies.hpp](security/policies.hpp)
+ * [security/tls_configuration.hpp] 
+ * [main.cpp](main.cpp)
+
 ## Licensing
 This project is [licensed](COPYING) under a 2-Clause BSD-like license, which
 *roughly* means that you are free to use it as you wish, as long as you credit
