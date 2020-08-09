@@ -46,7 +46,7 @@
 
 //#define SIG_IGN  ((__sighandler_t)  1)
 #undef SIG_IGN
-#define SIG_IGN reinterpret_cast<__sighandler_t>(1)
+#define SIG_IGN reinterpret_cast<void (*)(int)>(1)
 
 [[nodiscard]] inline bool
 StringStartsWith(const std::string &string, const std::string &prefix) {
