@@ -17,6 +17,9 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/uio.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/ioctl.h>
 #elif defined(__linux__)
 #include <netinet/in.h>
 #include <netinet/tcp.h>
