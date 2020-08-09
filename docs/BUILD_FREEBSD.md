@@ -22,7 +22,7 @@ and `pkgconf` is `pkg-config`.
 ## Getting the Code
 Getting the code is as easy as:
 ```sh
-git clone https://github.com/usadson/WebEngine.git && cd WebServer
+git clone https://github.com/usadson/WebServer.git && cd WebServer
 ```
 or using SSH:
 ```sh
