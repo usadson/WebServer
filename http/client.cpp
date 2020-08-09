@@ -402,6 +402,22 @@ Client::ExtractComponentsFromPath() noexcept {
 	return ClientError::NO_ERROR;
 }
 
+bool
+Client::HandleFileNotFound() noexcept {
+	static const std::string indexPathTarget("/index.html");
+	const auto *script = server->cgi().Lookup(currentRequest);
+
+	if (script != nullptr) {
+		return ServeCGI(script);
+	}
+
+	if (StringStartsWith(indexPathTarget, currentRequest.path)) {
+		return ServeDefaultPage();
+	}
+	ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
+	return RecoverErrorFileNotFound();
+}
+
 ClientError
 Client::HandleRequest() noexcept {
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
@@ -452,21 +468,9 @@ Client::MarkConnectionClosing() noexcept {
 
 bool
 Client::RecoverError(ClientError error) noexcept {
-	static const std::string indexPathTarget("/index.html");
-	const CGI::Script *script = nullptr;
-
 	switch (error) {
 		case ClientError::FILE_NOT_FOUND:
-			script = server->cgi().Lookup(currentRequest);
-			if (script != nullptr) {
-				return ServeCGI(script);
-			}
-
-			if (StringStartsWith(indexPathTarget, currentRequest.path)) {
-				return ServeDefaultPage();
-			}
-			ErrorReporter::ReportError(ErrorReporter::Error::FILE_NOT_FOUND, "Path='" + currentRequest.path + '\'');
-			return RecoverErrorFileNotFound();
+			return HandleFileNotFound();
 		case ClientError::EMPTY_METHOD:
 			return RecoverErrorBadRequest(Strings::BadRequestMessages::EmptyMethod);
 
