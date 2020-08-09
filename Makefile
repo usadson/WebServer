@@ -2,6 +2,7 @@
 # See the COPYING file for licensing information.
 
 .DEFAULT_GOAL := default
+.MAIN := default
 
 include standard.Makefile
 
