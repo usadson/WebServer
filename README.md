@@ -51,7 +51,7 @@ code and is well documented.
 See:
  * [http/configuration.hpp](http/configuration.hpp)
  * [security/policies.hpp](security/policies.hpp)
- * [security/tls_configuration.hpp] 
+ * [security/tls_configuration.hpp](security/tls_configuration.hpp)
  * [main.cpp](main.cpp)
 
 ## Licensing
