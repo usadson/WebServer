@@ -505,11 +505,8 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION:
 			return ServeStringRequest(Strings::StatusLines::TooManyRequests, MediaTypes::HTML, Strings::TooManyRequestsPage);;
 		case ClientError::UPGRADE_TO_HTTPS:
-		{
-			std::string metadata = "Location: https://" + server->config().hostname + currentRequest.path + "\r\n";
-			// Notify to close connection
-			return SendMetadata(Strings::StatusLines::MovedPermanently, 0, MediaTypes::HTML, metadata.c_str()) && false;
-		}
+			MarkConnectionClosing();
+			return SendMetadata(Strings::StatusLines::MovedPermanently, 0, MediaTypes::HTML, ("Location: https://" + server->config().hostname + currentRequest.path + "\r\n").c_str()) && false;
 		default:
 			break;
 	}
