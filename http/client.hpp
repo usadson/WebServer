@@ -129,6 +129,11 @@ TESTING_VISIBILITY:
 	[[nodiscard]] ClientError
 	ExtractComponentsFromPath() noexcept;
 
+	// This function handles the FILE_NOT_FOUND ClientError. It is called from
+	// RecoverError.
+	[[nodiscard]] bool
+	HandleFileNotFound() noexcept;
+
 	// This function handles the parsed HTTP message, and runs the correct calls
 	// to respond to this request.
 	//
