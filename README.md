@@ -45,4 +45,5 @@ should trigger shutdown. If it doesn't work, try the control + c method.
 ## Licensing
 This project is [licensed](COPYING) under a 2-Clause BSD-like license, which
 *roughly* means that you are free to use it as you wish, as long as you credit
-me.
+the authors of this project and possibly the authors of the dependencies used
+with this software.
