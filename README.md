@@ -29,6 +29,14 @@ nobody runs servers on Windows and WSL exists. Most systems have `pkg-config`
 installed by default, but if you run into problems mentioning this utility,
 make sure it is installed.
 
+## Build Instructions
+The following sections are about building the software. There are specific
+building instructions to ease the installation. For Debian, Ubuntu or a
+derivative, click [here](docs/BUILD_DEBIAN.md). For FreeBSD, click
+[here](docs/BUILD_FREEBSD.md). For any other system, make sure you have the
+right packages installed, but not that the package names can differ per
+distribution of your operating system.
+
 ## Dependencies
 Make sure you have the following packages installed:
  - [clang](https://clang.llvm.org/)
@@ -37,12 +45,6 @@ Make sure you have the following packages installed:
  - [make](https://www.gnu.org/software/make/)
  - [openssl](https://openssl.org/)
  - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
-
-You can install the packages on Debian/Ubuntu(-like) systems with APT:
-```sh
-apt update -y
-apt install clang git libssl-dev make openssl pkg-config
-```
 
 ## Building
 `make`. I haven't found a modern, well-thought-through and easy-to-use building
