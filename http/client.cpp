@@ -628,6 +628,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 	const bool preventIframing = server->config().securityPolicies.denyIFraming;
 	const bool enableXSSPrevention = server->config().securityPolicies.enableXSSProtectionHeader;
 	const bool enableContentSecurityPolicy = server->config().securityPolicies.contentSecurityPolicy.length() != 0;
+	const bool disableReferrer = server->config().securityPolicies.disableReferrer;
 	const std::size_t additionalMetaDataLen = additionalMetaData == nullptr ? 0 : strlen(additionalMetaData);
 	const std::string &mediaTypeValue = mediaType.Complete();
 
@@ -641,6 +642,7 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 		 (preventIframing ? 29 : 0) +
 		 (enableXSSPrevention ? 33 : 0) +
 		 (enableContentSecurityPolicy ? 27 + server->config().securityPolicies.contentSecurityPolicy.length() : 0) +
+		 (disableReferrer ? 30 : 0) +
 		 18 + mediaTypeValue.length() +
 		 (mediaType.IncludeCharset() ? 18 : 2) +
 		 (additionalMetaData != nullptr ? additionalMetaDataLen : 0) +
@@ -692,6 +694,11 @@ Client::SendMetadata(const base::String &response, std::size_t contentLength, co
 		const char cspHeader[] = "\r\nContent-Security-Policy: ";
 		metadata.insert(std::end(metadata), std::cbegin(cspHeader), std::cend(cspHeader) - 1);
 		metadata.insert(std::end(metadata), std::cbegin(value), std::cend(value));
+	}
+
+	if (disableReferrer) {
+		const char rpHeader[] = "\r\nReferrer-Policy: no-referrer";
+		metadata.insert(std::end(metadata), std::cbegin(rpHeader), std::cend(rpHeader) - 1);
 	}
 
 	const char contentTypeName[] = "\r\nContent-Type: ";
