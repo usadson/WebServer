@@ -35,6 +35,13 @@ struct Policies {
 	// Spec: https://tools.ietf.org/html/rfc7034
 	bool denyIFraming{ true };
 
+	// Disables the 'Referer' header sent when navigating.
+	// Effectively: "Referrer-Policy: no-referrer"
+	//
+	// See more at: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+	// Spec: https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-header
+	bool disableReferrer{ true };
+
 	// Enables the "X-XSS-Protection" header.
 	// Prevents browsers from executing cross site scripts.
 	//
