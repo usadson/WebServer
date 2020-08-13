@@ -426,10 +426,16 @@ Client::HandleRequest() noexcept {
 		return ClientError::TOO_MANY_REQUESTS_PER_THIS_CONNECTION;
 	}
 
-	const auto file = server->fileResolver.Resolve(currentRequest);
+	const auto resolveResult = server->fileResolver.Resolve(currentRequest);
+	const auto &status = resolveResult.first;
+	const auto &file = resolveResult.second;
 
-	if (!file) {
+	if (status == IO::FileResolveStatus::NOT_FOUND) {
 		return ClientError::FILE_NOT_FOUND;
+	}
+
+	if (status == IO::FileResolveStatus::INSUFFICIENT_PERMISSIONS) {
+		return ClientError::FILE_READ_INSUFFICIENT_PERMISSIONS;
 	}
 
 	auto error = CheckFileLocation(file->Path());
