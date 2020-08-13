@@ -49,6 +49,7 @@ const base::String TooManyOWSs = "too many ows's";
 
 namespace StatusLines {
 const base::String BadRequest = "HTTP/1.1 400 Bad Request";
+const base::String Forbidden = "HTTP/1.1 403 Forbidden";
 const base::String MovedPermanently = "HTTP/1.1 301 Moved Permanently";
 const base::String NotFound = "HTTP/1.1 404 Not Found";
 const base::String OK = "HTTP/1.1 200 OK";
