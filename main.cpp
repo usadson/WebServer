@@ -64,11 +64,16 @@ main() {
 		return EXIT_FAILURE;
 	}
 
-	httpConfig1.rootDirectory = "/dev/null";
+#ifdef NO_HTTP_SERVER2
+	httpConfig1.rootDirectory = "/var/www/html";
 	httpConfig1.port = 80;
 	HTTP::Server httpServer1(httpConfig1, manager);
-#ifndef NO_HTTP_SERVER2
+#else
+	httpConfig1.rootDirectory = "/dev/null";
+	httpConfig1.port = 80;
 	httpConfig1.upgradeToHTTPS = true;
+	HTTP::Server httpServer1(httpConfig1, manager);
+
 	httpConfig2.rootDirectory = "/var/www/html";
 	httpConfig2.port = 443;
 	httpConfig2.useTransportSecurity = true;
@@ -197,6 +202,9 @@ DropPrivileges(gid_t group, uid_t user) noexcept {
 				break;
 			case Security::PrivilegesStatus::UNABLE_DROP_USER:
 				stream << "unable to drop user";
+				break;
+			default:
+				stream << "unspecified (programming error)";
 				break;
 		}
 		Logger::Error("Main", stream.str());
