@@ -21,6 +21,7 @@ MAIN_BINARIES = bin/base/error_reporter.o \
 	   bin/http/server_launch_error.o \
 	   bin/io/file.o \
 	   bin/io/file_resolver.o \
+	   bin/security/process.o \
 	   bin/security/tls_configuration.o
 
 PREREQUISITE_BINARIES = $(MAIN_BINARIES) \
@@ -164,6 +165,10 @@ bin/io/file_resolver.o: io/file_resolver.cpp \
 	http/request.hpp \
 	io/file.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ io/file_resolver.cpp
+
+bin/security/process.o: security/process.cpp \
+	security/process.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ security/process.cpp
 
 bin/security/tls_configuration.o: security/tls_configuration.cpp \
 	security/tls_configuration.hpp \
