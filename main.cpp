@@ -57,6 +57,13 @@ main() {
 
 	HTTP::Server httpServer1(httpConfig1, manager);
 	HTTP::Server httpServer2(httpConfig2, manager);
+
+	if (!httpServer1.Initialize() ||
+		!httpServer2.Initialize()) {
+		Logger::Error("Main", "Failed to initialize servers");
+		return EXIT_FAILURE;
+	}
+
 	httpServer1.Start();
 	httpServer2.Start();
 
