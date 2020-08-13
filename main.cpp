@@ -7,6 +7,7 @@
 #include <array>
 #include <iostream>
 #include <iterator>
+#include <sstream>
 #include <string>
 
 #include <cstdio>
@@ -19,6 +20,7 @@
 #include "http/configuration.hpp"
 #include "http/server.hpp"
 #include "security/policies.hpp"
+#include "security/process.hpp"
 #include "security/tls_configuration.hpp"
 
 bool
@@ -61,6 +63,28 @@ main() {
 	if (!httpServer1.Initialize() ||
 		!httpServer2.Initialize()) {
 		Logger::Error("Main", "Failed to initialize servers");
+		return EXIT_FAILURE;
+	}
+
+	auto privilegeStatus = Security::Process::DropPrivileges(securityPolicies.privileges.groupID, securityPolicies.privileges.userID);
+	if (privilegeStatus != Security::PrivilegesStatus::OK) {
+		std::stringstream stream;
+		stream << "Failed to drop privileges: ";
+		switch (privilegeStatus) {
+			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER:
+				stream << "switchable to superuser's user";
+				break;
+			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER_GROUP:
+				stream << "switchable to superuser's group";
+				break;
+			case Security::PrivilegesStatus::UNABLE_DROP_GROUP:
+				stream << "unable to drop group";
+				break;
+			case Security::PrivilegesStatus::UNABLE_DROP_USER:
+				stream << "unable to drop user";
+				break;
+		}
+		Logger::Error("Main", stream.str());
 		return EXIT_FAILURE;
 	}
 
