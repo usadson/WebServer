@@ -24,6 +24,7 @@
 #include "security/tls_configuration.hpp"
 
 #define NO_HTTP_SERVER2
+constexpr bool shouldLoadTLSConfiguration = false;
 
 bool
 LoadTLSConfiguration(Security::TLSConfiguration &config);
@@ -44,7 +45,7 @@ main() {
 	Security::Policies securityPolicies{};
 	Security::TLSConfiguration tlsConfiguration{};
 
-	if (!LoadTLSConfiguration(tlsConfiguration)) {
+	if (shouldLoadTLSConfiguration && !LoadTLSConfiguration(tlsConfiguration)) {
 		Logger::Error("Main", "Failed to load TLS configuration");
 		return EXIT_FAILURE;
 	}
