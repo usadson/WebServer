@@ -167,6 +167,11 @@ TESTING_VISIBILITY:
 	[[nodiscard]] bool
 	RecoverErrorFileNotFound() noexcept;
 
+	// Handles the FILE_READ_INSUFFICIENT_PERMISSIONS ClientError.
+	// Called by RecoverError.
+	[[nodiscard]] bool
+	RecoverErrorFileReadInsufficientPermissions() noexcept;
+
 	// Clears the 'currentRequest' member variable.
 	void
 	ResetExchangeState() noexcept;

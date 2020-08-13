@@ -550,6 +550,12 @@ Client::RecoverErrorFileNotFound() noexcept {
 	return ServeStringRequest(Strings::StatusLines::NotFound, MediaTypes::HTML, Strings::NotFoundPage);
 }
 
+bool
+Client::RecoverErrorFileReadInsufficientPermissions() noexcept {
+	ErrorReporter::ReportError(ErrorReporter::Error::FILE_READ_INSUFFICIENT_PERMISSIONS, "Path='" + currentRequest.path + '\'');
+	return ServeStringRequest(Strings::StatusLines::Forbidden, MediaTypes::HTML, Strings::ForbiddenPage);
+}
+
 void
 Client::ResetExchangeState() noexcept {
 	const auto maxRequests = server->config().securityPolicies.maxRequestsPerConnection;
