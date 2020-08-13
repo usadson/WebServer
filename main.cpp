@@ -23,6 +23,8 @@
 #include "security/process.hpp"
 #include "security/tls_configuration.hpp"
 
+#define NO_HTTP_SERVER2
+
 bool
 LoadTLSConfiguration(Security::TLSConfiguration &config);
 
@@ -48,10 +50,15 @@ main() {
 	}
 
 	HTTP::Configuration httpConfig1(mediaTypeFinder, securityPolicies, tlsConfiguration);
+#ifndef NO_HTTP_SERVER2
 	HTTP::Configuration httpConfig2(mediaTypeFinder, securityPolicies, tlsConfiguration);
+#endif
 
-	if ((httpConfig1.hostname.empty() && !LoadHostName(httpConfig1)) ||
-		(httpConfig1.hostname.empty() && !LoadHostName(httpConfig1))) {
+	if ((httpConfig1.hostname.empty() && !LoadHostName(httpConfig1))
+#ifndef NO_HTTP_SERVER2
+		|| (httpConfig2.hostname.empty() && !LoadHostName(httpConfig2))
+#endif
+	) {
 		Logger::Error("Main", "Failed to retrieve hostname");
 		return EXIT_FAILURE;
 	}
@@ -59,15 +66,19 @@ main() {
 	httpConfig1.rootDirectory = "/dev/null";
 	httpConfig1.port = 80;
 	httpConfig1.upgradeToHTTPS = true;
+	HTTP::Server httpServer1(httpConfig1, manager);
+#ifndef NO_HTTP_SERVER2
 	httpConfig2.rootDirectory = "/var/www/html";
 	httpConfig2.port = 443;
 	httpConfig2.useTransportSecurity = true;
-
-	HTTP::Server httpServer1(httpConfig1, manager);
 	HTTP::Server httpServer2(httpConfig2, manager);
+#endif
 
-	if (!httpServer1.Initialize() ||
-		!httpServer2.Initialize()) {
+	if (!httpServer1.Initialize()
+#ifndef NO_HTTP_SERVER2
+		|| !httpServer2.Initialize()
+#endif
+	) {
 		Logger::Error("Main", "Failed to initialize servers");
 		return EXIT_FAILURE;
 	}
@@ -78,7 +89,9 @@ main() {
 	}
 
 	httpServer1.Start();
+#ifndef NO_HTTP_SERVER2
 	httpServer2.Start();
+#endif
 
 	Logger::Log("Main", "Server Started");
 
@@ -88,9 +101,11 @@ main() {
 	Logger::Log("Main", "Stopping...");
 
 	httpServer1.SignalShutdown();
+#ifndef NO_HTTP_SERVER2
 	httpServer2.SignalShutdown();
-	httpServer1.Join();
 	httpServer2.Join();
+#endif
+	httpServer1.Join();
 
 	Logger::Log("Main", "Stopped!");
 
