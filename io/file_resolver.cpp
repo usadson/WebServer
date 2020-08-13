@@ -12,7 +12,18 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-std::unique_ptr<IO::File>
+[[nodiscard]]
+IO::FileResolveStatus
+ResolveErrno() noexcept {
+	switch (errno) {
+		case EPERM:
+			return IO::FileResolveStatus::INSUFFICIENT_PERMISSIONS;
+		default:
+			return IO::FileResolveStatus::NOT_FOUND;
+	}
+}
+
+std::pair<IO::FileResolveStatus, std::unique_ptr<IO::File>>
 IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 	std::stringstream pathBuilder;
 	pathBuilder << root;
@@ -20,19 +31,19 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 
 	auto file = std::make_unique<IO::File>(pathBuilder.str().c_str());
 	if (file->Handle() != -1 && file->IsNormalFile()) {
-		return file;
+		return { IO::FileResolveStatus::OK, std::move(file) };
 	}
 
 	if (file->Handle() != -1 && !file->IsDirectory()) {
-		return std::unique_ptr<IO::File> {};
+		return { ResolveErrno(), std::unique_ptr<IO::File> {} };
 	}
 
 	pathBuilder << "/index.html";
 
 	file->InternalInit(pathBuilder.str().c_str());
 	if (file->Handle() != -1) {
-		return file;
+		return { ResolveErrno(), std::move(file) };
 	}
 
-	return std::unique_ptr<IO::File> {};
+	return { IO::FileResolveStatus::NOT_FOUND, std::unique_ptr<IO::File> {} };
 }

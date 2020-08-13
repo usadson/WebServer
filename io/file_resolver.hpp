@@ -8,17 +8,25 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "http/request.hpp"
 #include "io/file.hpp"
 
 namespace IO {
+
+enum class FileResolveStatus {
+	OK,
+	NOT_FOUND,
+	INSUFFICIENT_PERMISSIONS
+};
+
 class FileResolver {
 public:
 	inline explicit FileResolver(const std::string &rootDirectory) noexcept : root(rootDirectory) {
 	}
 
-	[[nodiscard]] std::unique_ptr<IO::File>
+	[[nodiscard]] std::pair<FileResolveStatus, std::unique_ptr<IO::File>>
 	Resolve(const HTTP::Request &) const noexcept;
 
 private:
