@@ -30,13 +30,13 @@ Server::Start() {
 	internalThread = std::make_unique<std::thread>(&Server::InternalStart, this);
 }
 
+bool
+Server::Initialize() noexcept {
+	return CreateServer();
+}
+
 void
 Server::InternalStart() {
-	if (!CreateServer()) {
-		Logger::Error("HTTPServer", "Failed to start!");
-		return;
-	}
-
 	struct pollfd pollAction;
 	pollAction.fd = internalSocket;
 	pollAction.events = POLLIN;

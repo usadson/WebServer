@@ -30,6 +30,9 @@ public:
 
 	~Server() noexcept;
 
+	[[nodiscard]] bool
+	Initialize() noexcept;
+
 	// Will create a thread for this server to run in, and starts the thread.
 	void
 	Start();
