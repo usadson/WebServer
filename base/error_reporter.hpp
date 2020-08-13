@@ -11,7 +11,8 @@
 namespace ErrorReporter {
 
 enum class Error {
-	FILE_NOT_FOUND
+	FILE_NOT_FOUND,
+	FILE_READ_INSUFFICIENT_PERMISSIONS
 };
 
 void

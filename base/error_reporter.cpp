@@ -19,8 +19,9 @@ struct ErrorInfo {
 	bool log;
 };
 
-static std::array<ErrorInfo, 1> settings = {{
+static std::array<ErrorInfo, 2> settings = {{
 	{ "FileNotFound", true }, // FILE_NOT_FOUND
+	{ "FileReadInsufficientPermissions", true }, // FILE_READ_INSUFFICIENT_PERMISSIONS
 }};
 
 void
