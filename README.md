@@ -7,7 +7,7 @@ A C++ WebServer.
 Wizard Web Server is the official name. This is the repository for a C++ web
 server.
 
-## What is it not?
+## What isn't it?
 A project for anyone to use. This may sound selfish, but (atm) I only intend to
 use this server myself. This means that I won't guarantee API/configuration
 stability.
