@@ -44,7 +44,7 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 
 	file->InternalInit(pathBuilder.str().c_str());
 	if (file->Handle() != -1) {
-		return { status, std::move(file) };
+		return { IO::FileResolveStatus::OK, std::move(file) };
 	}
 
 	return { status, std::unique_ptr<IO::File> {} };
