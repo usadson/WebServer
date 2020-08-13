@@ -32,6 +32,9 @@ LoadHostName(HTTP::Configuration &config);
 [[nodiscard]] bool
 DropPrivileges(gid_t, uid_t) noexcept;
 
+[[nodiscard]] bool
+DetectPrivileges(Security::Policies &);
+
 int
 main() {
 	CGI::Manager manager{};
@@ -69,7 +72,8 @@ main() {
 		return EXIT_FAILURE;
 	}
 
-	if (!DropPrivileges(securityPolicies.privileges.groupID, securityPolicies.privileges.userID)) {
+	if (DetectPrivileges(securityPolicies) &&
+		!DropPrivileges(securityPolicies.privileges.groupID, securityPolicies.privileges.userID)) {
 		return EXIT_FAILURE;
 	}
 
@@ -182,6 +186,51 @@ DropPrivileges(gid_t group, uid_t user) noexcept {
 		Logger::Error("Main", stream.str());
 		return false;
 	}
+
+	return true;
+}
+
+bool
+DetectPrivileges(Security::Policies &policies) {
+	auto *userID = std::getenv("WS_UID");
+	auto *groupID = std::getenv("WS_GID");
+
+	if (!userID) {
+		Logger::Error("PrivilegeSecurity", "User ID \"WS_UID\" not set.");
+		Logger::Warning("PrivilegeSecurity", "Wizard won't drop privileges! \
+This disables the additional security layer of kernel privileges de-escalation.");
+		return false;
+	}
+
+	int uid;
+	try {
+		uid = std::stoi(userID);
+	} catch (...) {
+		Logger::Error("PrivilegeSecurity", "Invalid user ID.");
+		Logger::Warning("PrivilegeSecurity", "Wizard won't drop privileges! \
+This disables the additional security layer of kernel privileges de-escalation.");
+		return false;
+	}
+
+	if (!groupID) {
+		Logger::Error("PrivilegeSecurity", "Group ID \"WS_GID\" not set.");
+		Logger::Warning("PrivilegeSecurity", "Wizard won't drop privileges! \
+This disables the additional security layer of kernel privileges de-escalation.");
+		return false;
+	}
+
+	int gid;
+	try {
+		gid = std::stoi(groupID);
+	} catch (...) {
+		Logger::Error("PrivilegeSecurity", "Invalid group ID.");
+		Logger::Warning("PrivilegeSecurity", "Wizard won't drop privileges! \
+This disables the additional security layer of kernel privileges de-escalation.");
+		return false;
+	}
+
+	policies.privileges.userID = uid;
+	policies.privileges.groupID = gid;
 
 	return true;
 }
