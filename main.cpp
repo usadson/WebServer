@@ -29,6 +29,9 @@ LoadTLSConfiguration(Security::TLSConfiguration &config);
 bool
 LoadHostName(HTTP::Configuration &config);
 
+[[nodiscard]] bool
+DropPrivileges(gid_t, uid_t) noexcept;
+
 int
 main() {
 	CGI::Manager manager{};
@@ -66,25 +69,7 @@ main() {
 		return EXIT_FAILURE;
 	}
 
-	auto privilegeStatus = Security::Process::DropPrivileges(securityPolicies.privileges.groupID, securityPolicies.privileges.userID);
-	if (privilegeStatus != Security::PrivilegesStatus::OK) {
-		std::stringstream stream;
-		stream << "Failed to drop privileges: ";
-		switch (privilegeStatus) {
-			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER:
-				stream << "switchable to superuser's user";
-				break;
-			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER_GROUP:
-				stream << "switchable to superuser's group";
-				break;
-			case Security::PrivilegesStatus::UNABLE_DROP_GROUP:
-				stream << "unable to drop group";
-				break;
-			case Security::PrivilegesStatus::UNABLE_DROP_USER:
-				stream << "unable to drop user";
-				break;
-		}
-		Logger::Error("Main", stream.str());
+	if (!DropPrivileges(securityPolicies.privileges.groupID, securityPolicies.privileges.userID)) {
 		return EXIT_FAILURE;
 	}
 
@@ -170,5 +155,33 @@ LoadHostName(HTTP::Configuration &config) {
 	}
 
 	config.hostname = std::string(buffer.data());
+	return true;
+}
+
+bool
+DropPrivileges(gid_t group, uid_t user) noexcept {
+	auto privilegeStatus = Security::Process::DropPrivileges(group, user);
+
+	if (privilegeStatus != Security::PrivilegesStatus::OK) {
+		std::stringstream stream;
+		stream << "Failed to drop privileges: ";
+		switch (privilegeStatus) {
+			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER:
+				stream << "switchable to superuser's user";
+				break;
+			case Security::PrivilegesStatus::SWITCHABLE_TO_SUPERUSER_GROUP:
+				stream << "switchable to superuser's group";
+				break;
+			case Security::PrivilegesStatus::UNABLE_DROP_GROUP:
+				stream << "unable to drop group";
+				break;
+			case Security::PrivilegesStatus::UNABLE_DROP_USER:
+				stream << "unable to drop user";
+				break;
+		}
+		Logger::Error("Main", stream.str());
+		return false;
+	}
+
 	return true;
 }
