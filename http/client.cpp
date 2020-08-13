@@ -477,6 +477,8 @@ Client::RecoverError(ClientError error) noexcept {
 	switch (error) {
 		case ClientError::FILE_NOT_FOUND:
 			return HandleFileNotFound();
+		case ClientError::FILE_READ_INSUFFICIENT_PERMISSIONS:
+			return RecoverErrorFileReadInsufficientPermissions();
 		case ClientError::EMPTY_METHOD:
 			return RecoverErrorBadRequest(Strings::BadRequestMessages::EmptyMethod);
 
