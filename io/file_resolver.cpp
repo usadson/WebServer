@@ -16,7 +16,7 @@
 IO::FileResolveStatus
 ResolveErrno() noexcept {
 	switch (errno) {
-		case EPERM:
+		case EACCES:
 			return IO::FileResolveStatus::INSUFFICIENT_PERMISSIONS;
 		default:
 			return IO::FileResolveStatus::NOT_FOUND;
@@ -34,16 +34,18 @@ IO::FileResolver::Resolve(const HTTP::Request &request) const noexcept {
 		return { IO::FileResolveStatus::OK, std::move(file) };
 	}
 
+	// Always use first status
+	const auto status = ResolveErrno();
 	if (file->Handle() != -1 && !file->IsDirectory()) {
-		return { ResolveErrno(), std::unique_ptr<IO::File> {} };
+		return { status, std::unique_ptr<IO::File> {} };
 	}
 
 	pathBuilder << "/index.html";
 
 	file->InternalInit(pathBuilder.str().c_str());
 	if (file->Handle() != -1) {
-		return { ResolveErrno(), std::move(file) };
+		return { status, std::move(file) };
 	}
 
-	return { IO::FileResolveStatus::NOT_FOUND, std::unique_ptr<IO::File> {} };
+	return { status, std::unique_ptr<IO::File> {} };
 }
