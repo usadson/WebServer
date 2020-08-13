@@ -8,9 +8,16 @@
 
 #include <iosfwd>
 
+#include <unistd.h>
+
 #include "base/string.hpp"
 
 namespace Security {
+
+struct PoliciesInternalPrivileges {
+	gid_t groupID;
+	uid_t userID;
+};
 
 struct Policies {
 
@@ -98,6 +105,8 @@ struct Policies {
 	// keeping the program in an infinite loop.
 	// 0 means unlimited.
 	std::size_t maxWhiteSpacesInHeaderField{ 20 };
+
+	PoliciesInternalPrivileges privileges{ 0, 0 };
 
 };
 
