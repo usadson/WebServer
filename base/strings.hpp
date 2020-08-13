@@ -11,6 +11,7 @@
 namespace Strings {
 
 extern const base::String DefaultWebPage;
+extern const base::String ForbiddenPage;
 extern const base::String NotFoundPage;
 extern const base::String TooManyRequestsPage;
 
