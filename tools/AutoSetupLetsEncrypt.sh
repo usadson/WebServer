@@ -3,7 +3,7 @@
 LIVE_DIR="/etc/letsencrypt/live/"
 
 if [ ! -d $LIVE_DIR ]; then
-  LIVE_DIR="/usr/local/etc/letsencrypt/live"
+  LIVE_DIR="/usr/local/etc/letsencrypt/live/"
   if [ ! -d $LIVE_DIR ]; then
     echo -e "\033[31m[AutoSetup] You haven't installed certbot, or at least neither the folder \033[37m$LIVE_DIR\033[31m nor \033[37m/etc/letsencrypt/live\033[31m exists.\033[0m"
     exit 1
