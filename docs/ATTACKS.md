@@ -12,3 +12,10 @@ The following modules are built into this software:
 - Maximum method length
 - Maximum request-target (path) length
 - Maximum whitespaces repetition
+
+## Other Defenses
+- Privilege de-escalation
+- <iframe> blocking
+- Sending of XSS protection hints
+- Disabling refer\[r\]er (privacy)
+- CSP
