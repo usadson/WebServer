@@ -71,7 +71,13 @@ Client::Client(Server *server, int sock) noexcept :
 
 bool
 Client::CheckConnectionLifetime() noexcept {
-	return false;
+	const auto now = std::chrono::high_resolution_clock::now();
+	if ((now - startingTimePoint) >= std::chrono::milliseconds(server->config().securityPolicies.maxConnectionLifetime)) {
+		MarkConnectionClosing();
+		return false;
+	}
+
+	return true;
 }
 
 ClientError
