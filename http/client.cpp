@@ -390,7 +390,7 @@ Client::Entrypoint() {
 	do {
 		previousRequestSuccess = RunMessageExchange();
 		ResetExchangeState();
-	} while (previousRequestSuccess && persistentConnection);
+	} while (previousRequestSuccess && persistentConnection && CheckConnectionLifetime());
 
 	Clean();
 }
@@ -487,6 +487,10 @@ Client::MarkConnectionClosing() noexcept {
 
 bool
 Client::RecoverError(ClientError error) noexcept {
+	if (!CheckConnectionLifetime()) {
+		return false;
+	}
+
 	switch (error) {
 		case ClientError::FILE_NOT_FOUND:
 			return HandleFileNotFound();
