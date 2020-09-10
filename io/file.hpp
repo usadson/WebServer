@@ -23,6 +23,11 @@ public:
 	~File() noexcept;
 
 	[[nodiscard]] inline constexpr int
+	Errno() const noexcept {
+		return error;
+	}
+
+	[[nodiscard]] inline constexpr int
 	Handle() const noexcept {
 		return fd;
 	}
@@ -53,6 +58,7 @@ protected:
 
 private:
 	int fd;
+	int error;
 	std::string internalPath;
 	struct stat status;
 };

@@ -22,7 +22,12 @@ IO::File::InternalInit(const char *path) {
 	internalPath = path;
 	fd = psx::open(path, psx::OpenMode::readOnly);
 
+	if (fd == -1) {
+		error = errno;
+	}
+
 	if (fd != -1 && psx::fstat(fd, &status) == -1) {
+		error = errno;
 		psx::close(fd);
 		fd = -1;
 	}
