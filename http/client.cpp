@@ -540,6 +540,9 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::UPGRADE_TO_HTTPS:
 			MarkConnectionClosing();
 			return SendMetadata(Strings::StatusLines::MovedPermanently, 0, MediaTypes::HTML, ("Location: https://" + server->config().hostname + currentRequest.path + "\r\n").c_str()) && false;
+
+		case ClientError::FILE_SYSTEM_OVERLOAD:
+			return ServeStringRequest(Strings::StatusLines::ServiceUnavailable, MediaTypes::HTML, Strings::BadRequestMessages::FileSystemOverloadPage);
 		default:
 			break;
 	}
