@@ -31,6 +31,7 @@ namespace StatusLines {
 	extern const base::String NotFound;
 	extern const base::String OK;
 	extern const base::String PayloadTooLarge;
+	extern const base::String ServiceUnavailable;
 	extern const base::String TooManyRequests;
 	extern const base::String URITooLong;
 } // namespace StatusLines
