@@ -65,6 +65,10 @@ TESTING_VISIBILITY:
 
 	Server *server;
 
+	// Checks if the connection should be closed due to security policies.
+	[[nodiscard]] bool
+	CheckConnectionLifetime() noexcept;
+
 	// Checks if the file is valid (e.g. inside the actual rootDirectory).
 	[[nodiscard]] ClientError
 	CheckFileLocation(const std::string &) const noexcept;

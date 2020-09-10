@@ -69,6 +69,11 @@ Client::Client(Server *server, int sock) noexcept :
 	server(server), thread(&Client::Entrypoint, this) {
 }
 
+bool
+Client::CheckConnectionLifetime() noexcept {
+	return false;
+}
+
 ClientError
 Client::CheckFileLocation(const std::string &path) const noexcept {
 	std::array<char, PATH_MAX> dest{};
