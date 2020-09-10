@@ -6,6 +6,7 @@
  * See the COPYING file for licensing information.
  */
 
+#include <chrono>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -211,6 +212,7 @@ public:
 	// is false: HandleRequest
 	std::size_t requestCount{0};
 	std::thread thread;
+	std::chrono::time_point<std::chrono::high_resolution_clock> startingTimePoint;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

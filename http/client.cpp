@@ -377,6 +377,8 @@ Client::Entrypoint() {
 		return;
 	}
 
+	startingTimePoint = std::chrono::high_resolution_clock::now();
+
 	bool previousRequestSuccess; // NOLINT(cppcoreguidelines-init-variables)
 
 	do {
