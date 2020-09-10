@@ -451,6 +451,10 @@ Client::HandleRequest() noexcept {
 		return ClientError::FILE_READ_INSUFFICIENT_PERMISSIONS;
 	}
 
+	if (status == IO::FileResolveStatus::FILE_SYSTEM_OVERLOAD) {
+		return ClientError::FILE_SYSTEM_OVERLOAD;
+	}
+
 	auto error = CheckFileLocation(file->Path());
 	if (error != ClientError::NO_ERROR) {
 		return error;
