@@ -63,6 +63,14 @@ struct Policies {
 	// Spec: https://fetch.spec.whatwg.org/#x-content-type-options-header
 	bool enableContentTypeNosniffing{ true };
 
+	// Maximum lifetime of a connection. If the max is reached and the
+	// connection is still alive, it will be closed ungracefully.
+	//
+	// Time is in milliseconds
+	// Default is 60000 i.e. 1 minute
+	// 0 means unlimited.
+	std::size_t maxConnectionLifetime{ 60000 };
+
 	// The maximum length of the header field-name.
 	// At this time, the longest registered header field-name is
 	// 'Include-Referred-Token-Binding-ID', with a length of 33 characters.
