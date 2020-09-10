@@ -19,3 +19,12 @@ The following modules are built into this software:
 - Sending of XSS protection hints
 - Disabling refer\[r\]er (privacy)
 - CSP
+
+## Future Defenses
+The following ideas have come to my mind, but haven't been implemented (properly):
+- Automatic IP blocking
+- Caching to avoid I/O overload (ClientError & FileResolveStatus' FILE_SYSTEM_OVERLOAD)
+- Full slowloris attack mitigation by read timeout total time checking
+- Maximum connections per IP
+- Service outage notifications
+- R-U-Dead-Yet mitigation
