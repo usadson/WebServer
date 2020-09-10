@@ -25,6 +25,8 @@ The following ideas have come to my mind, but haven't been implemented (properly
 - Automatic IP blocking
 - Caching to avoid I/O overload (ClientError & FileResolveStatus' FILE_SYSTEM_OVERLOAD)
 - Full slowloris attack mitigation by read timeout total time checking
+- Maximum message body length (this isn't actually needed because we skip that parsing either way)
 - Maximum connections per IP
+- Prioritizing connections from different IPs
 - Service outage notifications
 - R-U-Dead-Yet mitigation
