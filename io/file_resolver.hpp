@@ -18,7 +18,8 @@ namespace IO {
 enum class FileResolveStatus {
 	OK,
 	NOT_FOUND,
-	INSUFFICIENT_PERMISSIONS
+	INSUFFICIENT_PERMISSIONS,
+	FILE_SYSTEM_OVERLOAD,
 };
 
 class FileResolver {

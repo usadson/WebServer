@@ -18,6 +18,8 @@ ResolveErrno() noexcept {
 	switch (errno) {
 		case EACCES:
 			return IO::FileResolveStatus::INSUFFICIENT_PERMISSIONS;
+		case EMFILE:
+			return IO::FileResolveStatus::FILE_SYSTEM_OVERLOAD;
 		default:
 			return IO::FileResolveStatus::NOT_FOUND;
 	}
