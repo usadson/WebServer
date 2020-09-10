@@ -31,6 +31,18 @@ const base::String TooManyRequestsPage =
 	"<p>The automatic abuse system has detected that you're sending too many requests. Calm down for a few seconds, then try again :)</p>"
 	"</body>"
 	"</html>";
+const base::String FileSystemOverloadPage =
+	"<!doctype html"
+	"<html>"
+	"<head>"
+	"<title>Service Unavailable</title>"
+	"</head>"
+	"<body>"
+	"<h1>Service Unavailable</h1>"
+	"<hr>"
+	"<p>Unfortunately, we're currently experiencing temporary outages. Sorry for the inconvenience!</p>"
+	"</body>"
+	"</html";
 
 namespace BadRequestMessages {
 const base::String EmptyMethod =
