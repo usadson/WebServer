@@ -23,6 +23,8 @@ The following modules are built into this software:
 ## Future Defenses
 The following ideas have come to my mind, but haven't been implemented (properly):
 - Automatic IP blocking
+- Automatic blocking of vulnerability scanners
+- Automatic blocking of directory
 - Caching to avoid I/O overload (ClientError & FileResolveStatus' FILE_SYSTEM_OVERLOAD)
 - Full slowloris attack mitigation by read timeout total time checking
 - Maximum message body length (this isn't actually needed because we skip that parsing either way)
