@@ -59,7 +59,7 @@ public:
 	[[nodiscard]] bool
 	Setup(const HTTP::Configuration &) noexcept;
 
-	// Writes the contents of the string. Doens't include the null termination
+	// Writes the contents of the string. Doesn't include the null termination
 	// character.
 	//
 	// Won't/can't modify the [string] parameter.
