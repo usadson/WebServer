@@ -159,31 +159,6 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str) noexcept {
-	std::size_t off = 0;
-	std::size_t len = str.length();
-
-	while (len != 0) {
-		ssize_t status;
-		if (useTransportSecurity) {
-			status = ConnectionSecureInternals::Write(this, str.c_str() + off, len);
-		} else {
-			status = psx::write(internalSocket, str.c_str() + off, len);
-		}
-
-		if (status == -1) {
-			hasWriteFailed = true;
-			return false;
-		}
-
-		len -= status;
-		off += status;
-	}
-
-	return true;
-}
-
-bool
 Connection::WriteBaseString(const base::String &str) noexcept {
 	std::size_t off = 0;
 	std::size_t len = str.length();

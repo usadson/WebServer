@@ -73,15 +73,6 @@ Connection::SendFile(int fd, std::size_t count) noexcept {
 }
 
 bool
-Connection::WriteString(const std::string &str) noexcept {
-	auto *internalData = reinterpret_cast<MemoryUserData *>(userData);
-
-	std::copy(std::cbegin(str), std::cend(str), std::back_inserter(internalData->output));
-
-	return true;
-}
-
-bool
 Connection::WriteBaseString(const base::String &str) noexcept {
 	auto *internalData = reinterpret_cast<MemoryUserData *>(userData);
 

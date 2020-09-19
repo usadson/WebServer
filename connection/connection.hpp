@@ -66,15 +66,6 @@ public:
 	//
 	// Returns success status
 	[[nodiscard]] bool
-	WriteString(const std::string &) noexcept;
-
-	// Writes the contents of the string. Doens't include the null termination
-	// character.
-	//
-	// Won't/can't modify the [string] parameter.
-	//
-	// Returns success status
-	[[nodiscard]] bool
 	WriteBaseString(const base::String &) noexcept;
 
 	// Is used by memory_connection.hpp but isn't used in the normal
