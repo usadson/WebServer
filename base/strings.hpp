@@ -28,6 +28,7 @@ namespace BadRequestMessages {
 namespace StatusLines {
 	extern const base::String BadRequest;
 	extern const base::String Forbidden;
+	extern const base::String HTTPVersionNotSupported;
 	extern const base::String MovedPermanently;
 	extern const base::String NotFound;
 	extern const base::String OK;
