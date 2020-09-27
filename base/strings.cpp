@@ -43,6 +43,19 @@ const base::String FileSystemOverloadPage =
 	"<p>Unfortunately, we're currently experiencing temporary outages. Sorry for the inconvenience!</p>"
 	"</body>"
 	"</html>";
+const base::String VersionNotSupportedPage =
+	R"(
+<!doctype html>
+<html>
+<head>
+<title>HTTP Version Not Supported</title>
+</head>
+<body>
+<h1>HTTP Version Not Supported</h1>
+<hr>
+<p>This server supports HTTP version 1.x (i.e. 1.0 and 1.1), but your client sent a different version major.</h1>
+</body>
+</html>)";
 
 namespace BadRequestMessages {
 const base::String EmptyMethod =

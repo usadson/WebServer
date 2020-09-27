@@ -15,6 +15,7 @@ extern const base::String ForbiddenPage;
 extern const base::String NotFoundPage;
 extern const base::String TooManyRequestsPage;
 extern const base::String FileSystemOverloadPage;
+extern const base::String VersionNotSupportedPage;
 
 namespace BadRequestMessages {
 	extern const base::String EmptyMethod;
