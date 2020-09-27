@@ -18,6 +18,8 @@ struct Request {
 	std::string path;
 	std::string query;
 
+	unsigned int versionMinor : 4;
+
 	// Version isn't worth/needed storing atm.
 
 	std::multimap<std::string, std::string> headers;
