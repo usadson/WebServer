@@ -282,6 +282,31 @@ Client::ConsumeHeaders() noexcept {
 }
 
 ClientError
+Client::CheckHostHeader() noexcept {
+	const std::string *str = nullptr;
+
+	for (const auto &pair : currentRequest.headers) {
+		if (pair.first == "Host") {
+			if (str != nullptr) {
+				// ...
+			}
+
+			str = &pair.second;
+		}
+	}
+
+	if (str == nullptr) {
+		// ...
+	}
+
+	if (*str != server->config().hostname) {
+		// ...
+	}
+
+	return ClientError::NO_ERROR;
+}
+
+ClientError
 Client::ConsumeMethod() noexcept {
 	std::vector<char> &buffer = this->currentRequest.method;
 
@@ -651,6 +676,11 @@ Client::RunMessageExchange() noexcept {
 	}
 
 	error = CheckUpgradeHTTPS();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
+	error = CheckHostHeader();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
 	}

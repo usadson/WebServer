@@ -107,6 +107,15 @@ TESTING_VISIBILITY:
 	[[nodiscard]] ClientError
 	ConsumeHeaders() noexcept;
 
+	// Checks if the 'Host' header is correct. This function verifies that one,
+	// and only one 'Host' header is present, and that the 'Host' header
+	// corresponds with the hostname of the server/machine.
+	//
+	// See RFC 7230 § 5.4
+	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#rfc.section.5.4.p.8
+	[[nodiscard]] ClientError
+	CheckHostHeader() noexcept;
+
 	// See RFC 7230 § 5.3
 	// https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#request-target
 	// NOTE This function only supports relative paths (i.e. paths starting
