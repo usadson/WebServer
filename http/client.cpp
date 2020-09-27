@@ -306,8 +306,22 @@ Client::CheckHostHeader() noexcept {
 	}
 
 	auto end = str->find(':');
-	if (end == std::string::npos)
+	if (end == std::string::npos) {
 		end = str->length();
+	} else {
+		std::string_view port(str->c_str() + end);
+		if (port.length() == 0 || port.length() > 5) {
+			return ClientError::HOST_HEADER_ILLEGAL_PORT;
+		}
+		for (char c : port) {
+			if (c < '0' || c > '9')
+				return ClientError::HOST_HEADER_ILLEGAL_PORT;
+		}
+		if (std::to_string(server->config().port) != port) {
+			return ClientError::HOST_HEADER_INCORRECT_PORT;
+		}
+	}
+
 	std::string_view host(str->c_str(), end);
 
 	if (host != server->config().hostname) {
