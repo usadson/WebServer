@@ -351,7 +351,7 @@ Client::ConsumePath() noexcept {
 ClientError
 Client::ConsumeVersion() noexcept {
 	std::array<char, 7> expectedChars = {
-		'H', 'T', 'T', 'P', '/', '1', '.'
+		'H', 'T', 'T', 'P', '/', '\0', '.'
 	};
 
 	for (std::size_t i = 0; i < 8; i++) {
@@ -360,7 +360,11 @@ Client::ConsumeVersion() noexcept {
 			return ClientError::FAILED_READ_VERSION;
 		}
 
-		if (i == 7 ?
+		if (i == 5) {
+			if (i != '1') {
+				return ClientError::UNSUPPORTED_VERSION;
+			}
+		} else if (i == 7 ?
 			(!Utils::IsNumericCharacter(character)) :
 			(character != expectedChars[i])) {
 			return ClientError::INCORRECT_VERSION;
