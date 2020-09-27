@@ -309,7 +309,7 @@ Client::CheckHostHeader() noexcept {
 	if (end == std::string::npos) {
 		end = str->length();
 	} else {
-		std::string_view port(str->c_str() + end);
+		std::string_view port(str->c_str() + end + 1);
 		if (port.length() == 0 || port.length() > 5) {
 			return ClientError::HOST_HEADER_ILLEGAL_PORT;
 		}
@@ -588,8 +588,12 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 
+		case ClientError::HOST_HEADER_ILLEGAL_PORT:
+			return RecoverErrorBadRequest("'Host' header port component isn't a number");
 		case ClientError::HOST_HEADER_INCORRECT:
 			return RecoverErrorBadRequest("incorrect 'Host' header field-value");
+		case ClientError::HOST_HEADER_INCORRECT_PORT:
+			return RecoverErrorBadRequest("incorrect 'Host' header port component");
 		case ClientError::HOST_HEADER_MANY:
 			return RecoverErrorBadRequest("more than one 'Host' header supplied");
 		case ClientError::HOST_HEADER_NONE:
