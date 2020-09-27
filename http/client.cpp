@@ -285,6 +285,12 @@ ClientError
 Client::CheckHostHeader() noexcept {
 	const std::string *str = nullptr;
 
+	// The 'Host' header was introduced in HTTP/1.1, so don't check the value
+	// for HTTP/1.0 requests:
+	if (currentRequest.versionMinor == 0) {
+		return ClientError::NO_ERROR;
+	}
+
 	for (const auto &pair : currentRequest.headers) {
 		if (pair.first == "Host") {
 			if (str != nullptr) {
@@ -296,15 +302,18 @@ Client::CheckHostHeader() noexcept {
 	}
 
 	if (str == nullptr) {
-		return currentRequest.versionMinor == 0 ?
-			ClientError::NO_ERROR : // in HTTP/1.0 the 'Host' header isn't required
-			ClientError::HOST_HEADER_NONE;
+		return ClientError::HOST_HEADER_NONE;
 	}
 
-	if (*str != server->config().hostname) {
+	auto end = str->find(':');
+	if (end == std::string::npos)
+		end = str->length();
+	std::string_view host(str->c_str(), end);
+
+	if (host != server->config().hostname) {
 		if (connection->IsLocalhost()) {
 			// TODO Include optional port number
-			if (*str == "localhost" || *str == "127.0.0.1" || *str == "0.0.0.0") {
+			if (host == "localhost" || host == "127.0.0.1" || host == "0.0.0.0") {
 				return ClientError::NO_ERROR;
 			}
 		}
