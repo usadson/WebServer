@@ -18,7 +18,7 @@ struct Request {
 	std::string path;
 	std::string query;
 
-	unsigned int versionMinor : 4;
+	std::uint8_t versionMinor;
 
 	// Version isn't worth/needed storing atm.
 
