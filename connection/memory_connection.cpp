@@ -31,7 +31,16 @@ Connection::~Connection() noexcept {
 
 bool
 Connection::Setup(const HTTP::Configuration & /* configuration */) noexcept {
+	isLocalhost = true;
 	return true;
+}
+
+void
+Connection::CheckLocalHostv4() noexcept {
+}
+
+void
+Connection::CheckLocalHostv6() noexcept {
 }
 
 bool
