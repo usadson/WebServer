@@ -326,7 +326,6 @@ Client::CheckHostHeader() noexcept {
 
 	if (host != server->config().hostname) {
 		if (connection->IsLocalhost()) {
-			// TODO Include optional port number
 			if (host == "localhost" || host == "127.0.0.1" || host == "0.0.0.0") {
 				return ClientError::NO_ERROR;
 			}
