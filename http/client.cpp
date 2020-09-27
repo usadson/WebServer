@@ -547,6 +547,8 @@ Client::RecoverError(ClientError error) noexcept {
 
 		case ClientError::FILE_SYSTEM_OVERLOAD:
 			return ServeStringRequest(Strings::StatusLines::ServiceUnavailable, MediaTypes::HTML, Strings::FileSystemOverloadPage);
+		case ClientError::UNSUPPORTED_VERSION:
+			return ServeStringRequest(Strings::StatusLines::HTTPVersionNotSupported, MediaTypes::TEXT, Strings::VersionNotSupportedPage);
 		default:
 			break;
 	}
