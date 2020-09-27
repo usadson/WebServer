@@ -396,9 +396,12 @@ Client::ConsumeVersion() noexcept {
 			if (character != '1') {
 				return ClientError::UNSUPPORTED_VERSION;
 			}
-		} else if (i == 7 ?
-			(!Utils::IsNumericCharacter(character)) :
-			(character != expectedChars[i])) {
+		} else if (i == 7) {
+			if (!Utils::IsNumericCharacter(character)) {
+				return ClientError::INCORRECT_VERSION;
+			}
+			currentRequest.versionMinor = static_cast<decltype(currentRequest.versionMinor)>(character - '0');
+		} else if (character != expectedChars[i]) {
 			return ClientError::INCORRECT_VERSION;
 		}
 	}
