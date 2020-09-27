@@ -20,7 +20,7 @@ struct Request {
 
 	// Version isn't worth/needed storing atm.
 
-	std::map<std::string, std::string> headers;
+	std::multimap<std::string, std::string> headers;
 
 	// Is method head
 	[[nodiscard]] inline bool
