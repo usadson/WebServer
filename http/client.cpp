@@ -288,7 +288,7 @@ Client::CheckHostHeader() noexcept {
 	for (const auto &pair : currentRequest.headers) {
 		if (pair.first == "Host") {
 			if (str != nullptr) {
-				// ...
+				return ClientError::HOST_HEADER_MANY;
 			}
 
 			str = &pair.second;
@@ -296,11 +296,11 @@ Client::CheckHostHeader() noexcept {
 	}
 
 	if (str == nullptr) {
-		// ...
+		return ClientError::HOST_HEADER_NONE;
 	}
 
 	if (*str != server->config().hostname) {
-		// ...
+		return ClientError::HOST_HEADER_INCORRECT;
 	}
 
 	return ClientError::NO_ERROR;
