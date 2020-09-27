@@ -361,7 +361,7 @@ Client::ConsumeVersion() noexcept {
 		}
 
 		if (i == 5) {
-			if (i != '1') {
+			if (character != '1') {
 				return ClientError::UNSUPPORTED_VERSION;
 			}
 		} else if (i == 7 ?
