@@ -32,7 +32,7 @@ const base::String TooManyRequestsPage =
 	"</body>"
 	"</html>";
 const base::String FileSystemOverloadPage =
-	"<!doctype html"
+	"<!doctype html>"
 	"<html>"
 	"<head>"
 	"<title>Service Unavailable</title>"
@@ -42,7 +42,7 @@ const base::String FileSystemOverloadPage =
 	"<hr>"
 	"<p>Unfortunately, we're currently experiencing temporary outages. Sorry for the inconvenience!</p>"
 	"</body>"
-	"</html";
+	"</html>";
 
 namespace BadRequestMessages {
 const base::String EmptyMethod =
