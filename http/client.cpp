@@ -295,10 +295,10 @@ Client::CheckHostHeader() noexcept {
 		}
 	}
 
-	std::cout << "versionMinor: " << currentRequest.versionMinor << '\n';
-
 	if (str == nullptr) {
-		return ClientError::HOST_HEADER_NONE;
+		return currentRequest.versionMinor == 0 ?
+			ClientError::NO_ERROR : // in HTTP/1.0 the 'Host' header isn't required
+			ClientError::HOST_HEADER_NONE;
 	}
 
 	if (*str != server->config().hostname) {
