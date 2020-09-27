@@ -553,6 +553,13 @@ Client::RecoverError(ClientError error) noexcept {
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
 			return RecoverErrorBadRequest("only absolute-path request-target supported");
 
+		case ClientError::HOST_HEADER_INCORRECT:
+			return RecoverErrorBadRequest("incorrect 'Host' header field-value");
+		case ClientError::HOST_HEADER_MANY:
+			return RecoverErrorBadRequest("more than one 'Host' header supplied");
+		case ClientError::HOST_HEADER_NONE:
+			return RecoverErrorBadRequest("no 'Host' header supplied");
+
 		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_NAME:
 			return ServeStringRequest(Strings::StatusLines::PayloadTooLarge, MediaTypes::TEXT, Strings::BadRequestMessages::HeaderFieldNameTooLong);
 		case ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE:
