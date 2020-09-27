@@ -295,6 +295,8 @@ Client::CheckHostHeader() noexcept {
 		}
 	}
 
+	std::cout << "versionMinor: " << currentRequest.versionMinor << '\n';
+
 	if (str == nullptr) {
 		return ClientError::HOST_HEADER_NONE;
 	}
@@ -400,7 +402,7 @@ Client::ConsumeVersion() noexcept {
 			if (!Utils::IsNumericCharacter(character)) {
 				return ClientError::INCORRECT_VERSION;
 			}
-			currentRequest.versionMinor = static_cast<decltype(currentRequest.versionMinor)>(character - '0');
+			currentRequest.versionMinor = character - '0';
 		} else if (character != expectedChars[i]) {
 			return ClientError::INCORRECT_VERSION;
 		}
