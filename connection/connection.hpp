@@ -10,9 +10,6 @@
 #include <iostream>
 #include <string>
 
-#include <netinet/in.h>
-#include <sys/socket.h>
-
 #include "base/string.hpp"
 
 // ForwardDecl from http/configuration.hpp
@@ -25,45 +22,11 @@ public:
 #ifndef CONNECTION_MEMORY_VARIANT
 	inline Connection(int socket, bool useTransportSecurity, void *userData=nullptr) noexcept
 	: userData(userData), internalSocket(socket), useTransportSecurity(useTransportSecurity) {
-#ifndef HTTP_SERVER_FORCE_IPV4
-		struct sockaddr_in6 address;
+#ifdef HTTP_SERVER_FORCE_IPV4
+		CheckLocalHostv4();
 #else
-		struct sockaddr_in address;
+		CheckLocalHostv6();
 #endif
-		socklen_t len = sizeof(address);
-		if (getpeername(socket, reinterpret_cast<struct sockaddr *>(&address), &len) == 0) {
-#ifndef HTTP_SERVER_FORCE_IPV4
-			[&address, this]() mutable {
-				isLocalhost = false;
-				for (std::size_t i = 0; i < 15; i++) {
-					if (address.sin6_addr.s6_addr[i] != 0x00)
-						return;
-				}
-				if (address.sin6_addr.s6_addr[15] != 0x01)
-					return;
-				isLocalhost = true;
-			}();
-			if (!isLocalhost) {
-				[&address, this]() mutable {
-					isLocalhost = false;
-					for (std::size_t i = 0; i < 10; i++) {
-						if (address.sin6_addr.s6_addr[i] != 0x00)
-							return;
-					}
-					if (address.sin6_addr.s6_addr[10] != 0xff ||
-						address.sin6_addr.s6_addr[11] != 0xff ||
-						address.sin6_addr.s6_addr[12] != 0x7f ||
-						address.sin6_addr.s6_addr[13] != 0x00 ||
-						address.sin6_addr.s6_addr[14] != 0x00 ||
-						address.sin6_addr.s6_addr[15] != 0x01
-					)
-						return;
-					isLocalhost = true;
-				}();
-			}
-#else
-#endif
-		}
 	}
 #else
 	inline explicit Connection(void *userData=nullptr) noexcept
@@ -132,4 +95,11 @@ private:
 	const int internalSocket;
 	const bool useTransportSecurity;
 #endif /* CONNECTION_MEMORY_VARIANT */
+
+private:
+	void
+	CheckLocalHostv4() noexcept;
+
+	void
+	CheckLocalHostv6() noexcept;
 };

@@ -13,19 +13,16 @@
 #include <cerrno>
 #include <ctime>
 
-#if defined(__FreeBSD__)
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/ioctl.h>
+
+#if defined(__FreeBSD__)
 #include <sys/types.h>
 #include <sys/uio.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/ioctl.h>
 #elif defined(__linux__)
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/ioctl.h>
 #include <sys/sendfile.h>
-#include <sys/socket.h>
 #else
 #include <array>
 #endif
@@ -181,4 +178,55 @@ Connection::WriteBaseString(const base::String &str) noexcept {
 	}
 
 	return true;
+}
+
+
+
+void
+Connection::CheckLocalHostv4() noexcept {
+	struct sockaddr_in address;
+	socklen_t len = sizeof(address);
+
+	if (getpeername(internalSocket, reinterpret_cast<struct sockaddr *>(&address), &len) == 0) {
+		isLocalhost = address.sin_addr.s_addr == 0x00000000 ||
+					  address.sin_addr.s_addr == 0x7f000001;
+	}
+}
+
+void
+Connection::CheckLocalHostv6() noexcept {
+	struct sockaddr_in6 address;
+	socklen_t len = sizeof(address);
+
+	if (getpeername(internalSocket, reinterpret_cast<struct sockaddr *>(&address), &len) == 0) {
+		[&address, this]() mutable {
+			isLocalhost = false;
+			for (std::size_t i = 0; i < 15; i++) {
+				if (address.sin6_addr.s6_addr[i] != 0x00)
+					return;
+			}
+			if (address.sin6_addr.s6_addr[15] != 0x01)
+				return;
+			isLocalhost = true;
+		}();
+
+		if (!isLocalhost) {
+			[&address, this]() mutable {
+				isLocalhost = false;
+				for (std::size_t i = 0; i < 10; i++) {
+					if (address.sin6_addr.s6_addr[i] != 0x00)
+						return;
+				}
+				if (address.sin6_addr.s6_addr[10] != 0xff ||
+					address.sin6_addr.s6_addr[11] != 0xff ||
+					address.sin6_addr.s6_addr[12] != 0x7f ||
+					address.sin6_addr.s6_addr[13] != 0x00 ||
+					address.sin6_addr.s6_addr[14] != 0x00 ||
+					address.sin6_addr.s6_addr[15] != 0x01) {
+					return;
+				}
+				isLocalhost = true;
+			}();
+		}
+	}
 }
