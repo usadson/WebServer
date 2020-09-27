@@ -33,15 +33,6 @@ public:
 		socklen_t len = sizeof(address);
 		if (getpeername(socket, reinterpret_cast<struct sockaddr *>(&address), &len) == 0) {
 #ifndef HTTP_SERVER_FORCE_IPV4
-			std::cout << "IPv6 Address: " << std::hex;
-			for (std::size_t i = 0; i < 16; i++) {
-				std::cout << static_cast<int>(address.sin6_addr.s6_addr[i]);
-
-				if (i != 15) {
-					std::cout << '.';
-				}
-			}
-			std::cout << std::dec << '\n';
 			[&address, this]() mutable {
 				isLocalhost = false;
 				for (std::size_t i = 0; i < 15; i++) {
@@ -71,11 +62,6 @@ public:
 				}();
 			}
 #else
-			std::cout << "IPv4 Address: ";
-			for (std::size_t i = 0; i < 4; i++) {
-				std::cout << address.sin_addr.s_addr[i];
-			}
-			std::cout << '\n';
 #endif
 		}
 	}
