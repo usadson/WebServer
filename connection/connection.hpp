@@ -7,8 +7,11 @@
  */
 
 #include <iosfwd>
-
+#include <iostream>
 #include <string>
+
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 #include "base/string.hpp"
 
@@ -21,7 +24,60 @@ class Connection {
 public:
 #ifndef CONNECTION_MEMORY_VARIANT
 	inline Connection(int socket, bool useTransportSecurity, void *userData=nullptr) noexcept
-		: userData(userData), internalSocket(socket), useTransportSecurity(useTransportSecurity) {
+	: userData(userData), internalSocket(socket), useTransportSecurity(useTransportSecurity) {
+#ifndef HTTP_SERVER_FORCE_IPV4
+		struct sockaddr_in6 address;
+#else
+		struct sockaddr_in address;
+#endif
+		socklen_t len = sizeof(address);
+		if (getpeername(socket, reinterpret_cast<struct sockaddr *>(&address), &len) == 0) {
+#ifndef HTTP_SERVER_FORCE_IPV4
+			std::cout << "IPv6 Address: " << std::hex;
+			for (std::size_t i = 0; i < 16; i++) {
+				std::cout << static_cast<int>(address.sin6_addr.s6_addr[i]);
+
+				if (i != 15) {
+					std::cout << '.';
+				}
+			}
+			std::cout << std::dec << '\n';
+			[&address, this]() mutable {
+				isLocalhost = false;
+				for (std::size_t i = 0; i < 15; i++) {
+					if (address.sin6_addr.s6_addr[i] != 0x00)
+						return;
+				}
+				if (address.sin6_addr.s6_addr[15] != 0x01)
+					return;
+				isLocalhost = true;
+			}();
+			if (!isLocalhost) {
+				[&address, this]() mutable {
+					isLocalhost = false;
+					for (std::size_t i = 0; i < 10; i++) {
+						if (address.sin6_addr.s6_addr[i] != 0x00)
+							return;
+					}
+					if (address.sin6_addr.s6_addr[10] != 0xff ||
+						address.sin6_addr.s6_addr[11] != 0xff ||
+						address.sin6_addr.s6_addr[12] != 0x7f ||
+						address.sin6_addr.s6_addr[13] != 0x00 ||
+						address.sin6_addr.s6_addr[14] != 0x00 ||
+						address.sin6_addr.s6_addr[15] != 0x01
+					)
+						return;
+					isLocalhost = true;
+				}();
+			}
+#else
+			std::cout << "IPv4 Address: ";
+			for (std::size_t i = 0; i < 4; i++) {
+				std::cout << address.sin_addr.s_addr[i];
+			}
+			std::cout << '\n';
+#endif
+		}
 	}
 #else
 	inline explicit Connection(void *userData=nullptr) noexcept
@@ -68,6 +124,11 @@ public:
 	[[nodiscard]] bool
 	WriteBaseString(const base::String &) noexcept;
 
+	[[nodiscard]] inline constexpr bool
+	IsLocalhost() const noexcept {
+		return isLocalhost;
+	}
+
 	// Is used by memory_connection.hpp but isn't used in the normal
 	// implementation.
 	void *userData;
@@ -75,7 +136,9 @@ public:
 	// Will be modified by Setup and its descendants if TLS is enabled.
 	void *securityContext{ nullptr };
 
-#ifndef CONNECTION_MEMORY_VARIANT
+	bool isLocalhost{ false };
+
+	#ifndef CONNECTION_MEMORY_VARIANT
 #ifndef CONNECTION_ALLOW_EXTENDED_VISIBILITY
 private:
 #endif
