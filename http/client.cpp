@@ -300,6 +300,13 @@ Client::CheckHostHeader() noexcept {
 	}
 
 	if (*str != server->config().hostname) {
+		if (connection->IsLocalhost()) {
+			// TODO Include optional port number
+			if (*str == "localhost" || *str == "127.0.0.1" || *str == "0.0.0.0") {
+				return ClientError::NO_ERROR;
+			}
+		}
+
 		return ClientError::HOST_HEADER_INCORRECT;
 	}
 
