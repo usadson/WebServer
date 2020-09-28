@@ -490,10 +490,10 @@ Client::ExtractComponentsFromPath() noexcept {
 		return ClientError::NO_ERROR;
 	}
 
-	if (questionMark != path.rfind('?')) {
-		// Multiple ?'s in path
-		return ClientError::INVALID_PATH_MULTIPLE_QUESTION_MARKS;
-	}
+	// NOTE:
+	// Multiple ?'s can be in path. This isn't a bad request or even explicitly
+	// the UAs fault, but the query just isn't decodable in the regular
+	// application/www-form-data format.
 
 	currentRequest.path = path.substr(0, questionMark);
 	currentRequest.query = path.substr(questionMark + 1, path.length() - 1 - questionMark);
@@ -604,8 +604,6 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("request-line should end with a newline (CRLF)");
 		case ClientError::INCORRECT_VERSION:
 			return RecoverErrorBadRequest("invalid HTTP version as per RFC 7230 section 2.6");
-		case ClientError::INVALID_PATH_MULTIPLE_QUESTION_MARKS:
-			return RecoverErrorBadRequest("invalid path: multiple QUESTION MARKs found");
 
 		case ClientError::INVALID_PATH_EMPTY:
 			return RecoverErrorBadRequest("request-target was empty");
