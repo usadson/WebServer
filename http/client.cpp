@@ -69,6 +69,29 @@ Client::Client(Server *server, int sock) noexcept :
 	server(server), thread(&Client::Entrypoint, this) {
 }
 
+std::size_t
+Client::CalculateMinLengthRequestTargetAbsoluteForm() const noexcept {
+	// 'http'
+	const constexpr std::size_t schemeLength = 4;
+
+	// 's' or ''
+	const std::size_t schemeSecureLength = server->config().useTransportSecurity ? 1 : 0;
+
+	// '://'
+	const constexpr std::size_t colonSlashSlashLength = 3;
+
+	const std::size_t addressLength = 0; // maybe todo?
+
+	// ':65535'
+	const constexpr std::size_t maxPortLength = 7;
+
+	// '/'
+	const constexpr std::size_t slashLength = 1;
+
+	return schemeLength + schemeSecureLength + colonSlashSlashLength + addressLength + maxPortLength + slashLength;
+
+}
+
 bool
 Client::CheckConnectionLifetime() noexcept {
 	const auto now = std::chrono::high_resolution_clock::now();
@@ -581,11 +604,15 @@ Client::RecoverError(ClientError error) noexcept {
 			return RecoverErrorBadRequest("request-line should end with a newline (CRLF)");
 		case ClientError::INCORRECT_VERSION:
 			return RecoverErrorBadRequest("invalid HTTP version as per RFC 7230 section 2.6");
+		case ClientError::INVALID_PATH_MULTIPLE_QUESTION_MARKS:
+			return RecoverErrorBadRequest("invalid path: multiple QUESTION MARKs found");
 
 		case ClientError::INVALID_PATH_EMPTY:
 			return RecoverErrorBadRequest("request-target was empty");
 		case ClientError::INVALID_PATH_NOT_ABSOLUTE:
-			return RecoverErrorBadRequest("only absolute-path request-target supported");
+			return RecoverErrorBadRequest("only origin-form and absolute-form request-targets are supported");
+		case ClientError::INCORRECT_PATH_ABSOLUTE_FORM:
+			return RecoverErrorBadRequest("absolute-form request-target in invalid form");
 
 		case ClientError::HOST_HEADER_ILLEGAL_PORT:
 			return RecoverErrorBadRequest("'Host' header port component isn't a number");
@@ -695,16 +722,6 @@ Client::RunMessageExchange() noexcept {
 		return RecoverError(error);
 	}
 
-	error = ValidateCurrentRequestPath();
-	if (error != ClientError::NO_ERROR) {
-		return RecoverError(error);
-	}
-
-	error = ExtractComponentsFromPath();
-	if (error != ClientError::NO_ERROR) {
-		return RecoverError(error);
-	}
-
 	error = ConsumeVersion();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
@@ -726,6 +743,16 @@ Client::RunMessageExchange() noexcept {
 	}
 
 	error = CheckHostHeader();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
+	error = ValidateCurrentRequestPath();
+	if (error != ClientError::NO_ERROR) {
+		return RecoverError(error);
+	}
+
+	error = ExtractComponentsFromPath();
 	if (error != ClientError::NO_ERROR) {
 		return RecoverError(error);
 	}
@@ -868,7 +895,7 @@ Client::ServeStringRequest(const base::String &responseLine,
 }
 
 ClientError
-Client::ValidateCurrentRequestPath() const noexcept {
+Client::ValidateCurrentRequestPath() noexcept {
 	if (currentRequest.path.empty()) {
 		return ClientError::INVALID_PATH_EMPTY;
 	}
@@ -877,8 +904,51 @@ Client::ValidateCurrentRequestPath() const noexcept {
 	//   - * for the OPTIONS method.
 	//   - the 'absolute-form' request-target type
 	//   -
+	std::cout << "Checking path: '" << currentRequest.path << "'\n";
 	if (currentRequest.path[0] != '/') {
-		return ClientError::INVALID_PATH_NOT_ABSOLUTE;
+		std::string_view path = currentRequest.path;
+
+		if (path.length() < CalculateMinLengthRequestTargetAbsoluteForm()) {
+			std::cout << "VCRP: path is shorter than CalculateMinLengthRequestTargetAbsoluteForm(): \"" << path << "\" != " << CalculateMinLengthRequestTargetAbsoluteForm() << "\n";
+			return ClientError::INCORRECT_PATH_ABSOLUTE_FORM;
+		}
+
+		if (std::tolower(path[0]) != 'h' ||
+			std::tolower(path[1]) != 't' ||
+			std::tolower(path[2]) != 't' ||
+			std::tolower(path[3]) != 'p') {
+			std::cout << "VCRP: path doesn't start with 'http'\n";
+			return ClientError::INCORRECT_PATH_ABSOLUTE_FORM;
+		}
+
+		if (server->config().useTransportSecurity && path[5] != 's') {
+			std::cout << "VCRP: Transport Secured connection doesn't have HTTPS scheme\n";
+			return ClientError::INCORRECT_PATH_ABSOLUTE_FORM;
+		}
+
+		path = path.substr(4 + (server->config().useTransportSecurity ? 1 : 0));
+
+		if (path[0] != ':' || path[1] != '/' || path[2] != '/') {
+			std::cout << "VCRP: path doesn't have :// \n";
+			return ClientError::INCORRECT_PATH_ABSOLUTE_FORM;
+		}
+
+		path = path.substr(3);
+
+		std::string_view::size_type end;
+
+		// we're ignoring the hostname atm.
+		if ((end = path.find(':')) != std::string_view::npos) {
+			path = path.substr(end);
+		} else if ((end = path.find('/')) != std::string_view::npos) {
+			// todo maybe check port number, if it is the correct one?
+			path = path.substr(end);
+		} else {
+			std::cout << "VCRP: path doesn't end with slash\n";
+			return ClientError::INCORRECT_PATH_ABSOLUTE_FORM;
+		}
+
+		currentRequest.path = path;
 	}
 
 	return ClientError::NO_ERROR;

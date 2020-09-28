@@ -66,6 +66,9 @@ TESTING_VISIBILITY:
 
 	Server *server;
 
+	[[nodiscard]] std::size_t
+	CalculateMinLengthRequestTargetAbsoluteForm() const noexcept;
+
 	// Checks if the connection should be closed due to security policies.
 	[[nodiscard]] bool
 	CheckConnectionLifetime() noexcept;
@@ -213,7 +216,7 @@ TESTING_VISIBILITY:
 	ServeStringRequest(const base::String &, const MediaType &, const base::String &body) noexcept;
 
 	[[nodiscard]] ClientError
-	ValidateCurrentRequestPath() const noexcept;
+	ValidateCurrentRequestPath() noexcept;
 
 public:
 	// This value is encremented if Security::Policies::maxRequestsCloseImmediately
