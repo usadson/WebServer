@@ -2,10 +2,7 @@
 # See the COPYING file for licensing information.
 
 # Binary files
-bin/
 build/
-infer-out/
-server
 
 # Mask log files
 *.log
