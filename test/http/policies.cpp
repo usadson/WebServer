@@ -185,9 +185,3 @@ TEST_F(ConsumeHeaderFieldValueTest, MaxHeaderFieldNameLengthOutOfBounds) {
 	auto error = client.ConsumeHeaderFieldValue();
 	ASSERT_EQ_CLIENT_ERROR(error, HTTP::ClientError::POLICY_TOO_LONG_HEADER_FIELD_VALUE);
 }
-
-int
-main(int argc, char **argv) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}

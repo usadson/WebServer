@@ -123,9 +123,3 @@ TEST_F(ClientTest, ConsumeMethodRandomToken) {
 			<< "\" a correct method (i.e. token i.e. 1*tchar) string, while it is a valid method string.";
 	}
 }
-
-int
-main(int argc, char **argv) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
