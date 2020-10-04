@@ -3,6 +3,7 @@
 
 # Binary files
 bin/
+build/
 infer-out/
 server
 
