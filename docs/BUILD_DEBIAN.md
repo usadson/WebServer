@@ -9,11 +9,10 @@ Make sure you have the following packages installed:
  - [libssl-dev](https://openssl.org/)
  - [make](https://www.gnu.org/software/make/)
  - [openssl](https://openssl.org/)
- - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
 
 You can install the packages on Ubuntu with the following command:
 ```sh
-sudo apt install clang git libssl-dev make openssl pkg-config
+sudo apt install clang git libssl-dev make openssl
 ```
 
 ## Getting the Code
@@ -27,8 +26,16 @@ git clone git@github.com:usadson/WebServer.git && cd WebServer
 ```
 
 ## Building
-Building is done via Makefiles. Simply run `make` inside the root of the repository
-to build the executable.
+Building is done via CMake:
+```sh
+mkdir build
+cd build
+cmake ..
+cmake --build .
+
+# To start the server:
+./server
+```
 
 ## End
 And that's all! Click [here](../README.md) to go back to the README document.

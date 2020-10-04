@@ -25,9 +25,7 @@ For this project, you need to have the OpenSSL library installed. Make that you
 have openssl, but also libssl/openssl-dev, or something alike installed. This
 project utilizes the clang/LLVM compiler infrastructure. Also, this project is
 only for POSIX a.ka. UNIX-like operating systems. No Windows support, since
-nobody runs servers on Windows and WSL exists. Most systems have `pkg-config`
-installed by default, but if you run into problems mentioning this utility,
-make sure it is installed.
+nobody runs servers on Windows and WSL exists.
 
 ## Build Instructions
 The following sections are about building the software. There are specific
@@ -44,11 +42,18 @@ Make sure you have the following packages installed:
  - [libssl-dev](https://openssl.org/)
  - [make](https://www.gnu.org/software/make/)
  - [openssl](https://openssl.org/)
- - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
 
 ## Building
-`make`. I haven't found a modern, well-thought-through and easy-to-use building
-system, so I'll stick with Makefiles for now. It should work out of the box.
+Building is done via CMake:
+```sh
+mkdir build
+cd build
+cmake ..
+cmake --build .
+
+# To start the server:
+./server
+```
 
 ## Running
 As the project is currently in development stages, no system(ctl/d/etc.) support
